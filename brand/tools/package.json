@@ -1,0 +1,11 @@
+{
+  "name": "pause-menu-brand-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "python3 build.py && node render.mjs && python3 build.py --finalize"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2"
+  }
+}
