@@ -158,8 +158,8 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
 
                     {/* Sabit 2. slayt: Oyun Gündemi. Bu ayın yeni çıkanları + sayfaya CTA. */}
                     <CarouselItem key="agenda-promo">
-                        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#080910] ring-1 ring-white/10 md:h-[420px]">
-                            <div className="absolute inset-0 z-0 bg-gradient-to-br from-amber-500/15 via-[#080910] to-rose-600/20" />
+                        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#0D0915] ring-1 ring-white/10 md:h-[420px]">
+                            <div className="absolute inset-0 z-0 bg-gradient-to-br from-amber-500/15 via-[#0D0915] to-rose-600/20" />
                             <div
                                 aria-hidden
                                 className="absolute inset-0 z-0 opacity-[0.35]"
@@ -247,8 +247,8 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                     {/* Sabit 3. slayt: mobil uygulama. Mağaza düğmeleri masaüstünde QR'lı indirme
                         penceresini açar, telefonda doğrudan mağazaya gider. */}
                     <CarouselItem key="app-promo">
-                        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#080910] ring-1 ring-white/10 md:h-[420px]">
-                            <div className="absolute inset-0 z-0 bg-gradient-to-br from-cyan-500/20 via-[#080910] to-violet-600/25" />
+                        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#0D0915] ring-1 ring-white/10 md:h-[420px]">
+                            <div className="absolute inset-0 z-0 bg-gradient-to-br from-orange-500/20 via-[#0D0915] to-violet-600/25" />
                             <div
                                 aria-hidden
                                 className="absolute inset-0 z-0 opacity-[0.35]"
@@ -259,7 +259,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                     maskImage: "radial-gradient(ellipse 90% 70% at 30% 40%, black 30%, transparent 75%)",
                                 }}
                             />
-                            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 z-0 h-80 w-80 rounded-full bg-cyan-500/15 blur-3xl" />
+                            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 z-0 h-80 w-80 rounded-full bg-orange-500/15 blur-3xl" />
                             <div aria-hidden className="pointer-events-none absolute -bottom-28 right-1/4 z-0 h-96 w-96 rounded-full bg-violet-600/20 blur-3xl" />
 
                             {/* Mobilde slayt sabit 340px: dolgu ve boşluklar dar tutulmazsa
@@ -316,7 +316,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
 
                         return (
                             <CarouselItem key={game.id}>
-                                <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#080910] ring-1 ring-white/10 md:h-[420px]">
+                                <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#0D0915] ring-1 ring-white/10 md:h-[420px]">
                                     {/* Tam kanlı keskin görsel + sinematik zoom */}
                                     <div className="absolute inset-0 z-0 overflow-hidden">
                                         <Image
@@ -332,8 +332,8 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                             sizes="(max-width: 1600px) 100vw, 1600px"
                                         />
                                         {/* Katmanlı karartma: alt ağırlıklı + sol vurgulu, metin her görselde okunur */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#080910] via-[#080910]/45 to-transparent" />
-                                        <div className="absolute inset-0 bg-gradient-to-r from-[#080910]/85 via-[#080910]/30 to-transparent" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[#0D0915] via-[#0D0915]/45 to-transparent" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-[#0D0915]/85 via-[#0D0915]/30 to-transparent" />
                                     </div>
 
                                     {/* Sinematik alt-sol içerik bloğu */}

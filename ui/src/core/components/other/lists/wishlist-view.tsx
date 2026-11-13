@@ -117,7 +117,7 @@ export function WishlistView() {
                                                 <div className="flex items-center gap-2 flex-wrap mt-1">
                                                     {game.rating ? (
                                                         <div
-                                                            className="px-2 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold text-[10px] border border-blue-500/20 flex items-center gap-1.5 tabular-nums"
+                                                            className="px-2 py-1 rounded-md bg-pink-500/10 text-pink-600 dark:text-pink-400 font-bold text-[10px] border border-pink-500/20 flex items-center gap-1.5 tabular-nums"
                                                             title="RAWG Rating"
                                                         >
                                                             <Image src={rawgLogoSrc} alt="RAWG" width={12} height={12} className="w-3 h-3 object-contain opacity-80" />

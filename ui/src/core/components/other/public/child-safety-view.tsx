@@ -9,7 +9,7 @@ const META = [
     { icon: Ban, color: "text-rose-600 dark:text-rose-400" },
     { icon: ShieldCheck, color: "text-emerald-600 dark:text-emerald-400" },
     { icon: Flag, color: "text-amber-600 dark:text-amber-400" },
-    { icon: Scale, color: "text-cyan-600 dark:text-cyan-400" },
+    { icon: Scale, color: "text-orange-600 dark:text-orange-400" },
 ];
 
 const COPY = {
@@ -98,10 +98,10 @@ export function ChildSafetyView() {
                 <section className="relative overflow-hidden rounded-3xl border border-border/50 bg-card/60 px-6 py-12 text-center">
                     <div
                         aria-hidden
-                        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.12),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(34,211,238,0.12),_transparent_60%)]"
+                        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.12),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(255,138,31,0.12),_transparent_60%)]"
                     />
                     <div className="relative flex flex-col items-center gap-4">
-                        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/15 to-cyan-500/15 text-emerald-600 dark:text-emerald-400">
+                        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/15 to-orange-500/15 text-emerald-600 dark:text-emerald-400">
                             <ShieldCheck className="h-8 w-8" />
                         </div>
                         <h1 className="text-3xl font-bold tracking-tight md:text-4xl">{t.title}</h1>
@@ -141,7 +141,7 @@ export function ChildSafetyView() {
                     })}
 
                     {/* Contact */}
-                    <section className="rounded-2xl border border-border/50 bg-gradient-to-br from-emerald-500/5 to-cyan-500/5 p-6 transition-colors hover:border-border">
+                    <section className="rounded-2xl border border-border/50 bg-gradient-to-br from-emerald-500/5 to-orange-500/5 p-6 transition-colors hover:border-border">
                         <div className="flex items-center gap-3">
                             <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/50 text-emerald-600 dark:text-emerald-400">
                                 <Mail className="h-5 w-5" />

@@ -123,7 +123,7 @@ export default function HomeBentoGrid({ trending, leaders }: HomeBentoGridProps)
                     </CardContent>
                 </Card>
 
-                <div className="rounded-xl bg-linear-to-r from-indigo-500 to-purple-600 p-4 text-white shadow-lg mt-4">
+                <div className="rounded-xl bg-linear-to-r from-fuchsia-500 to-purple-600 p-4 text-white shadow-lg mt-4">
                     <p className="font-bold text-sm">{t("homeBento.ctaTitle")}</p>
                     <p className="text-xs text-white/80 mt-1">{t("homeBento.ctaDescription")}</p>
                 </div>

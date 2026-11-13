@@ -90,12 +90,12 @@ function LoginPageContent() {
             {/* Brand glow behind the card */}
             <div
                 aria-hidden
-                className="pointer-events-none absolute -inset-1 rounded-[28px] bg-gradient-to-r from-cyan-500/20 via-blue-500/10 to-fuchsia-500/20 blur-2xl"
+                className="pointer-events-none absolute -inset-1 rounded-[28px] bg-gradient-to-r from-orange-500/20 via-pink-500/10 to-fuchsia-500/20 blur-2xl"
             />
 
             <Card className="relative overflow-hidden rounded-2xl border-border/50 bg-card/80 shadow-2xl backdrop-blur-xl">
                 {/* Top accent line */}
-                <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent" />
+                <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-400/70 to-transparent" />
 
                 <Link href={buildLocalizedPathname("/", locale)} aria-label={t("auth.backToHome")}>
                     <Button
@@ -157,7 +157,7 @@ function LoginPageContent() {
                             <div className="text-right">
                                 <Link
                                     href={buildLocalizedPathname("/forgot-password", locale)}
-                                    className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-cyan-600 dark:hover:text-cyan-400 hover:underline"
+                                    className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-orange-600 dark:hover:text-orange-400 hover:underline"
                                 >
                                     {t("auth.forgotPassword")}
                                 </Link>
@@ -166,7 +166,7 @@ function LoginPageContent() {
                             <Button
                                 type="submit"
                                 disabled={isPending}
-                                className="h-10 w-full cursor-pointer rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 text-base font-semibold text-white shadow-lg shadow-violet-500/25 transition-all hover:from-cyan-400 hover:to-violet-400 hover:shadow-violet-500/40"
+                                className="h-10 w-full cursor-pointer rounded-full bg-gradient-to-r from-orange-500 to-violet-500 text-base font-semibold text-white shadow-lg shadow-violet-500/25 transition-all hover:from-orange-400 hover:to-violet-400 hover:shadow-violet-500/40"
                             >
                                 {isPending ? t("auth.loginPending") : t("auth.loginTitle")}
                             </Button>
@@ -177,7 +177,7 @@ function LoginPageContent() {
                                 {t("auth.noAccount")}
                                 <Link
                                     href={buildLocalizedPathname("/register", locale)}
-                                    className="ml-1 font-semibold text-cyan-600 dark:text-cyan-400 underline-offset-4 hover:underline"
+                                    className="ml-1 font-semibold text-orange-600 dark:text-orange-400 underline-offset-4 hover:underline"
                                 >
                                     {t("auth.createAccount")}
                                 </Link>

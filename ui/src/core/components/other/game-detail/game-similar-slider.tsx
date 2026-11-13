@@ -77,10 +77,10 @@ export const GameSimilarSlider = ({ rawgId }: GameSimilarSliderProps) => {
                                 </div>
 
                                 <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-black/0" />
-                                <div className="absolute inset-0 bg-radial from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
+                                <div className="absolute inset-0 bg-radial from-orange-500/10 via-transparent to-transparent pointer-events-none" />
 
                                 {gghubRating && (
-                                    <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-black/75 px-2.5 py-1 border border-cyan-400/70 shadow-lg backdrop-blur-md text-[11px] font-semibold text-cyan-50">
+                                    <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-black/75 px-2.5 py-1 border border-orange-400/70 shadow-lg backdrop-blur-md text-[11px] font-semibold text-orange-50">
                                         <Image
                                             src={logoSrc}
                                             alt="Pause Menu"
@@ -93,7 +93,7 @@ export const GameSimilarSlider = ({ rawgId }: GameSimilarSliderProps) => {
                                 )}
 
                                 <div className="absolute bottom-0 left-0 right-0 p-4 space-y-1.5">
-                                    <h4 className="text-sm md:text-base font-semibold text-white line-clamp-1 group-hover/card:text-cyan-300 transition-colors">
+                                    <h4 className="text-sm md:text-base font-semibold text-white line-clamp-1 group-hover/card:text-orange-300 transition-colors">
                                         {game.name}
                                     </h4>
 
@@ -119,8 +119,8 @@ export const GameSimilarSlider = ({ rawgId }: GameSimilarSliderProps) => {
                                     </div>
 
                                     <div className="flex items-center justify-between pt-1">
-                                        <span className="inline-flex items-center gap-1.5 text-[11px] text-cyan-200/80 opacity-0 group-hover/card:opacity-100 translate-y-1 group-hover/card:translate-y-0 transition-all duration-200">
-                                            <span className="inline-block w-1 h-1 rounded-full bg-cyan-300 animate-pulse" />
+                                        <span className="inline-flex items-center gap-1.5 text-[11px] text-orange-200/80 opacity-0 group-hover/card:opacity-100 translate-y-1 group-hover/card:translate-y-0 transition-all duration-200">
+                                            <span className="inline-block w-1 h-1 rounded-full bg-orange-300 animate-pulse" />
                                             {t("gameDetail.similarViewDetails")}
                                         </span>
                                         <span className="text-[10px] uppercase tracking-[0.18em] text-zinc-400/90">

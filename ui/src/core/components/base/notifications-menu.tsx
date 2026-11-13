@@ -26,13 +26,13 @@ type IconComponent = React.ComponentType<{ className?: string }>;
 const notificationIconMeta = (type: NotificationType): { Icon: IconComponent; color: string } => {
     switch (type) {
         case NotificationType.Follow:
-            return { Icon: UserPlus, color: "text-blue-500" };
+            return { Icon: UserPlus, color: "text-pink-500" };
         case NotificationType.ListFollow:
             return { Icon: List, color: "text-green-500" };
         case NotificationType.Review:
             return { Icon: Star, color: "text-yellow-500" };
         case NotificationType.ListComment:
-            return { Icon: MessageSquare, color: "text-sky-500" };
+            return { Icon: MessageSquare, color: "text-orange-500" };
         case NotificationType.CommentReply:
             return { Icon: Reply, color: "text-teal-500" };
         case NotificationType.CommentLike:
@@ -40,7 +40,7 @@ const notificationIconMeta = (type: NotificationType): { Icon: IconComponent; co
         case NotificationType.ListRating:
             return { Icon: Star, color: "text-amber-500" };
         case NotificationType.ReviewComment:
-            return { Icon: MessageSquare, color: "text-indigo-500" };
+            return { Icon: MessageSquare, color: "text-fuchsia-500" };
         case NotificationType.ReviewCommentReply:
             return { Icon: Reply, color: "text-violet-500" };
         case NotificationType.ReviewCommentLike:
@@ -50,7 +50,7 @@ const notificationIconMeta = (type: NotificationType): { Icon: IconComponent; co
         case NotificationType.PostLike:
             return { Icon: Heart, color: "text-rose-500" };
         case NotificationType.PostReply:
-            return { Icon: MessageSquare, color: "text-sky-500" };
+            return { Icon: MessageSquare, color: "text-orange-500" };
         case NotificationType.PostRepost:
             return { Icon: Repeat2, color: "text-emerald-500" };
         case NotificationType.Birthday:

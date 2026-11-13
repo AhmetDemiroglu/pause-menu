@@ -6,9 +6,9 @@ import { useCurrentLocale } from "@/core/contexts/locale-context";
 type Section = { title: string; lead?: string; list?: string[]; after?: string };
 
 const META = [
-    { icon: Globe, color: "text-cyan-600 dark:text-cyan-400" },
+    { icon: Globe, color: "text-orange-600 dark:text-orange-400" },
     { icon: Smartphone, color: "text-violet-600 dark:text-violet-400" },
-    { icon: Mail, color: "text-blue-600 dark:text-blue-400" },
+    { icon: Mail, color: "text-pink-600 dark:text-pink-400" },
     { icon: Database, color: "text-rose-600 dark:text-rose-400" },
     { icon: Scale, color: "text-emerald-600 dark:text-emerald-400" },
 ];

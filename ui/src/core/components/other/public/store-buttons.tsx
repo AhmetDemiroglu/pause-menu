@@ -54,7 +54,7 @@ export function StoreButton({
                     onLinkClick?.(event);
                     onClick?.();
                 }}
-                className={cn(base, "transition-all hover:scale-[1.02] hover:border-cyan-400/60 hover:bg-black", className)}
+                className={cn(base, "transition-all hover:scale-[1.02] hover:border-orange-400/60 hover:bg-black", className)}
             >
                 {icon}
                 <span className={labelClass}>{label}</span>
@@ -67,7 +67,7 @@ export function StoreButton({
             {icon}
             <span className={labelClass}>{label}</span>
             {soon ? (
-                <span className="absolute -right-2 -top-2 rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                <span className="absolute -right-2 -top-2 rounded-full bg-gradient-to-r from-orange-500 to-violet-500 px-2 py-0.5 text-[10px] font-bold text-white shadow">
                     {soon}
                 </span>
             ) : null}

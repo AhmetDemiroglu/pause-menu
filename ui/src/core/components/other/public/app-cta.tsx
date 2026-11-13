@@ -35,7 +35,7 @@ export function AppDownloadCTA() {
             <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card/70 p-6">
                 <div
                     aria-hidden
-                    className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-cyan-500/20 to-fuchsia-500/20 blur-2xl"
+                    className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-orange-500/20 to-fuchsia-500/20 blur-2xl"
                 />
                 <h3 className="text-lg font-semibold tracking-tight">{t.downloadTitle}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{t.downloadDesc}</p>
@@ -46,13 +46,13 @@ export function AppDownloadCTA() {
             <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card/70 p-6">
                 <div
                     aria-hidden
-                    className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-blue-500/20 to-violet-500/20 blur-2xl"
+                    className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br from-pink-500/20 to-violet-500/20 blur-2xl"
                 />
                 <h3 className="text-lg font-semibold tracking-tight">{t.contactTitle}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{t.contactDesc}</p>
                 <a
                     href="mailto:info@pausemenu.app"
-                    className="mt-4 inline-flex items-center gap-2 rounded-full border border-border/60 bg-secondary/40 px-4 py-2.5 text-sm font-medium transition-colors hover:border-cyan-400/60 hover:text-cyan-400"
+                    className="mt-4 inline-flex items-center gap-2 rounded-full border border-border/60 bg-secondary/40 px-4 py-2.5 text-sm font-medium transition-colors hover:border-orange-400/60 hover:text-orange-400"
                 >
                     <Mail className="h-4 w-4" />
                     info@pausemenu.app

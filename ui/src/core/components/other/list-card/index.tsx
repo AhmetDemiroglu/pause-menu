@@ -44,7 +44,7 @@ const VisibilityInfo: React.FC<{
             );
         case ListVisibilitySetting.Followers:
             return (
-                <Badge variant="outline" className="border-blue-500 text-blue-500">
+                <Badge variant="outline" className="border-pink-500 text-pink-500">
                     <Users className="mr-1 h-3 w-3" />
                     {!isCollapsed && t("lists.followers")}
                 </Badge>

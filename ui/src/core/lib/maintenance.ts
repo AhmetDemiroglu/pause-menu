@@ -115,8 +115,8 @@ const SCENE_SVG = (label: string) => `
       <stop offset="0" stop-color="#FF2E88"/><stop offset="0.5" stop-color="#FF5A4E"/><stop offset="1" stop-color="#FF8A1F"/>
     </linearGradient>
     <linearGradient id="ground" x1="0" y1="0" x2="720" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0f172a" stop-opacity="0"/><stop offset="0.12" stop-color="#0f172a"/>
-      <stop offset="0.88" stop-color="#0f172a"/><stop offset="1" stop-color="#0f172a" stop-opacity="0"/>
+      <stop offset="0" stop-color="#14101F" stop-opacity="0"/><stop offset="0.12" stop-color="#14101F"/>
+      <stop offset="0.88" stop-color="#14101F"/><stop offset="1" stop-color="#14101F" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="groundLine" x1="0" y1="0" x2="720" y2="0" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#475569" stop-opacity="0"/><stop offset="0.12" stop-color="#475569"/>
@@ -127,7 +127,7 @@ const SCENE_SVG = (label: string) => `
     </linearGradient>
     <mask id="groundMask"><rect x="0" y="340" width="720" height="80" fill="url(#groundDown)"/></mask>
     <linearGradient id="tower" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#0f172a"/>
+      <stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#14101F"/>
     </linearGradient>
     <linearGradient id="shine" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.5" stop-color="#fff" stop-opacity="0.85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
@@ -189,7 +189,7 @@ const SCENE_SVG = (label: string) => `
       <rect x="440" y="318" width="18" height="12" rx="2" opacity="0.15"><animate attributeName="opacity" values="0.15;0.8;0.8;0.15" keyTimes="0;0.1;0.6;1" dur="6s" begin="0.5s" repeatCount="indefinite"/></rect>
       <rect x="470" y="318" width="18" height="12" rx="2" opacity="0.15"><animate attributeName="opacity" values="0.15;0.8;0.8;0.15" keyTimes="0;0.1;0.6;1" dur="6s" begin="4.2s" repeatCount="indefinite"/></rect>
     </g>
-    <rect x="400" y="318" width="28" height="22" rx="2" fill="#0f172a" stroke="#475569"/>
+    <rect x="400" y="318" width="28" height="22" rx="2" fill="#14101F" stroke="#475569"/>
     <text x="425" y="262" text-anchor="middle" font-size="25" font-weight="800" font-family="inherit" letter-spacing="1.5" fill="url(#brand)">PAUSE MENU</text>
     <g clip-path="url(#signClip)">
       <rect x="300" y="215" width="60" height="60" fill="url(#shine)" opacity="0.9">
@@ -234,7 +234,7 @@ const SCENE_SVG = (label: string) => `
     </g>
     <g stroke="#94a3b8" stroke-width="1" opacity="0.7"><line x1="110" y1="56" x2="470" y2="90"/><line x1="110" y1="56" x2="44" y2="90"/></g>
     <rect x="42" y="100" width="34" height="22" rx="2" fill="#475569"/>
-    <rect x="122" y="100" width="22" height="18" rx="3" fill="#f59e0b"/><rect x="127" y="104" width="12" height="7" rx="1" fill="#0f172a" opacity="0.8"/>
+    <rect x="122" y="100" width="22" height="18" rx="3" fill="#f59e0b"/><rect x="127" y="104" width="12" height="7" rx="1" fill="#14101F" opacity="0.8"/>
     <circle cx="110" cy="54" r="3.5" fill="#ef4444"><animate attributeName="opacity" values="1;0.15;1" dur="1.4s" repeatCount="indefinite"/></circle>
     <circle cx="470" cy="88" r="3" fill="#ef4444"><animate attributeName="opacity" values="0.15;1;0.15" dur="1.4s" repeatCount="indefinite"/></circle>
     <!-- araba + halat + kanca + sandik -->
@@ -312,7 +312,7 @@ export function renderMaintenancePage(locale: MaintenanceLocale) {
     min-height: 100vh; display: flex; align-items: center; justify-content: center;
     padding: 24px 16px; background: #020618; color: #e2e8f0;
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-image: radial-gradient(60rem 30rem at 15% -10%, rgba(34,211,238,.10), transparent 60%),
+    background-image: radial-gradient(60rem 30rem at 15% -10%, rgba(255,138,31,.10), transparent 60%),
                       radial-gradient(50rem 30rem at 110% 110%, rgba(217,70,239,.10), transparent 60%);
   }
   main { width: 100%; max-width: 760px; text-align: center; }

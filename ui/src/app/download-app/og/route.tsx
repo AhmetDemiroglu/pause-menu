@@ -45,7 +45,7 @@ export async function GET(request: Request) {
                     height: "630px",
                     display: "flex",
                     position: "relative",
-                    background: "#0a0b14",
+                    background: "#110C1A",
                     overflow: "hidden",
                     fontFamily: "sans-serif",
                 }}

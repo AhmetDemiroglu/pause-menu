@@ -74,7 +74,7 @@ export const GameReviewDialog = ({ isOpen, onClose, gameId, gameSlug, gameName, 
         }
 
         if (num >= 7) {
-            return "bg-blue-600 border-blue-500 text-white shadow-[0_0_10px_rgba(59,130,246,0.5)]";
+            return "bg-pink-600 border-pink-500 text-white shadow-[0_0_10px_rgba(255,46,136,0.5)]";
         }
 
         if (num >= 5) {

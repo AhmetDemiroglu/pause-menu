@@ -15,22 +15,22 @@ import type { AiClubLine } from "@/models/ai/ai-club.model";
 export function AiClubBackground({ className }: { className?: string }) {
     const confetti: { x: number; y: number; w: number; h: number; r: number; c: string }[] = [
         { x: 70, y: 40, w: 14, h: 6, r: 25, c: "#facc15" },
-        { x: 180, y: 360, w: 12, h: 5, r: -30, c: "#22d3ee" },
+        { x: 180, y: 360, w: 12, h: 5, r: -30, c: "#FF8A1F" },
         { x: 330, y: 70, w: 10, h: 10, r: 45, c: "#f472b6" },
         { x: 470, y: 380, w: 16, h: 6, r: 15, c: "#a3e635" },
         { x: 610, y: 30, w: 12, h: 5, r: -20, c: "#fb923c" },
         { x: 760, y: 395, w: 10, h: 10, r: 30, c: "#c084fc" },
-        { x: 880, y: 60, w: 14, h: 6, r: 60, c: "#22d3ee" },
+        { x: 880, y: 60, w: 14, h: 6, r: 60, c: "#FF8A1F" },
         { x: 1010, y: 345, w: 12, h: 5, r: -45, c: "#facc15" },
         { x: 1130, y: 120, w: 10, h: 10, r: 10, c: "#f472b6" },
         { x: 1160, y: 300, w: 14, h: 6, r: -15, c: "#a3e635" },
         { x: 260, y: 210, w: 8, h: 8, r: 45, c: "#fde047" },
-        { x: 560, y: 250, w: 8, h: 8, r: 20, c: "#67e8f9" },
+        { x: 560, y: 250, w: 8, h: 8, r: 20, c: "#FFB36B" },
     ];
     const stars: { x: number; y: number; s: number; c: string; d: number }[] = [
         { x: 120, y: 120, s: 9, c: "#fde047", d: 0 },
         { x: 420, y: 150, s: 7, c: "#f9a8d4", d: 0.7 },
-        { x: 690, y: 120, s: 10, c: "#67e8f9", d: 1.3 },
+        { x: 690, y: 120, s: 10, c: "#FFB36B", d: 1.3 },
         { x: 960, y: 190, s: 8, c: "#fde047", d: 0.4 },
         { x: 1080, y: 40, s: 7, c: "#bef264", d: 1.8 },
         { x: 360, y: 320, s: 8, c: "#c4b5fd", d: 1.1 },
@@ -42,7 +42,7 @@ export function AiClubBackground({ className }: { className?: string }) {
             <div className="absolute inset-0 bg-[#12061f]" />
             <div className="absolute -left-20 -top-24 h-80 w-80 rounded-full bg-fuchsia-600/45 blur-3xl" />
             <div className="absolute -bottom-32 left-1/3 h-96 w-96 rounded-full bg-violet-600/40 blur-3xl" />
-            <div className="absolute -right-16 top-6 h-72 w-72 rounded-full bg-cyan-400/30 blur-3xl" />
+            <div className="absolute -right-16 top-6 h-72 w-72 rounded-full bg-orange-400/30 blur-3xl" />
             <div className="absolute bottom-0 right-1/4 h-56 w-56 rounded-full bg-amber-400/25 blur-3xl" />
             <div className="absolute left-1/2 top-1/3 h-40 w-40 rounded-full bg-lime-400/15 blur-3xl" />
 
@@ -104,7 +104,7 @@ export function AiClubBackground({ className }: { className?: string }) {
 
                 {/* Gamepad */}
                 <g transform="translate(1085 360) rotate(-12)" opacity="0.8">
-                    <rect x="-34" y="-16" width="68" height="32" rx="16" fill="#22d3ee" />
+                    <rect x="-34" y="-16" width="68" height="32" rx="16" fill="#FF8A1F" />
                     <rect x="-22" y="-3" width="14" height="4" rx="1" fill="#12061f" />
                     <rect x="-17" y="-8" width="4" height="14" rx="1" fill="#12061f" />
                     <circle cx="14" cy="-3" r="3.5" fill="#12061f" />

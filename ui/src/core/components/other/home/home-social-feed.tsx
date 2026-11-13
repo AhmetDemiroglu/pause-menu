@@ -671,8 +671,8 @@ function ReviewCard({ activity, timeAgo, locale }: { activity: Activity; timeAgo
             <CardHeader
                 actor={activity.actor}
                 fallbackIcon={
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-500/10">
-                        <Star className="h-4 w-4 text-blue-500" />
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-pink-500/10">
+                        <Star className="h-4 w-4 text-pink-500" />
                     </div>
                 }
                 actionText={t("home.reviewShared")}

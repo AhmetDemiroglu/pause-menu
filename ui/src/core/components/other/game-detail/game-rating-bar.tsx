@@ -25,9 +25,9 @@ export const GameRatingBar = ({ rating, onRateClick, actionLabel = "Puan vermek 
 
         if (score >= 7.0) return {
             label: "Öneriliyor",
-            text: "text-blue-400",
+            text: "text-pink-400",
             icon: Smile,
-            gradient: "from-blue-600 via-blue-500 to-cyan-400 shadow-[0_0_20px_rgba(59,130,246,0.4)]"
+            gradient: "from-pink-600 via-pink-500 to-orange-400 shadow-[0_0_20px_rgba(255,46,136,0.4)]"
         };
 
         if (score >= 5.0) return {

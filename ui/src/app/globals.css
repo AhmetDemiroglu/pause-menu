@@ -50,90 +50,81 @@
 
 :root {
     --radius: 0.625rem;
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.129 0.042 264.695);
+    /* Pause Menu palette: warm ink neutrals, hot pink primary, sunset orange accent. */
+    --background: oklch(0.995 0.003 88);
+    --foreground: oklch(0.186 0.03 295.5);
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.129 0.042 264.695);
+    --card-foreground: oklch(0.186 0.03 295.5);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.129 0.042 264.695);
-    --primary: oklch(0.208 0.042 265.755);
-    --primary-foreground: oklch(0.984 0.003 247.858);
-    --secondary: oklch(0.968 0.007 247.896);
-    --secondary-foreground: oklch(0.208 0.042 265.755);
-    --muted: oklch(0.968 0.007 247.896);
-    --muted-foreground: oklch(0.554 0.046 257.417);
-    --accent: oklch(0.968 0.007 247.896);
-    --accent-foreground: oklch(0.208 0.042 265.755);
+    --popover-foreground: oklch(0.186 0.03 295.5);
+    --primary: oklch(0.611 0.233 1.5);
+    --primary-foreground: oklch(0.99 0.005 88);
+    --secondary: oklch(0.965 0.01 300);
+    --secondary-foreground: oklch(0.24 0.04 295.5);
+    --muted: oklch(0.965 0.01 300);
+    --muted-foreground: oklch(0.52 0.04 295);
+    --accent: oklch(0.955 0.025 355);
+    --accent-foreground: oklch(0.32 0.1 355);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.929 0.013 255.508);
-    --input: oklch(0.929 0.013 255.508);
-    --ring: oklch(0.704 0.04 256.788);
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
-    --sidebar: oklch(0.984 0.003 247.858);
-    --sidebar-foreground: oklch(0.129 0.042 264.695);
-    --sidebar-primary: oklch(0.208 0.042 265.755);
-    --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-    --sidebar-accent: oklch(0.968 0.007 247.896);
-    --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-    --sidebar-border: oklch(0.929 0.013 255.508);
-    --sidebar-ring: oklch(0.704 0.04 256.788);
-    /* @bahis rengi. --primary BILEREK kullanilmiyor: shadcn "slate" temasinda
-       --primary notr bir gri ve --foreground'a o kadar yakin ki etiket duz
-       metinden ayirt edilemiyordu. Bu indigo, mobildeki colors.primary
-       (#6366f1) ile ayni; iki platform birebir ayni gorunsun diye. */
-    --mention: oklch(0.585 0.233 277.117);
-
-    /* Gonderilerde uc etiket tipi var ve birbirinden RENKLE ayriliyor:
-       kisi indigo (yukaridaki --mention), oyun kehribar, liste mavi.
-       Uc tip de ayni "@" ile yazildigi icin renk tek ayirt edici isaret. */
+    --border: oklch(0.915 0.014 300);
+    --input: oklch(0.915 0.014 300);
+    --ring: oklch(0.662 0.244 1.7);
+    --chart-1: oklch(0.662 0.244 1.7);
+    --chart-2: oklch(0.748 0.176 55.4);
+    --chart-3: oklch(0.542 0.212 352.8);
+    --chart-4: oklch(0.413 0.216 295.5);
+    --chart-5: oklch(0.8 0.15 80);
+    --sidebar: oklch(0.985 0.005 300);
+    --sidebar-foreground: oklch(0.186 0.03 295.5);
+    --sidebar-primary: oklch(0.611 0.233 1.5);
+    --sidebar-primary-foreground: oklch(0.99 0.005 88);
+    --sidebar-accent: oklch(0.955 0.025 355);
+    --sidebar-accent-foreground: oklch(0.32 0.1 355);
+    --sidebar-border: oklch(0.915 0.014 300);
+    --sidebar-ring: oklch(0.662 0.244 1.7);
+    /* Mention colours. Post tags of three kinds are told apart by colour only:
+       people pink (brand), games amber, lists purple. */
+    --mention: oklch(0.58 0.23 2);
     --mention-game: oklch(0.646 0.161 65.5);
-    --mention-list: oklch(0.588 0.158 241.966);
+    --mention-list: oklch(0.5 0.2 295);
 }
 
 .dark {
-    --background: oklch(0.129 0.042 264.695);
-    --foreground: oklch(0.984 0.003 247.858);
-    --card: oklch(0.208 0.042 265.755);
-    --card-foreground: oklch(0.984 0.003 247.858);
-    --popover: oklch(0.208 0.042 265.755);
-    --popover-foreground: oklch(0.984 0.003 247.858);
-    --primary: oklch(0.929 0.013 255.508);
-    --primary-foreground: oklch(0.208 0.042 265.755);
-    --secondary: oklch(0.279 0.041 260.031);
-    --secondary-foreground: oklch(0.984 0.003 247.858);
-    --muted: oklch(0.279 0.041 260.031);
-    --muted-foreground: oklch(0.704 0.04 256.788);
-    --accent: oklch(0.279 0.041 260.031);
-    --accent-foreground: oklch(0.984 0.003 247.858);
+    --background: oklch(0.165 0.028 295.5);
+    --foreground: oklch(0.974 0.017 88);
+    --card: oklch(0.21 0.04 295);
+    --card-foreground: oklch(0.974 0.017 88);
+    --popover: oklch(0.21 0.04 295);
+    --popover-foreground: oklch(0.974 0.017 88);
+    --primary: oklch(0.662 0.244 1.7);
+    --primary-foreground: oklch(0.99 0.005 88);
+    --secondary: oklch(0.27 0.045 295);
+    --secondary-foreground: oklch(0.974 0.017 88);
+    --muted: oklch(0.27 0.045 295);
+    --muted-foreground: oklch(0.72 0.035 295);
+    --accent: oklch(0.3 0.07 350);
+    --accent-foreground: oklch(0.974 0.017 88);
     --destructive: oklch(0.704 0.191 22.216);
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.551 0.027 264.364);
-    --chart-1: oklch(0.488 0.243 264.376);
-    --chart-2: oklch(0.696 0.17 162.48);
-    --chart-3: oklch(0.769 0.188 70.08);
-    --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
-    --sidebar: oklch(0.208 0.042 265.755);
-    --sidebar-foreground: oklch(0.984 0.003 247.858);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-    --sidebar-accent: oklch(0.279 0.041 260.031);
-    --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
+    --ring: oklch(0.662 0.244 1.7);
+    --chart-1: oklch(0.7 0.22 2);
+    --chart-2: oklch(0.78 0.16 58);
+    --chart-3: oklch(0.62 0.2 350);
+    --chart-4: oklch(0.6 0.2 295);
+    --chart-5: oklch(0.82 0.14 80);
+    --sidebar: oklch(0.19 0.035 295);
+    --sidebar-foreground: oklch(0.974 0.017 88);
+    --sidebar-primary: oklch(0.662 0.244 1.7);
+    --sidebar-primary-foreground: oklch(0.99 0.005 88);
+    --sidebar-accent: oklch(0.3 0.07 350);
+    --sidebar-accent-foreground: oklch(0.974 0.017 88);
     --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.551 0.027 264.364);
-    /* Koyu zeminde indigo-500 sonuk kaliyor; mobildeki primaryLight (#818cf8)
-       ile ayni olan bir ton acigi kullaniliyor. */
-    --mention: oklch(0.673 0.182 276.935);
-
-    /* Koyu zeminde her ikisi de bir ton acik: aydinlik temadaki tonlar
-       koyu arka planda okunaksiz kaliyor. */
+    --sidebar-ring: oklch(0.662 0.244 1.7);
+    /* One step lighter on the dark background so the tags stay readable. */
+    --mention: oklch(0.72 0.2 2);
     --mention-game: oklch(0.769 0.148 70.08);
-    --mention-list: oklch(0.702 0.142 242.435);
+    --mention-list: oklch(0.7 0.16 295);
 }
 
 @layer base {
@@ -552,16 +543,16 @@
     --glass-spec-soft: rgba(255, 255, 255, 0.45);
     --glass-spec-side: rgba(255, 255, 255, 0.34);
     --glass-sheen: rgba(255, 255, 255, 0.2);
-    --glass-under: rgba(19, 24, 38, 0.1);
-    --glass-under-soft: rgba(19, 24, 38, 0.22);
+    --glass-under: rgba(20, 16, 31, 0.1);
+    --glass-under-soft: rgba(20, 16, 31, 0.22);
 }
 .dark {
     --glass-tint-a: rgba(255, 255, 255, 0.1);
     --glass-tint-b: rgba(255, 255, 255, 0.035);
-    --glass-dense-a: rgba(24, 29, 48, 0.56);
-    --glass-dense-b: rgba(12, 16, 30, 0.44);
-    --glass-frost-a: rgba(30, 36, 58, 0.62);
-    --glass-frost-b: rgba(13, 18, 34, 0.46);
+    --glass-dense-a: rgba(30, 22, 44, 0.56);
+    --glass-dense-b: rgba(16, 11, 26, 0.44);
+    --glass-frost-a: rgba(36, 26, 54, 0.62);
+    --glass-frost-b: rgba(18, 12, 30, 0.46);
     --glass-rim: rgba(255, 255, 255, 0.38);
     --glass-rim-soft: rgba(255, 255, 255, 0.09);
     --glass-shadow: rgba(2, 4, 16, 0.32);

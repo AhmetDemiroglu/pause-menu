@@ -87,9 +87,9 @@ export default function DownloadAppClient() {
     const n = Math.max(Math.ceil(remainingMs / 1000), 0);
 
     return (
-        <main className="relative flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-[#0a0b14] px-4 py-6 text-white">
+        <main className="relative flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-[#110C1A] px-4 py-6 text-white">
             {/* Brand glows */}
-            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-orange-500/20 blur-3xl" />
             <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-violet-600/25 blur-3xl" />
 
             <div className="relative z-10 w-full max-w-sm rounded-3xl border border-white/10 bg-white/[0.03] p-6 text-center shadow-2xl backdrop-blur sm:p-8">
@@ -108,19 +108,19 @@ export default function DownloadAppClient() {
 
                 {/* Redirect notice + countdown (only when a matching store exists for this device) */}
                 {isRedirecting ? (
-                    <div className="mt-6 rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.06] px-4 py-3.5 text-left">
+                    <div className="mt-6 rounded-2xl border border-orange-400/20 bg-orange-400/[0.06] px-4 py-3.5 text-left">
                         <div className="flex items-center justify-between gap-3">
                             <div>
                                 <p className="text-sm font-semibold text-white">Taking you to the {storeName}…</p>
                                 <p className="mt-0.5 text-xs text-white/55">Seni {storeName}&apos;a yönlendiriyoruz…</p>
                             </div>
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-base font-bold tabular-nums text-cyan-300">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-base font-bold tabular-nums text-orange-300">
                                 {n}
                             </div>
                         </div>
                         <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-white/10">
                             <div
-                                className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-400 transition-[width] duration-500 ease-linear"
+                                className="h-full rounded-full bg-gradient-to-r from-orange-400 to-violet-400 transition-[width] duration-500 ease-linear"
                                 style={{ width: `${progress * 100}%` }}
                             />
                         </div>
@@ -176,7 +176,7 @@ export default function DownloadAppClient() {
                 <a
                     href="https://pausemenu.app"
                     onClick={() => trackDownloadEvent("web_click", { target: "web" })}
-                    className="mt-4 inline-block text-xs font-medium text-cyan-400 underline-offset-4 transition-colors hover:text-cyan-300 hover:underline"
+                    className="mt-4 inline-block text-xs font-medium text-orange-400 underline-offset-4 transition-colors hover:text-orange-300 hover:underline"
                 >
                     Open the web version · Web sürümünü aç
                 </a>

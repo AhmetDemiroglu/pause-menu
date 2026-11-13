@@ -103,9 +103,9 @@ export default function ProfileOverview({ username }: ProfileOverviewProps) {
                             <span className="text-xs text-muted-foreground">{t("profileOverview.reviews")}</span>
                         </CardContent>
                     </Card>
-                    <Card className="bg-blue-500/5 border-blue-500/10">
+                    <Card className="bg-pink-500/5 border-pink-500/10">
                         <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-                            <List className="h-5 w-5 text-blue-500 mb-1" />
+                            <List className="h-5 w-5 text-pink-500 mb-1" />
                             <span className="text-2xl font-bold">{stats.totalGamesListed}</span>
                             <span className="text-xs text-muted-foreground">{t("profileOverview.listed")}</span>
                         </CardContent>

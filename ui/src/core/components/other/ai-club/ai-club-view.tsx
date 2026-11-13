@@ -24,7 +24,7 @@ const PAGE_SIZE = 6;
 const KIND_STYLE: Record<AiConversationKind, { emoji: string; className: string }> = {
     debate: { emoji: "🥊", className: "bg-rose-500/15 text-rose-300 ring-rose-500/30" },
     plan: { emoji: "🗳️", className: "bg-amber-500/15 text-amber-300 ring-amber-500/30" },
-    askExpert: { emoji: "🧠", className: "bg-cyan-500/15 text-cyan-300 ring-cyan-500/30" },
+    askExpert: { emoji: "🧠", className: "bg-orange-500/15 text-orange-300 ring-orange-500/30" },
     newRelease: { emoji: "🆕", className: "bg-lime-500/15 text-lime-300 ring-lime-500/30" },
     post: { emoji: "💬", className: "bg-violet-500/15 text-violet-300 ring-violet-500/30" },
 };
@@ -71,7 +71,7 @@ export function AiClubView() {
                             {t("aiClub.eyebrow")}
                         </span>
                         <h1 className="text-3xl font-black tracking-tight md:text-5xl">
-                            <span className="bg-gradient-to-r from-yellow-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">{t("aiClub.title")}</span>{" "}
+                            <span className="bg-gradient-to-r from-yellow-200 via-pink-200 to-orange-200 bg-clip-text text-transparent">{t("aiClub.title")}</span>{" "}
                             <span aria-hidden>{t("aiClub.titleEmoji")}</span>
                         </h1>
                         <p className="max-w-lg text-sm text-white/80 md:text-base">{t("aiClub.subtitle")}</p>
@@ -105,7 +105,7 @@ export function AiClubView() {
                 <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
                     {[
                         { emoji: "⭐", key: "what1", color: "from-amber-500/25 to-amber-500/5 ring-amber-500/30" },
-                        { emoji: "📰", key: "what2", color: "from-cyan-500/25 to-cyan-500/5 ring-cyan-500/30" },
+                        { emoji: "📰", key: "what2", color: "from-orange-500/25 to-orange-500/5 ring-orange-500/30" },
                         { emoji: "🗳️", key: "what3", color: "from-lime-500/25 to-lime-500/5 ring-lime-500/30" },
                         { emoji: "🥊", key: "what4", color: "from-rose-500/25 to-rose-500/5 ring-rose-500/30" },
                     ].map((item) => (
@@ -323,7 +323,7 @@ function TriangleSchema({
                 </div>
             ))}
             <span className="absolute left-[4%] top-[40%] rotate-[-54deg] rounded-full bg-rose-500/90 px-2 py-0.5 text-[10px] font-bold text-white shadow">{labels[0]}</span>
-            <span className="absolute right-[4%] top-[40%] rotate-[54deg] rounded-full bg-cyan-500/90 px-2 py-0.5 text-[10px] font-bold text-black shadow">{labels[1]}</span>
+            <span className="absolute right-[4%] top-[40%] rotate-[54deg] rounded-full bg-orange-500/90 px-2 py-0.5 text-[10px] font-bold text-black shadow">{labels[1]}</span>
             <span className="absolute bottom-[26px] left-1/2 -translate-x-1/2 rounded-full bg-amber-400/90 px-2 py-0.5 text-[10px] font-bold text-black shadow">{labels[2]}</span>
             <span className="absolute left-1/2 top-[48%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-card px-3 py-1.5 text-center text-xs font-bold shadow-lg ring-1 ring-border">
                 👀 {center}
@@ -339,7 +339,7 @@ function JoinSection() {
     const reason = profile?.aiInteractionBlockReason ?? null;
 
     return (
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600/30 via-fuchsia-500/20 to-cyan-500/20 p-6 ring-1 ring-violet-500/30 md:p-8">
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600/30 via-fuchsia-500/20 to-orange-500/20 p-6 ring-1 ring-violet-500/30 md:p-8">
             <SectionTitle emoji="🚪" title={t("aiClub.joinTitle")} />
             <p className="mt-2 text-sm text-muted-foreground">{t("aiClub.joinText")}</p>
 

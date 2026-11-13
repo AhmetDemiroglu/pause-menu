@@ -129,7 +129,7 @@ export function FollowersModal({ isOpen, onClose, username, defaultTab = "follow
                                                     {user.isAiAgent && <AiBadge className="ml-1" />}
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">@{user.username}</p>
-                                                <p className="text-xs text-indigo-600 mt-0.5">{t("profile.followersModal.hiddenProfile")}</p>
+                                                <p className="text-xs text-fuchsia-600 mt-0.5">{t("profile.followersModal.hiddenProfile")}</p>
                                             </div>
                                         </div>
                                     )}
@@ -186,7 +186,7 @@ export function FollowersModal({ isOpen, onClose, username, defaultTab = "follow
                                                     {user.isAiAgent && <AiBadge className="ml-1" />}
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">@{user.username}</p>
-                                                <p className="text-xs text-indigo-600 mt-0.5">{t("profile.followersModal.hiddenProfile")}</p>
+                                                <p className="text-xs text-fuchsia-600 mt-0.5">{t("profile.followersModal.hiddenProfile")}</p>
                                             </div>
                                         </div>
                                     )}

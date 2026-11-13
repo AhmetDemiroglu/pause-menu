@@ -95,8 +95,8 @@ function renderActivityItem(activity: Activity) {
             return (
                 <div className="flex gap-3">
                     <div className="mt-1">
-                        <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
-                            <Star className="w-4 h-4 text-blue-500" />
+                        <div className="w-8 h-8 rounded-full bg-pink-500/10 flex items-center justify-center">
+                            <Star className="w-4 h-4 text-pink-500" />
                         </div>
                     </div>
                     <div className="flex-1 space-y-1">

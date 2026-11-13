@@ -255,7 +255,7 @@ export function PostCard({ post, variant = "feed", onDeleted, className }: PostC
                     <div className="mt-2.5 flex items-center gap-5 text-muted-foreground">
                         <Link
                             href={localizeHref(`/posts/${subject.id}`)}
-                            className="flex cursor-pointer items-center gap-1.5 text-xs transition-colors hover:text-sky-500"
+                            className="flex cursor-pointer items-center gap-1.5 text-xs transition-colors hover:text-orange-500"
                             aria-label={t("posts.replyAction")}
                         >
                             <MessageCircle className="h-3.5 w-3.5" />

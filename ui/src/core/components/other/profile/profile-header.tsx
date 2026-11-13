@@ -171,7 +171,7 @@ export default function ProfileHeader({ profile, isOwnProfile = false }: Profile
         return (
             <div className="w-full rounded-lg overflow-hidden bg-card text-card-foreground shadow-md">
                 <div className="h-28 md:h-32 w-full relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-purple-500/20 to-blue-500/30" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-purple-500/20 to-pink-500/30" />
                     <div className="absolute inset-0 bg-background/40" />
                 </div>
 
@@ -262,7 +262,7 @@ export default function ProfileHeader({ profile, isOwnProfile = false }: Profile
                         unoptimized
                     />
                 ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-purple-500/20 to-blue-500/30" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-purple-500/20 to-pink-500/30" />
                 )}
                 <div className="absolute inset-0 bg-background/40" />
                 {isOwnProfile && (

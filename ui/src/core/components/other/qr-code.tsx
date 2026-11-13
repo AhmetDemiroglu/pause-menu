@@ -32,7 +32,7 @@ export const QrCode = ({
   value,
   label,
   logo,
-  darkColor = '#0f172a',
+  darkColor = '#14101F',
   eyeColor = darkColor,
   className,
 }: QrCodeProps) => {

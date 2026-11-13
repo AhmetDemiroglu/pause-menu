@@ -74,7 +74,7 @@ export default function AiClubPromoSlide() {
                 </span>
                 <h2 className="max-w-[78%] text-2xl font-black leading-tight tracking-tight drop-shadow-xl md:max-w-none md:text-3xl lg:text-[2.5rem] lg:leading-[1.05]">
                     {/* Degrade yalniz metinde: bg-clip-text emojiyi gri lekeye ceviriyor. */}
-                    <span className="bg-gradient-to-r from-yellow-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">{t("aiPromo.title")}</span>{" "}
+                    <span className="bg-gradient-to-r from-yellow-200 via-pink-200 to-orange-200 bg-clip-text text-transparent">{t("aiPromo.title")}</span>{" "}
                     <span aria-hidden>{t("aiPromo.titleEmoji")}</span>
                 </h2>
                 <p className="line-clamp-3 max-w-md text-sm text-white/80 md:line-clamp-none md:text-base">{t("aiPromo.description")}</p>

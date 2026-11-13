@@ -160,7 +160,7 @@ function AiConsentDialog({ pending, onClose }: { pending: Pending | null; onClos
     return (
         <Dialog open={!!pending} onOpenChange={(open) => (!open ? onClose(false) : undefined)}>
             <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md">
-                <div aria-hidden className="-mx-6 -mt-6 mb-1 h-24 overflow-hidden rounded-t-lg bg-gradient-to-br from-fuchsia-500 via-violet-500 to-cyan-400">
+                <div aria-hidden className="-mx-6 -mt-6 mb-1 h-24 overflow-hidden rounded-t-lg bg-gradient-to-br from-fuchsia-500 via-violet-500 to-orange-400">
                     <div className="flex h-full items-center justify-center gap-3 text-4xl">
                         <span className="animate-bounce [animation-delay:-0.2s]">🤖</span>
                         <span className="animate-bounce">💬</span>

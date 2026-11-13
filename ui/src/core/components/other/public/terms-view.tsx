@@ -7,11 +7,11 @@ import { useCurrentLocale } from "@/core/contexts/locale-context";
 type Section = { title: string; lead?: string; list?: string[]; deny?: boolean; after?: string };
 
 const META = [
-    { icon: Handshake, color: "text-cyan-600 dark:text-cyan-400" },
+    { icon: Handshake, color: "text-orange-600 dark:text-orange-400" },
     { icon: Gamepad2, color: "text-violet-600 dark:text-violet-400" },
     { icon: UserCog, color: "text-amber-600 dark:text-amber-400" },
     { icon: ShieldAlert, color: "text-rose-600 dark:text-rose-400" },
-    { icon: MessageSquare, color: "text-blue-600 dark:text-blue-400" },
+    { icon: MessageSquare, color: "text-pink-600 dark:text-pink-400" },
     { icon: Flag, color: "text-orange-600 dark:text-orange-400" },
     { icon: Copyright, color: "text-fuchsia-600 dark:text-fuchsia-400" },
     { icon: Plug, color: "text-emerald-600 dark:text-emerald-400" },
@@ -132,10 +132,10 @@ export function TermsView() {
                 <section className="relative overflow-hidden rounded-3xl border border-border/50 bg-card/60 px-6 py-12 text-center">
                     <div
                         aria-hidden
-                        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(139,92,246,0.12),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(34,211,238,0.12),_transparent_60%)]"
+                        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(139,92,246,0.12),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(255,138,31,0.12),_transparent_60%)]"
                     />
                     <div className="relative flex flex-col items-center gap-4">
-                        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/15 to-cyan-500/15 text-violet-600 dark:text-violet-400">
+                        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/15 to-orange-500/15 text-violet-600 dark:text-violet-400">
                             <FileText className="h-8 w-8" />
                         </div>
                         <h1 className="text-3xl font-bold tracking-tight md:text-4xl">{t.title}</h1>
@@ -168,7 +168,7 @@ export function TermsView() {
                                                     </li>
                                                 ) : (
                                                     <li key={item} className="flex items-start gap-2.5">
-                                                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400/70" />
+                                                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-400/70" />
                                                         <span>{item}</span>
                                                     </li>
                                                 )
@@ -182,7 +182,7 @@ export function TermsView() {
                     })}
 
                     {/* Uygulanacak hukuk, full width */}
-                    <div className="md:col-span-2 rounded-2xl border border-border/50 bg-gradient-to-br from-violet-500/5 to-cyan-500/5 p-6">
+                    <div className="md:col-span-2 rounded-2xl border border-border/50 bg-gradient-to-br from-violet-500/5 to-orange-500/5 p-6">
                         <div className="flex items-start gap-4">
                             <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-secondary/50 text-violet-600 dark:text-violet-400">
                                 <Scale className="h-5 w-5" />

@@ -5,12 +5,12 @@ import { AppDownloadCTA } from "@core/components/other/public/app-cta";
 import { useCurrentLocale } from "@/core/contexts/locale-context";
 
 const ICONS = [Gamepad2, ListChecks, Star, Users, MessageCircle, Trophy];
-const COLORS = ["text-cyan-600 dark:text-cyan-400", "text-violet-600 dark:text-violet-400", "text-amber-600 dark:text-amber-400", "text-blue-600 dark:text-blue-400", "text-emerald-600 dark:text-emerald-400", "text-fuchsia-600 dark:text-fuchsia-400"];
+const COLORS = ["text-orange-600 dark:text-orange-400", "text-violet-600 dark:text-violet-400", "text-amber-600 dark:text-amber-400", "text-pink-600 dark:text-pink-400", "text-emerald-600 dark:text-emerald-400", "text-fuchsia-600 dark:text-fuchsia-400"];
 
 const COPY = {
     "en-US": {
         badge: "Early access",
-        titleLine: "The heart of gaming beats here",
+        titleLine: "Pause. Talk games.",
         subtitle: "A social platform for gamers. Discover games, build lists, rate, and follow the community. All in one place.",
         footer: "© 2026 Pause Menu. Built for gamers.",
         features: [
@@ -24,7 +24,7 @@ const COPY = {
     },
     tr: {
         badge: "Erken erişim",
-        titleLine: "Oyunun kalbi burada atıyor",
+        titleLine: "Oyuna ara ver, oyunu konuş.",
         subtitle: "Oyuncular için sosyal platform. Oyun keşfet, listeler oluştur, puanla ve topluluğu takip et. Hepsi tek yerde.",
         footer: "© 2026 Pause Menu. Oyuncular için üretildi.",
         features: [
@@ -48,11 +48,11 @@ export function MarketingView() {
             <section className="relative overflow-hidden rounded-3xl border border-border/50 bg-card/60 px-6 py-16 text-center md:py-20">
                 <div
                     aria-hidden
-                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.12),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(139,92,246,0.12),_transparent_60%)]"
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,138,31,0.12),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(139,92,246,0.12),_transparent_60%)]"
                 />
                 <div className="relative">
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-background/40 px-3 py-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
-                        <Sparkles className="h-3.5 w-3.5 text-cyan-700 dark:text-cyan-300" /> {t.badge}
+                        <Sparkles className="h-3.5 w-3.5 text-orange-700 dark:text-orange-300" /> {t.badge}
                     </span>
                     <h1 className="mt-5 text-balance text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
                         <span className="bg-gradient-to-r from-[#FF2E88] via-[#FF5A4E] to-[#FF8A1F] bg-clip-text text-transparent">Pause Menu</span>

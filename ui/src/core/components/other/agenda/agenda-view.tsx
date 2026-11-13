@@ -213,7 +213,7 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
         <Link
             key={game.id}
             href={buildLocalizedPathname(`/games/${game.slug || game.rawgId}`, locale)}
-            className="group relative block overflow-hidden rounded-xl bg-[#0b0d16] ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(0,0,0,0.9)] hover:ring-white/25"
+            className="group relative block overflow-hidden rounded-xl bg-[#120D1C] ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(0,0,0,0.9)] hover:ring-white/25"
         >
             <div className="relative aspect-video overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -293,8 +293,8 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
     return (
         <div className="space-y-8">
             {/* Sinematik başlık bandı */}
-            <div className="relative overflow-hidden rounded-2xl bg-[#080910] ring-1 ring-white/10">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/15 via-[#080910] to-rose-600/20" />
+            <div className="relative overflow-hidden rounded-2xl bg-[#0D0915] ring-1 ring-white/10">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/15 via-[#0D0915] to-rose-600/20" />
                 <div
                     aria-hidden
                     className="absolute inset-0 opacity-[0.35]"

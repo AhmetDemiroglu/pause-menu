@@ -15,7 +15,7 @@ export default function HomeStatsBar({ stats }: HomeStatsBarProps) {
     const t = useI18n();
     const format = (value: number) => value.toLocaleString(locale === "tr" ? "tr-TR" : "en-US");
     const items = [
-        { icon: Gamepad2, label: t("home.stats.games"), value: stats.totalGames, color: "text-blue-600 dark:text-blue-400" },
+        { icon: Gamepad2, label: t("home.stats.games"), value: stats.totalGames, color: "text-pink-600 dark:text-pink-400" },
         { icon: Users, label: t("home.stats.users"), value: stats.totalUsers, color: "text-green-600 dark:text-green-400" },
         { icon: Star, label: t("home.stats.reviews"), value: stats.totalReviews, color: "text-yellow-600 dark:text-yellow-400" },
         { icon: List, label: t("home.stats.lists"), value: stats.totalLists, color: "text-purple-600 dark:text-purple-400" },

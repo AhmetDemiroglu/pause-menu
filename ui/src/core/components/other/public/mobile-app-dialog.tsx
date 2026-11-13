@@ -31,7 +31,7 @@ const PLAY_LOGO = (
 );
 
 /** QR renkleri SABIT: koyu temada da beyaz zemin + koyu modul (ters QR'i bazi kameralar okumuyor). */
-const QR_DARK = "#0b0f1a";
+const QR_DARK = "#14101F";
 const QR_EYE = "#6d28d9";
 
 const TAB_ORDER: MobilePlatform[] = ["ios", "android"];
@@ -138,7 +138,7 @@ const DialogBody = ({ initial }: { initial: MobilePlatform }) => {
                 <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 size-64 rounded-full bg-violet-500 opacity-[0.12] blur-3xl" />
 
                 <div className="relative flex items-center gap-4">
-                    <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-[18px] bg-[#080910] shadow-md ring-1 ring-white/10">
+                    <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-[18px] bg-[#0D0915] shadow-md ring-1 ring-white/10">
                         <Image src="/icon-192.png" alt="" width={52} height={52} className="h-[52px] w-[52px] object-contain" />
                     </div>
                     <div className="min-w-0 pr-8 sm:pr-0">

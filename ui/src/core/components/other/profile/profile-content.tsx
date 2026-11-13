@@ -97,11 +97,11 @@ export default function ProfileContent({ username, initialProfile = null }: Prof
                         {hasPosts && (
                             <TabsTrigger
                                 value="posts"
-                                className="cursor-pointer group relative flex items-center gap-2 h-full rounded-none border-b-2 border-transparent px-6 text-muted-foreground transition-all hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 data-[state=active]:border-indigo-500 data-[state=active]:text-indigo-600 dark:data-[state=active]:text-indigo-400 data-[state=active]:bg-indigo-50 dark:data-[state=active]:bg-indigo-950/30"
+                                className="cursor-pointer group relative flex items-center gap-2 h-full rounded-none border-b-2 border-transparent px-6 text-muted-foreground transition-all hover:text-fuchsia-600 hover:bg-fuchsia-50 dark:hover:bg-fuchsia-950/20 data-[state=active]:border-fuchsia-500 data-[state=active]:text-fuchsia-600 dark:data-[state=active]:text-fuchsia-400 data-[state=active]:bg-fuchsia-50 dark:data-[state=active]:bg-fuchsia-950/30"
                             >
                                 <MessageSquare className="h-4 w-4" />
                                 <span className="font-semibold">Gönderiler</span>
-                                <span className="ml-1.5 flex h-5 min-w-5 items-center justify-center rounded-md bg-muted px-1.5 text-[11px] font-bold group-data-[state=active]:bg-indigo-100 group-data-[state=active]:text-indigo-700 dark:group-data-[state=active]:bg-indigo-900/40 dark:group-data-[state=active]:text-indigo-300">
+                                <span className="ml-1.5 flex h-5 min-w-5 items-center justify-center rounded-md bg-muted px-1.5 text-[11px] font-bold group-data-[state=active]:bg-fuchsia-100 group-data-[state=active]:text-fuchsia-700 dark:group-data-[state=active]:bg-fuchsia-900/40 dark:group-data-[state=active]:text-fuchsia-300">
                                     {profile.postCount}
                                 </span>
                             </TabsTrigger>
@@ -124,12 +124,12 @@ export default function ProfileContent({ username, initialProfile = null }: Prof
                         {/* 4. LİSTELER */}
                         <TabsTrigger
                             value="lists"
-                            className="cursor-pointer group relative flex items-center gap-2 h-full rounded-none border-b-2 border-transparent px-6 text-muted-foreground transition-all hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/20 data-[state=active]:border-blue-500 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400 data-[state=active]:bg-blue-50 dark:data-[state=active]:bg-blue-950/30"
+                            className="cursor-pointer group relative flex items-center gap-2 h-full rounded-none border-b-2 border-transparent px-6 text-muted-foreground transition-all hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-950/20 data-[state=active]:border-pink-500 data-[state=active]:text-pink-600 dark:data-[state=active]:text-pink-400 data-[state=active]:bg-pink-50 dark:data-[state=active]:bg-pink-950/30"
                         >
                             <Library className="h-4 w-4" />
                             <span className="font-semibold">Listeler</span>
                             {(profile.listCount || 0) > 0 && (
-                                <span className="ml-1.5 flex h-5 min-w-5 items-center justify-center rounded-md bg-muted px-1.5 text-[11px] font-bold group-data-[state=active]:bg-blue-100 group-data-[state=active]:text-blue-700 dark:group-data-[state=active]:bg-blue-900/40 dark:group-data-[state=active]:text-blue-300">
+                                <span className="ml-1.5 flex h-5 min-w-5 items-center justify-center rounded-md bg-muted px-1.5 text-[11px] font-bold group-data-[state=active]:bg-pink-100 group-data-[state=active]:text-pink-700 dark:group-data-[state=active]:bg-pink-900/40 dark:group-data-[state=active]:text-pink-300">
                                     {profile.listCount}
                                 </span>
                             )}
