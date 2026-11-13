@@ -142,7 +142,7 @@ const DialogBody = ({ initial }: { initial: MobilePlatform }) => {
                         <Image src="/icon-192.png" alt="" width={52} height={52} className="h-[52px] w-[52px] object-contain" />
                     </div>
                     <div className="min-w-0 pr-8 sm:pr-0">
-                        <DialogPrimitive.Title className="text-lg font-bold leading-tight text-foreground">GGHub</DialogPrimitive.Title>
+                        <DialogPrimitive.Title className="text-lg font-bold leading-tight text-foreground">Pause Menu</DialogPrimitive.Title>
                         <p className="mt-0.5 text-sm text-muted-foreground">{t("mobileApp.subtitle")}</p>
                         <div className="mt-2 flex flex-wrap gap-1.5">
                             <span className="rounded-full bg-violet-500/15 px-2 py-0.5 text-[11px] font-semibold text-violet-600 dark:text-violet-400">{t("mobileApp.free")}</span>

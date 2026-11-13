@@ -11,7 +11,7 @@ interface ScoreBadgeProps {
 const SCORE_LABELS: Record<ScoreType, string> = {
   metacritic: "Metacritic",
   rawg: "RAWG",
-  gghub: "GGHub",
+  gghub: "Pause Menu",
   igdb: "IGDB",
 };
 
@@ -34,7 +34,7 @@ const getScoreStyling = (type: ScoreType, score: number | null | undefined) => {
 
 export function ScoreBadge({ type, score }: ScoreBadgeProps) {
   // IGDB puanı 0-100 aralığında gelir (Metacritic gibi tam sayı gösterilir),
-  // RAWG ve GGHub 0-5 / 0-10 aralığında ondalıklı.
+  // RAWG ve Pause Menu 0-5 / 0-10 aralığında ondalıklı.
   const scoreValue =
     typeof score === "number"
       ? type === "rawg" || type === "gghub"

@@ -312,7 +312,7 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
                     <div className="space-y-2">
                         <div className="flex items-center gap-2 text-amber-300/90">
                             <CalendarDays className="h-5 w-5" />
-                            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">GGHub</span>
+                            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">Pause Menu</span>
                         </div>
                         <h1 className="text-3xl font-black tracking-tight text-white md:text-4xl">{t("agenda.title")}</h1>
                         <p className="max-w-2xl text-sm text-white/60">{t("agenda.subtitle")}</p>

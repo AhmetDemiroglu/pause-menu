@@ -16,7 +16,7 @@ import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "@/core/com
 import { PlatformIcons } from "@/core/components/other/platform-icons";
 import { IgdbLogo } from "@/core/components/other/igdb-logo";
 import { StoreButtons } from "@/core/components/other/public/store-buttons";
-import logoSrc from "@core/assets/logo.png";
+import logoSrc from "@core/assets/brand-mark.png";
 import AiClubPromoSlide from "./ai-club-promo-slide";
 import metacriticLogoSrc from "@core/assets/metacritic_logo.png";
 import rawgLogoSrc from "@core/assets/rawg_logo.png";
@@ -176,7 +176,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                             <div className="relative z-10 flex h-full flex-col justify-center gap-3 px-5 pb-12 pt-5 md:max-w-[55%] md:gap-4 md:p-12 md:pb-16 lg:px-16">
                                 <div className="flex items-center gap-2 text-amber-300/90">
                                     <CalendarDays className="h-5 w-5 md:h-6 md:w-6" />
-                                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">GGHub</span>
+                                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">Pause Menu</span>
                                 </div>
                                 <h2 className="text-2xl font-black tracking-tight text-white drop-shadow-xl md:text-3xl lg:text-[2.6rem] lg:leading-[1.05]">
                                     {t("home.agendaPromoTitle")}
@@ -295,7 +295,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                         <div className="absolute left-1/2 top-[11px] z-20 h-[15px] w-[66px] -translate-x-1/2 rounded-full bg-black" />
                                         <div className="overflow-hidden rounded-[1.9rem] bg-black">
                                             <Image
-                                                src={locale === "tr" ? "/gghub-app-tr.jpg" : "/gghub-app-en.jpg"}
+                                                src={locale === "tr" ? "/app-screen-tr.jpg" : "/app-screen-en.jpg"}
                                                 alt={t("common.appName")}
                                                 width={540}
                                                 height={1174}
@@ -350,7 +350,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                                     <ScoreBadge score={String(Math.round(game.igdbRating))} logoAlt="IGDB" accentClassName="text-indigo-300" />
                                                 ) : null}
                                                 {game.gghubRating > 0 ? (
-                                                    <ScoreBadge score={game.gghubRating.toFixed(1)} logo={logoSrc} logoAlt="GGHub" accentClassName="text-violet-400" />
+                                                    <ScoreBadge score={game.gghubRating.toFixed(1)} logo={logoSrc} logoAlt="Pause Menu" accentClassName="text-violet-400" />
                                                 ) : null}
 
                                                 <span className="rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-xs font-medium text-white/70 backdrop-blur-md">

@@ -18,7 +18,7 @@ export type JsonLdObject = Record<string, unknown>;
 const ORGANIZATION_ID = `${SITE_URL}/#organization`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
 
-/** GGHub puani 1-10 tam sayi (inceleme diyalogu 10 buton). RAWG 0-5, IGDB/Metacritic 0-100. */
+/** Pause Menu puani 1-10 tam sayi (inceleme diyalogu 10 buton). RAWG 0-5, IGDB/Metacritic 0-100. */
 const GGHUB_BEST_RATING = 10;
 
 /** Kucuk "<" kacisi: JSON icinde "</script>" gecerse tarayici script'i erken kapatir. */
@@ -45,7 +45,7 @@ export const organizationJsonLd = (): JsonLdObject => ({
     "@type": "Organization",
     "@id": ORGANIZATION_ID,
     name: SITE_NAME,
-    legalName: "GGHub",
+    legalName: "Pause Menu",
     url: SITE_URL,
     logo: { "@type": "ImageObject", url: LOGO_URL, width: 719, height: 579 },
     email: SITE_EMAIL,
@@ -59,7 +59,7 @@ export const webSiteJsonLd = (locale: AppLocale): JsonLdObject => ({
     "@type": "WebSite",
     "@id": WEBSITE_ID,
     name: SITE_NAME,
-    alternateName: ["GGHub Social", "GGHub Oyuncu Sosyal Platformu", "GGHub Games Community"],
+    alternateName: ["PauseMenu", "Pause Menu Oyuncu Sosyal Platformu", "Pause Menu Gaming Community"],
     url: SITE_URL,
     inLanguage: ["tr-TR", "en-US"],
     publisher: { "@id": ORGANIZATION_ID },
@@ -75,7 +75,7 @@ export const mobileApplicationJsonLd = (): JsonLdObject => ({
     "@type": "MobileApplication",
     "@id": `${SITE_URL}/download-app#app`,
     name: SITE_NAME,
-    alternateName: "GGHub: Games Community",
+    alternateName: "Pause Menu: Gaming Community",
     url: `${SITE_URL}/download-app`,
     operatingSystem: "iOS, Android",
     applicationCategory: "SocialNetworkingApplication",

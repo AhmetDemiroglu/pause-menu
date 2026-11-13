@@ -61,7 +61,7 @@ export async function generateMetadata(): Promise<Metadata> {
         creator: SITE_NAME,
         publisher: SITE_NAME,
         keywords: [
-            "GGHub",
+            "Pause Menu",
             "oyuncu sosyal platformu",
             "oyun keşfet",
             "oyun incelemeleri",
@@ -140,7 +140,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <html lang={locale} suppressHydrationWarning>
             <head>
                 {apiOrigin ? <link rel="preconnect" href={apiOrigin} crossOrigin="anonymous" /> : null}
-                <link rel="preconnect" href="https://assets.gghub.social" />
+                <link rel="preconnect" href="https://assets.pausemenu.app" />
                 <link rel="dns-prefetch" href="https://accounts.google.com" />
                 <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 

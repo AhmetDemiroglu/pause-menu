@@ -14,6 +14,7 @@ Logos, app icons and web icons for Pause Menu. Every raster file is generated fr
 | `app-icon/store` | App Store (1024, no alpha) and Google Play (512) listing icons. |
 | `web` | `favicon.ico`, Apple touch icon, PWA icons (standard and maskable). |
 | `social` | Default 1200 x 630 link preview image. |
+| `email` | Logo used in transactional email headers (served from the asset CDN). |
 
 ## Logo variants
 

@@ -19,6 +19,7 @@ import { Suspense } from "react";
 import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { buildLocalizedPathname } from "@/i18n/config";
 import { SocialAuthButtons } from "./social-auth-buttons";
+import { BrandLogo } from "@core/components/base/brand-logo";
 
 function RegisterPageContent() {
     const t = useI18n();
@@ -92,9 +93,7 @@ function RegisterPageContent() {
 
                 <CardHeader className="space-y-1.5 pb-2 pt-6 text-center">
                     <Link href={buildLocalizedPathname("/", locale)} className="mx-auto inline-flex select-none">
-                        <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-fuchsia-500 bg-clip-text text-[2rem] font-extrabold leading-none tracking-tight text-transparent">
-                            GGHub
-                        </span>
+                        <BrandLogo priority className="h-7" />
                     </Link>
                     <div className="space-y-0.5">
                         <CardTitle className="text-xl font-semibold">{t("auth.registerCreateTitle")}</CardTitle>

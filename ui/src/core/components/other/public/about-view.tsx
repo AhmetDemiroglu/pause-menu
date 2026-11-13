@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Gamepad2, Users, Share2, Sparkles, Compass, ListChecks, Bot } from "lucide-react";
-import logoSrc from "@core/assets/logo.png";
+import logoSrc from "@core/assets/app-icon.png";
 import { The_Girl_Next_Door } from "next/font/google";
 import { useI18n } from "@/core/contexts/locale-context";
 
@@ -27,7 +27,7 @@ export function AboutView() {
                         {t("about.badge")}
                     </div>
                     <div className="flex items-center gap-3">
-                        <Image src={logoSrc} alt="GGHub Logo" title="'Good Game'" width={42} height={42} className="rounded-md" />
+                        <Image src={logoSrc} alt="Pause Menu" width={42} height={42} className="rounded-xl" />
                         <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{t("about.title")}</h1>
                     </div>
                     <p className={`${font.className} text-lg md:text-2xl text-foreground/80 leading-relaxed`}>

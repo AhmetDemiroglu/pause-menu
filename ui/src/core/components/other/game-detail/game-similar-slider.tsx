@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import logoSrc from "@core/assets/logo.png";
+import logoSrc from "@core/assets/brand-mark.png";
 import placeHolder2 from "@core/assets/placeholder2.png";
 import { useI18n } from "@/core/contexts/locale-context";
 import { useLocalizedHref } from "@/core/hooks/use-localized-href";
@@ -83,7 +83,7 @@ export const GameSimilarSlider = ({ rawgId }: GameSimilarSliderProps) => {
                                     <div className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-black/75 px-2.5 py-1 border border-cyan-400/70 shadow-lg backdrop-blur-md text-[11px] font-semibold text-cyan-50">
                                         <Image
                                             src={logoSrc}
-                                            alt="GGHub"
+                                            alt="Pause Menu"
                                             width={16}
                                             height={16}
                                             className="rounded-sm object-contain"

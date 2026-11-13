@@ -12,7 +12,7 @@ const COPY = {
         badge: "Early access",
         titleLine: "The heart of gaming beats here",
         subtitle: "A social platform for gamers. Discover games, build lists, rate, and follow the community. All in one place.",
-        footer: "© 2026 GGHub. Built for gamers.",
+        footer: "© 2026 Pause Menu. Built for gamers.",
         features: [
             { title: "Discover games", desc: "Filter thousands of titles, dive into details, and see trends and similar games." },
             { title: "Build lists", desc: "Create your own collections and share them; follow other players' lists." },
@@ -26,7 +26,7 @@ const COPY = {
         badge: "Erken erişim",
         titleLine: "Oyunun kalbi burada atıyor",
         subtitle: "Oyuncular için sosyal platform. Oyun keşfet, listeler oluştur, puanla ve topluluğu takip et. Hepsi tek yerde.",
-        footer: "© 2026 GGHub. Oyuncular için üretildi.",
+        footer: "© 2026 Pause Menu. Oyuncular için üretildi.",
         features: [
             { title: "Oyun keşfet", desc: "Binlerce oyunu filtrele, detaylarına in, trendleri ve benzer oyunları gör." },
             { title: "Listeler oluştur", desc: "Kendi koleksiyonlarını yap, paylaş; başkalarının listelerini takip et." },
@@ -55,7 +55,7 @@ export function MarketingView() {
                         <Sparkles className="h-3.5 w-3.5 text-cyan-700 dark:text-cyan-300" /> {t.badge}
                     </span>
                     <h1 className="mt-5 text-balance text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
-                        <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-fuchsia-500 bg-clip-text text-transparent">GGHub</span>
+                        <span className="bg-gradient-to-r from-[#FF2E88] via-[#FF5A4E] to-[#FF8A1F] bg-clip-text text-transparent">Pause Menu</span>
                         <br />
                         {t.titleLine}
                     </h1>

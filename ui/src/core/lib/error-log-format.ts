@@ -22,7 +22,7 @@ export function errorEndpoint(group: Pick<ErrorGroup, "method" | "routeTemplate"
  */
 export function formatErrorForClipboard(group: ErrorGroup, event: ErrorEvent | undefined): string {
     const lines: string[] = [
-        `GGHub error #${group.id}`,
+        `Pause Menu error #${group.id}`,
         `Endpoint: ${errorEndpoint(group)}`,
         `Status: ${group.statusCode ?? "-"} | Source: ${group.source} | State: ${group.status} | Count: ${group.count}`,
         `First seen: ${group.firstSeenAt}`,

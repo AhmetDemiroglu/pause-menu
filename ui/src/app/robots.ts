@@ -39,7 +39,7 @@ const disallow = [
 
 /**
  * Yapay zeka arama/egitim tarayicilari ACIKCA izinli: ChatGPT, Claude, Perplexity, Google AI,
- * Bing Copilot ve digerleri GGHub'i kaynak olarak gorsun. "*" zaten izin veriyor; liste niyeti
+ * Bing Copilot ve digerleri Pause Menu'yü kaynak olarak gorsun. "*" zaten izin veriyor; liste niyeti
  * belgeler ve ileride "*" daraltilsa bile bu botlarin acik kalmasini garanti eder.
  */
 const AI_CRAWLERS = [
@@ -76,6 +76,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
         sitemap: `${SITE_URL}/sitemap.xml`,
         // `host` çıplak alan adı bekliyor, şema kabul etmiyor.
-        host: "gghub.social",
+        host: "pausemenu.app",
     };
 }

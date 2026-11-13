@@ -4,11 +4,11 @@ import { APP_STORE_URL, GOOGLE_PLAY_URL } from "@/core/lib/store-links";
  * Site geneli SEO sabitleri. Kanonik URL, sosyal kart gorseli ve "sameAs" baglantilarinin
  * TEK kaynagi: layout, sayfa metadata'lari, JSON-LD, sitemap ve llms.txt hepsi buradan okur.
  */
-export const SITE_URL = "https://gghub.social";
-export const SITE_NAME = "GGHub";
-export const SITE_EMAIL = "info@gghub.social";
-export const DEFAULT_OG_IMAGE = "/og/gghub-social-v2.png";
-export const LOGO_URL = `${SITE_URL}/og/gghub-logo.png`;
+export const SITE_URL = "https://pausemenu.app";
+export const SITE_NAME = "Pause Menu";
+export const SITE_EMAIL = "info@pausemenu.app";
+export const DEFAULT_OG_IMAGE = "/og/og-default.png";
+export const LOGO_URL = `${SITE_URL}/og/logo.png`;
 
 /** App Store sayfa kimligi (apps.apple.com/.../id6781281375). Smart banner ve JSON-LD kullanir. */
 export const APP_STORE_ID = "6781281375";

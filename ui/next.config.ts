@@ -61,7 +61,7 @@ const nextConfig: NextConfig = {
                 // R2 (profil fotoğrafı + kapak görseli). Buraya eklenmediği sürece bu görseller
                 // next/image'dan geçemiyordu; ham <img> ile tam çözünürlükte iniyorlardı.
                 protocol: "https",
-                hostname: "assets.gghub.social",
+                hostname: "assets.pausemenu.app",
             },
             {
                 // Google ile giriş yapan kullanıcıların ProfileImageUrl'i doğrudan Google CDN'ini

@@ -10,8 +10,8 @@ export const SUPPORT_COPY = {
         subtitle: "The answers you are looking for are here. If you cannot find them, do not hesitate to write to us.",
         faqs: [
             {
-                q: "What is GGHub?",
-                a: "GGHub is a social platform for gamers. You discover games, create lists, rate and review, and connect with the community.",
+                q: "What is Pause Menu?",
+                a: "Pause Menu is a social platform for gamers. You discover games, create lists, rate and review, and connect with the community.",
             },
             {
                 q: "Can I use it without signing in?",
@@ -40,8 +40,8 @@ export const SUPPORT_COPY = {
         subtitle: "Aklındaki soruların cevabı burada. Bulamazsan bize yazmaktan çekinme.",
         faqs: [
             {
-                q: "GGHub nedir?",
-                a: "GGHub, oyuncular için bir sosyal platformdur. Oyun keşfeder, listeler oluşturur, puan/yorum verir ve toplulukla bağlanırsın.",
+                q: "Pause Menu nedir?",
+                a: "Pause Menu, oyuncular için bir sosyal platformdur. Oyun keşfeder, listeler oluşturur, puan/yorum verir ve toplulukla bağlanırsın.",
             },
             {
                 q: "Giriş yapmadan kullanabilir miyim?",

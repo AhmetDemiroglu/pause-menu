@@ -12,7 +12,7 @@ export default async function SupportPage({ params }: { params?: Promise<{ local
 
     return (
         <>
-            {/* FAQPage: Google SSS zengin sonucu; yapay zeka aramalari 'GGHub nedir?' cevabini buradan alir. */}
+            {/* FAQPage: Google SSS zengin sonucu; yapay zeka aramalari 'Pause Menu nedir?' cevabini buradan alir. */}
             <JsonLd data={faqJsonLd(faqs.map((item) => ({ question: item.q, answer: item.a })))} />
             <SupportView />
         </>

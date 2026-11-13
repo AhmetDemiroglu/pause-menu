@@ -7,14 +7,14 @@ import { StoreButtons } from "@/core/components/other/public/store-buttons";
 const COPY = {
     "en-US": {
         downloadTitle: "Download the app",
-        downloadDesc: "GGHub is live on the App Store and Google Play. Get it on your device.",
+        downloadDesc: "Pause Menu is live on the App Store and Google Play. Get it on your device.",
         contactTitle: "Get in touch",
         contactDesc: "Write to us with questions, feedback, or collaboration ideas.",
         soon: "Soon",
     },
     tr: {
         downloadTitle: "Uygulamayı indir",
-        downloadDesc: "GGHub App Store ve Google Play'de yayında. Cihazına hemen indir.",
+        downloadDesc: "Pause Menu App Store ve Google Play'de yayında. Cihazına hemen indir.",
         contactTitle: "İletişime geç",
         contactDesc: "Soruların, geri bildirimin veya iş birliği için bize yaz.",
         soon: "Yakında",
@@ -51,11 +51,11 @@ export function AppDownloadCTA() {
                 <h3 className="text-lg font-semibold tracking-tight">{t.contactTitle}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{t.contactDesc}</p>
                 <a
-                    href="mailto:info@gghub.social"
+                    href="mailto:info@pausemenu.app"
                     className="mt-4 inline-flex items-center gap-2 rounded-full border border-border/60 bg-secondary/40 px-4 py-2.5 text-sm font-medium transition-colors hover:border-cyan-400/60 hover:text-cyan-400"
                 >
                     <Mail className="h-4 w-4" />
-                    info@gghub.social
+                    info@pausemenu.app
                     <ArrowUpRight className="h-3.5 w-3.5 opacity-60" />
                 </a>
             </div>

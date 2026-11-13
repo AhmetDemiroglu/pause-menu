@@ -4,7 +4,7 @@ import { memo } from "react";
 import placeHolder3 from "@core/assets/placeholder3.png";
 import Link from "next/link";
 import Image from "next/image";
-import logoSrc from "@core/assets/logo.png";
+import logoSrc from "@core/assets/brand-mark.png";
 import rawgLogoSrc from "@core/assets/rawg_logo.png";
 import metacriticLogoSrc from "@core/assets/metacritic_logo.png";
 import { IgdbLogo } from "@/core/components/other/igdb-logo";
@@ -43,7 +43,7 @@ export const ListGameCard = memo(function ListGameCard({ game, showRemoveButton,
                         <p className="text-xs text-muted-foreground">{game.released ? new Date(game.released).getFullYear() : "-"}</p>
                     </div>
 
-                    {/* RAWG / Metacritic / GGHub Puanı */}
+                    {/* RAWG / Metacritic / Pause Menu Puanı */}
                     <div className="flex items-center gap-2 flex-wrap">
                         {/* RAWG (Mavi) */}
                         {game.rating ? (
@@ -69,9 +69,9 @@ export const ListGameCard = memo(function ListGameCard({ game, showRemoveButton,
                             </div>
                         ) : null}
 
-                        {/* GGHub (Mor) */}
-                        <div className="px-2 py-1 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold text-[10px] border border-purple-500/20 flex items-center gap-1.5 tabular-nums" title="GGHub Puanı">
-                            <Image src={logoSrc} alt="GGHub" width={12} height={12} className="w-3 h-3 object-contain opacity-80" />
+                        {/* Pause Menu (Mor) */}
+                        <div className="px-2 py-1 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold text-[10px] border border-purple-500/20 flex items-center gap-1.5 tabular-nums" title="Pause Menu Puanı">
+                            <Image src={logoSrc} alt="Pause Menu" width={12} height={12} className="w-3 h-3 object-contain opacity-80" />
                             {game.gghubRating && game.gghubRating > 0 ? game.gghubRating.toFixed(1) : "-"}
                         </div>
                     </div>

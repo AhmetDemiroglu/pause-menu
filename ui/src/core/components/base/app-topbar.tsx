@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useEffect, useId, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowLeft, Search } from "lucide-react";
-import logoSrc from "@core/assets/logo.png";
+import { BrandLogo } from "@core/components/base/brand-logo";
 import { useAuth } from "@core/hooks/use-auth";
 import { useI18n } from "@/core/contexts/locale-context";
 import { useLocalizedHref } from "@/core/hooks/use-localized-href";
@@ -97,8 +96,8 @@ export function AppTopbar() {
                         {/* Sol: mobil menu + logo */}
                         <div className="flex shrink-0 items-center gap-1 md:gap-2">
                             <SidebarTrigger />
-                            <Link href={localizeHref("/")} aria-label="GGHub" className="flex items-center rounded-md px-1">
-                                <Image src={logoSrc} alt="GGHub" width={35} height={22} priority className="h-6 w-auto md:h-7" />
+                            <Link href={localizeHref("/")} aria-label="Pause Menu" className="flex items-center rounded-md px-1">
+                                <BrandLogo priority className="h-4 md:h-5" />
                             </Link>
                         </div>
 

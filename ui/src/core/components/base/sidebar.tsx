@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -32,7 +31,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import logoSrc from "@core/assets/logo.png";
+import { BrandLogo } from "@core/components/base/brand-logo";
 import { useAuth } from "@core/hooks/use-auth";
 import { useSidebar } from "@/core/contexts/sidebar-context";
 import { useNavigationData, useRecentMessages } from "@/core/hooks/use-navigation-data";
@@ -169,7 +168,7 @@ function SidebarInner({ isMobile }: { isMobile: boolean }) {
             {isMobile ? (
                 <div className="flex items-center border-b border-border/40 px-4 py-3">
                     <Link href={localizeHref("/")} className="flex shrink-0 items-center" onClick={onLinkClick}>
-                        <Image src={logoSrc} alt="GGHub" width={35} height={22} className="h-6 w-auto" />
+                        <BrandLogo className="h-4" />
                     </Link>
                 </div>
             ) : null}

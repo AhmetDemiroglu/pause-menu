@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 import { Menu } from "lucide-react";
@@ -12,7 +11,7 @@ import { AdminSidebarNav } from "@/core/components/admin/admin-sidebar-nav";
 import { useAuth } from "@core/hooks/use-auth";
 import { buildLocalizedPathname } from "@/i18n/config";
 import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
-import logoSrc2 from "@core/assets/logo2.png";
+import { BrandLogo } from "@core/components/base/brand-logo";
 
 const FullPageLoader = ({ label }: { label: string }) => (
     <div className="flex h-screen w-full items-center justify-center">
@@ -51,7 +50,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <header className="sticky top-0 z-40 w-full border-b bg-background px-4 md:hidden">
                 <div className="flex h-16 items-center justify-between">
                     <Link href={buildLocalizedPathname("/dashboard", locale)} className="flex items-center" onClick={() => setIsSheetOpen(false)}>
-                        <Image src={logoSrc2} alt="GGHub logo" width={80} className="transition-transform group-hover:scale-110" />
+                        <BrandLogo className="h-4" />
                     </Link>
 
                     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>

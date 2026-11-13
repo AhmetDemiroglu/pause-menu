@@ -7,10 +7,10 @@ import { APP_STORE_URL, GOOGLE_PLAY_URL } from "@/core/lib/store-links";
 import { AppleLogo, StoreButton } from "@/core/components/other/public/store-buttons";
 import { startVisit, trackDownloadEvent } from "@/core/lib/download-analytics";
 import { metaPixelCustom } from "@/core/lib/meta-pixel";
-import logoSrc from "@core/assets/logo.png";
+import logoSrc from "@core/assets/app-icon.png";
 
 /**
- * Standalone, shareable landing page (gghub.social/download-app).
+ * Standalone, shareable landing page (pausemenu.app/download-app).
  * Detects the visitor's OS and auto-redirects to the matching store after a
  * short, clearly-announced countdown; otherwise shows both store buttons. Lives
  * outside the locale routing (see middleware bypass) so the URL stays clean for
@@ -93,10 +93,10 @@ export default function DownloadAppClient() {
             <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-violet-600/25 blur-3xl" />
 
             <div className="relative z-10 w-full max-w-sm rounded-3xl border border-white/10 bg-white/[0.03] p-6 text-center shadow-2xl backdrop-blur sm:p-8">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-cyan-500/20 to-violet-600/25 sm:h-20 sm:w-20">
-                    <Image src={logoSrc} alt="GGHub" width={64} height={64} className="h-14 w-14 object-contain sm:h-16 sm:w-16" />
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-white/10 sm:h-20 sm:w-20">
+                    <Image src={logoSrc} alt="Pause Menu" width={80} height={80} className="h-16 w-16 object-contain sm:h-20 sm:w-20" />
                 </div>
-                <h1 className="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-3xl font-black tracking-tight text-transparent">GGHub</h1>
+                <h1 className="bg-gradient-to-r from-[#FF2E88] to-[#FF8A1F] bg-clip-text text-3xl font-black tracking-tight text-transparent">Pause Menu</h1>
 
                 {/* Bilingual tagline: English primary, Turkish subtitle */}
                 <p className="mx-auto mt-3 max-w-xs text-[15px] font-medium leading-snug text-white/85">
@@ -174,7 +174,7 @@ export default function DownloadAppClient() {
                 ) : null}
 
                 <a
-                    href="https://gghub.social"
+                    href="https://pausemenu.app"
                     onClick={() => trackDownloadEvent("web_click", { target: "web" })}
                     className="mt-4 inline-block text-xs font-medium text-cyan-400 underline-offset-4 transition-colors hover:text-cyan-300 hover:underline"
                 >

@@ -60,7 +60,7 @@ export const GameRatingBar = ({ rating, onRateClick, actionLabel = "Puan vermek 
                     </h3>
                 </div>
                 <div className="flex flex-col items-end leading-none">
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">GGHub Puanı</span>
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Pause Menu Puanı</span>
                     <span className={`text-xl font-bold ${info.text}`}>{rating.toFixed(1)}</span>
                 </div>
             </div>

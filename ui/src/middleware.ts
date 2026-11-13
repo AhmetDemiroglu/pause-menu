@@ -59,7 +59,7 @@ const maintenanceLocale = (request: NextRequest, pathname: string): MaintenanceL
 
 /** Bakim modu (ayrinti ve kullanim: core/lib/maintenance.ts, docs/bakim-modu.md). Cevap yoksa null. */
 const maintenanceResponse = (request: NextRequest, pathname: string): Response | null => {
-    // api.gghub.social bu servise tasindiysa backend kapali demektir: her istege bakim cevabi.
+    // api.<alan adi> bu servise tasindiysa backend kapali demektir: her istege bakim cevabi.
     if (isApiHost(request.headers.get("x-forwarded-host") ?? request.headers.get("host"))) {
         return pathname === "/api/app-release/check" ? appReleaseMaintenanceResponse(request.nextUrl) : maintenanceJsonResponse();
     }

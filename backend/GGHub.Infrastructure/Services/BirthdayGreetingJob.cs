@@ -271,7 +271,7 @@ namespace GGHub.Infrastructure.Services
 
             // Fallback BILEREK localhost degil: prod'da env eksik kalirsa kullanicilara
             // localhost linki gitmesin (AuthController ayni anahtari kullaniyor).
-            var frontendBaseUrl = (_configuration["App:FrontendBaseUrl"] ?? "https://gghub.social").TrimEnd('/');
+            var frontendBaseUrl = (_configuration["App:FrontendBaseUrl"] ?? "https://pausemenu.app").TrimEnd('/');
             var celebrationUrl = $"{frontendBaseUrl}/birthday";
 
             var subject = AppText.GetFor(locale, "birthday.emailSubject");

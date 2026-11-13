@@ -27,7 +27,7 @@ const MAX_BODY_BYTES = 4096;
  * 16 byte = 128 bit; 10M degerde cakisma olasiligi ihmal edilebilir.
  */
 function visitorHash(ip: string, userAgent: string): string {
-    const salt = process.env.VISITOR_HASH_SALT ?? "gghub-dev-salt";
+    const salt = process.env.VISITOR_HASH_SALT ?? "pm-dev-salt";
     const day = new Date().toISOString().slice(0, 10);
     return createHash("sha256").update(`${salt}|${day}|${ip}|${userAgent}`).digest("hex").slice(0, 32);
 }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     // Kaynak kontrolu: derinlemesine savunma. Spoof edilebilir ama tembel gurultuyu keser.
     const origin = request.headers.get("origin");
-    if (origin && !/^https?:\/\/(localhost(:\d+)?|([\w-]+\.)?gghub\.social)$/.test(origin)) {
+    if (origin && !/^https?:\/\/(localhost(:\d+)?|([\w-]+\.)?pausemenu\.app)$/.test(origin)) {
         return new NextResponse(null, { status: 204 });
     }
 

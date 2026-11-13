@@ -6,7 +6,7 @@ using GGHub.Worker;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-// GGHub katalog botu.
+// Pause Menu katalog botu.
 //
 // Neden ayri bir konsol projesi (WebAPI'yi tekrar calistirmak yerine):
 //  1. Kestrel yok, yani port 7263 catismasi yok: IDE'den gelistirirken bot calismaya devam eder.
@@ -84,7 +84,7 @@ builder.Services.Configure<HypeScoreSettings>(builder.Configuration.GetSection("
 builder.Services.AddHttpClient("Wikipedia", client =>
 {
     client.Timeout = TimeSpan.FromSeconds(30);
-    client.DefaultRequestHeaders.UserAgent.ParseAdd("GGHubCatalogBot/1.0 (https://gghub.social)");
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("PauseMenuCatalogBot/1.0 (https://pausemenu.app)");
 });
 builder.Services.AddScoped<IWikipediaHypeService, WikipediaHypeService>();
 builder.Services.AddScoped<HypeScoreCalculator>();
@@ -244,7 +244,7 @@ using (var startupScope = host.Services.CreateScope())
     }
 }
 
-logger.LogInformation("=== GGHub Worker basladi ===");
+logger.LogInformation("=== Pause Menu Worker basladi ===");
 
 await host.RunAsync();
 return 0;

@@ -329,6 +329,11 @@
       "src": "social/svg/og-default.svg",
       "out": "social/og-default.png",
       "width": 1200
+    },
+    {
+      "src": "logo/svg/icon-rounded.svg",
+      "out": "email/email-logo.png",
+      "width": 176
     }
   ],
   "flatten": [

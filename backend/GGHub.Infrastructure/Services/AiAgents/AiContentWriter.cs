@@ -65,7 +65,7 @@ namespace GGHub.Infrastructure.Services
             "Bu görevde bir insan kullanıcının oyun listesine takılıyorsun: iğneleyici, alaycı ve komik olabilirsin. Hedef yalnızca liste ve oyun zevki; kişinin kendisi, zekası, görünüşü, yaşı, hayatı ya da kimliği asla. Küfür, hakaret ve aşağılama yok. Arkadaşına takılan biri gibi yaz: güldürsün, kırmasın.";
 
         private static string BaseRules(AiAgentIdentity agent, string lang, bool listRoast = false) => $"""
-            Sen GGHub adlı oyun sosyal ağında yaşayan bir yapay zeka karakterisin. Adın "{agent.DisplayName}", kullanıcı adın @{agent.Username}.
+            Sen Pause Menu adlı oyun sosyal ağında yaşayan bir yapay zeka karakterisin. Adın "{agent.DisplayName}", kullanıcı adın @{agent.Username}.
             Karakterin: {agent.Persona}
 
             Değişmez kurallar:
@@ -77,7 +77,7 @@ namespace GGHub.Infrastructure.Services
             - Biri kendine zarar vermekten ya da ciddi bir sıkıntıdan bahsederse: nazik ol, yalnız olmadığını söyle ve bir yakınından ya da profesyonel destekten (acil durumda 112) yardım almasını öner. Oyun sohbetine zorlama.
             - Çıktı dili: {AiLanguage.ModelName(lang)}. Yazdığın metnin tamamı bu dilde olsun; bu talimatların Türkçe olması çıktı dilini değiştirmez. (Output language: {AiLanguage.ModelName(lang)}.)
             - Kısa ve doğal yaz, gerçek bir sohbet gibi. Cümle uzunluğunu değiştir. Emoji en fazla iki tane. Hashtag, madde işareti, başlık ve markdown kullanma. Uzun tire (— ya da –) kullanma.
-            - GGHub'da seninle birlikte başka AI karakterler de yaşıyor ve aranızda gerçek fikir ayrılıkları var. Kendi zevkini savun, karşı tarafın argümanıyla ve zevkiyle açıkça dalga geç. Acımasız, cüretkar ve alaycı ol; aklına gelen en keskin lafı seç, sulandırma. Geri adım atma, uzlaşmak zorunda değilsin. Uysal ve yumuşak olma, ama sıkıcı da olma: keskin, zeki ve komik.
+            - Pause Menu'de seninle birlikte başka AI karakterler de yaşıyor ve aranızda gerçek fikir ayrılıkları var. Kendi zevkini savun, karşı tarafın argümanıyla ve zevkiyle açıkça dalga geç. Acımasız, cüretkar ve alaycı ol; aklına gelen en keskin lafı seç, sulandırma. Geri adım atma, uzlaşmak zorunda değilsin. Uysal ve yumuşak olma, ama sıkıcı da olma: keskin, zeki ve komik.
             - Sınır kesin: hedef her zaman fikir ve zevktir, kişi değil. Küfür, hakaret, aşağılama, nefret söylemi ve kimlik (cinsiyet, köken, din, engel) üzerinden laf yok.
             - {(listRoast ? ListRoast : RoastHumans)}
             - Her sohbette aynı kalıbı tekrar etme: girişini, cümle yapını ve kapanışını değiştir.
@@ -129,30 +129,30 @@ namespace GGHub.Infrastructure.Services
             AiAgentIdentity agent, string partnerName, IReadOnlyList<string> recentGames, string lang, CancellationToken ct)
         {
             var games = recentGames.Count > 0
-                ? $"Kullanıcının GGHub'da son ilgilendiği oyunlar: {string.Join(", ", recentGames)}."
-                : "Kullanıcının GGHub'da henüz belirgin bir oyun hareketi yok.";
+                ? $"Kullanıcının Pause Menu'de son ilgilendiği oyunlar: {string.Join(", ", recentGames)}."
+                : "Kullanıcının Pause Menu'de henüz belirgin bir oyun hareketi yok.";
 
             var prompt = $"""
-                @{partnerName} GGHub'a yeni katıldı. Ona kısa bir hoş geldin mesajı yaz.
+                @{partnerName} Pause Menu'ye yeni katıldı. Ona kısa bir hoş geldin mesajı yaz.
                 {games}
-                Kendini GGHub'ın AI karakterlerinden biri olarak tanıt ve ona hangi oyunları sevdiğini sor. Karşılaman da karakterine uygun, küstah ve esprili olsun; resmi hoş geldin cümleleri kurma. En fazla 2 kısa cümle.
+                Kendini Pause Menu'nün AI karakterlerinden biri olarak tanıt ve ona hangi oyunları sevdiğini sor. Karşılaman da karakterine uygun, küstah ve esprili olsun; resmi hoş geldin cümleleri kurma. En fazla 2 kısa cümle.
                 {HumanAddressee}
                 """;
             return RunAsync(BaseRules(agent, lang), new[] { new GeminiTurn("user", prompt) }, lang, 200, 300, 0.9, ct);
         }
 
         /// <summary>
-        /// Rizali kullaniciya kendiliginden DM. Konu kullanicinin GGHub'daki son hareketi (hook);
+        /// Rizali kullaniciya kendiliginden DM. Konu kullanicinin Pause Menu'deki son hareketi (hook);
         /// hareket yoksa genel bir oyun sorusu. Hos geldin mesajindan farki: tanisma yok, dogrudan konu.
         /// </summary>
         public Task<AiText?> WriteCasualMessageAsync(
             AiAgentIdentity agent, string partnerName, string? hook, bool firstContact, string lang, CancellationToken ct)
         {
             var topic = string.IsNullOrWhiteSpace(hook)
-                ? "Kullanıcının GGHub'da belirgin bir son hareketi yok: ona şu sıralar ne oynadığını ya da ne beklediğini sor."
-                : $"Kullanıcının GGHub'daki son hareketi: {hook} Mesajını bunun üzerine kur: kendi görüşünü söyle ve ona bir soru sor.";
+                ? "Kullanıcının Pause Menu'de belirgin bir son hareketi yok: ona şu sıralar ne oynadığını ya da ne beklediğini sor."
+                : $"Kullanıcının Pause Menu'deki son hareketi: {hook} Mesajını bunun üzerine kur: kendi görüşünü söyle ve ona bir soru sor.";
             var intro = firstContact
-                ? "Onunla ilk kez yazışıyorsun: tek kısa ifadeyle GGHub'ın AI karakterlerinden biri olduğunu belli et."
+                ? "Onunla ilk kez yazışıyorsun: tek kısa ifadeyle Pause Menu'nün AI karakterlerinden biri olduğunu belli et."
                 : "Daha önce yazışmıştınız: kendini yeniden tanıtma, doğrudan konuya gir.";
 
             var prompt = $"""
@@ -172,7 +172,7 @@ namespace GGHub.Infrastructure.Services
         {
             var description = string.IsNullOrWhiteSpace(listDescription) ? "" : $"Açıklaması: \"{Trim(listDescription, 300)}\"\n";
             var prompt = $"""
-                @{owner} GGHub'da "{Trim(listName, 120)}" adlı bir oyun listesi hazırladı.
+                @{owner} Pause Menu'de "{Trim(listName, 120)}" adlı bir oyun listesi hazırladı.
                 {description}Listedeki oyunlar ({totalGames} oyun): {string.Join(", ", games)}.
 
                 Listeye kısa bir yorum yaz: listenin adına, seçimlere, eksik kalan bariz bir oyuna ya da yan yana durması tuhaf oyunlara takıl.
@@ -220,8 +220,8 @@ namespace GGHub.Infrastructure.Services
         {
             var sb = new StringBuilder();
             sb.AppendLine(root.FromAgent
-                ? "GGHub'da SEN şu gönderiyi paylaşmıştın:"
-                : $"GGHub'da @{root.AuthorName}{(root.AuthorIsAi ? " (AI)" : "")} şu gönderiyi paylaştı:");
+                ? "Pause Menu'de SEN şu gönderiyi paylaşmıştın:"
+                : $"Pause Menu'de @{root.AuthorName}{(root.AuthorIsAi ? " (AI)" : "")} şu gönderiyi paylaştı:");
             sb.AppendLine($"\"{root.Text}\"");
             if (replies.Count > 0)
             {
@@ -249,7 +249,7 @@ namespace GGHub.Infrastructure.Services
                 ? "Takipçilerinle sohbet başlatacak bir soru ya da görüşle bitir."
                 : $"Sonunda @{askPeer.Username} adlı AI arkadaşına seslenip fikrini sor. {askPeer.Note}";
             var prompt = $"""
-                GGHub akışına kısa bir gönderi yaz. Konu: {angle}
+                Pause Menu akışına kısa bir gönderi yaz. Konu: {angle}
 
                 Oyun bilgisi:
                 {Facts(game)}
@@ -269,7 +269,7 @@ namespace GGHub.Infrastructure.Services
             AiGameFacts? game, bool isPoll, CancellationToken ct)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("GGHub'da diğer AI karakterlerle herkesin görebileceği bir sohbet başlatıyorsun.");
+            sb.AppendLine("Pause Menu'de diğer AI karakterlerle herkesin görebileceği bir sohbet başlatıyorsun.");
             sb.AppendLine($"Sahne: {brief}");
             sb.AppendLine($"Sahnenin tonu: {tone}");
             if (!string.IsNullOrWhiteSpace(stance)) sb.AppendLine($"Senin tarafın: {stance}");
@@ -303,7 +303,7 @@ namespace GGHub.Infrastructure.Services
             bool isFinal, AiSceneDirection direction, string lang, CancellationToken ct, bool addresseeIsHuman = false)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("GGHub'da AI karakterlerin herkese açık sohbetindesin.");
+            sb.AppendLine("Pause Menu'de AI karakterlerin herkese açık sohbetindesin.");
             sb.AppendLine($"Sahne: {brief}");
             sb.AppendLine($"Sahnenin tonu: {direction.Tone}");
             if (!string.IsNullOrWhiteSpace(stance)) sb.AppendLine($"Senin tarafın: {stance}");
@@ -336,7 +336,7 @@ namespace GGHub.Infrastructure.Services
         public Task<AiText?> WriteReviewAsync(AiAgentIdentity agent, AiGameFacts game, int rating, CancellationToken ct)
         {
             var prompt = $"""
-                GGHub'da bu oyun için kısa bir inceleme yaz. Verdiğin puan 10 üzerinden {rating}. Metin bu puanla tutarlı olsun.
+                Pause Menu'de bu oyun için kısa bir inceleme yaz. Verdiğin puan 10 üzerinden {rating}. Metin bu puanla tutarlı olsun.
 
                 Oyun bilgisi:
                 {Facts(game)}

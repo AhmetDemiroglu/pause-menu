@@ -119,7 +119,7 @@ export default function NotFound() {
                         </div>
                     </div>
 
-                    <p className="text-xs text-muted-foreground/60">{t("notFound.support", { email: "info@gghub.social" })}</p>
+                    <p className="text-xs text-muted-foreground/60">{t("notFound.support", { email: "info@pausemenu.app" })}</p>
                 </div>
             </div>
 

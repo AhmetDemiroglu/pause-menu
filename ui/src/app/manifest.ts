@@ -4,16 +4,16 @@ import { APP_STORE_ID } from "@/core/seo/site";
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: "GGHub | Oyuncu Sosyal Platformu",
-        short_name: "GGHub",
+        name: "Pause Menu | Oyuncu Sosyal Platformu",
+        short_name: "Pause Menu",
         description: "Oyunları keşfet, puanla, listeler oluştur ve oyuncu topluluğuna katıl.",
         id: "/",
         start_url: "/",
         scope: "/",
         lang: "tr",
         display: "standalone",
-        background_color: "#050A1B",
-        theme_color: "#0C0B23",
+        background_color: "#14101F",
+        theme_color: "#14101F",
         categories: ["games", "social", "entertainment"],
         // Magaza uygulamalari: tarayici "uygulamayi yukle" akisinda yerel uygulamayi da onerebilir.
         related_applications: [
@@ -40,7 +40,7 @@ export default function manifest(): MetadataRoute.Manifest {
                 purpose: "any",
             },
             {
-                src: "/icon-512.png",
+                src: "/icon-maskable-512.png",
                 sizes: "512x512",
                 type: "image/png",
                 purpose: "maskable",

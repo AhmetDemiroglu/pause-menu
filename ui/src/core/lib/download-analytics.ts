@@ -47,7 +47,7 @@ function referrerHost(): string | undefined {
     try {
         const host = new URL(document.referrer).hostname.toLowerCase();
         // Kendi icimizden gelen gecisler kanal degil.
-        if (host.endsWith("gghub.social") || host === "localhost") return undefined;
+        if (host.endsWith("pausemenu.app") || host === "localhost") return undefined;
         return host.replace(/^www\./, "");
     } catch {
         return undefined;

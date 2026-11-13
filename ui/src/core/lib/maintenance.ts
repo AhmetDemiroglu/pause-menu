@@ -1,10 +1,10 @@
 /**
- * Bakim modu. Backend (Railway "GGHub / api") durdurulunca site ve mobil uygulama buradan cevap alir.
+ * Bakim modu. Backend (Railway "Pause Menu / api") durdurulunca site ve mobil uygulama buradan cevap alir.
  *
  * Iki anahtar var, ikisi de yalniz middleware'de okunur:
- *   - MAINTENANCE_MODE=1 (Railway "GGHub / UI" degiskeni): web'in her sayfasi bu statik sayfayi 503 ile doner.
+ *   - MAINTENANCE_MODE=1 (Railway "Pause Menu / UI" degiskeni): web'in her sayfasi bu statik sayfayi 503 ile doner.
  *     Sayfa React/kok layout kullanmaz, backend'e hic istek atmaz; backend kapaliyken de calisir.
- *   - api.gghub.social alan adi UI servisine tasinirsa: o host'a gelen her istege bakim cevabi verilir.
+ *   - api.<alan adi> UI servisine tasinirsa: o host'a gelen her istege bakim cevabi verilir.
  *     Mobilin acilis kapisi (GET /api/app-release/check) "maintenance" alir ve magazadaki MEVCUT surumler
  *     yeni yayin gerekmeden kendi bakim ekranini (BlockedScreen) gosterir. Bu dal bayraga bagli degildir:
  *     normal calismada api host'u bu servise hic gelmez.
@@ -17,35 +17,35 @@ export type MaintenanceLocale = "tr" | "en";
 const RETRY_AFTER_SECONDS = "3600";
 
 const STORE_URLS = {
-    ios: "https://apps.apple.com/us/app/gghub-games-community/id6781281375",
+    ios: "https://apps.apple.com/app/id6781281375",
     android: "https://play.google.com/store/apps/details?id=com.gghub.mobile",
 } as const;
 
 const MOBILE_MESSAGE = {
-    tr: "Size daha iyi bir hizmet verebilmek için GGHub'ı yeniliyoruz. Kasım ayının ilk haftasında yeniden açılıyoruz. Hesabınız, listeleriniz ve incelemeleriniz güvende, hiçbir veri silinmeyecek. Beklerken bir el oynayın.",
-    en: "We're upgrading GGHub to serve you better. We'll be back in the first week of November. Your account, lists and reviews are safe and nothing will be deleted. Play a round while you wait.",
+    tr: "Size daha iyi bir hizmet verebilmek için Pause Menu'yü yeniliyoruz. Kısa süre içinde yeniden açılıyoruz. Hesabınız, listeleriniz ve incelemeleriniz güvende, hiçbir veri silinmeyecek. Beklerken bir el oynayın.",
+    en: "We're upgrading Pause Menu to serve you better. We will be back shortly. Your account, lists and reviews are safe and nothing will be deleted. Play a round while you wait.",
 } as const;
 
 const COPY = {
     tr: {
         htmlLang: "tr",
-        docTitle: "GGHub bakımda",
+        docTitle: "Pause Menu bakımda",
         badge: "Bakım çalışması sürüyor",
         title: "Bakımdayız",
-        lead: "Size daha iyi bir hizmet verebilmek için GGHub'ı yeniliyoruz.",
-        body: "Kasım ayının ilk haftasında yeniden açılıyoruz. Hesabınız, listeleriniz ve incelemeleriniz güvende, hiçbir veri silinmeyecek. Anlayışınız için teşekkür ederiz.",
-        footer: "GGHub ekibi",
-        svgLabel: "Vinçlerin GGHub binasını inşa ettiği hareketli çizim",
+        lead: "Size daha iyi bir hizmet verebilmek için Pause Menu'yü yeniliyoruz.",
+        body: "Kısa süre içinde yeniden açılıyoruz. Hesabınız, listeleriniz ve incelemeleriniz güvende, hiçbir veri silinmeyecek. Anlayışınız için teşekkür ederiz.",
+        footer: "Pause Menu ekibi",
+        svgLabel: "Vinçlerin Pause Menu binasını inşa ettiği hareketli çizim",
     },
     en: {
         htmlLang: "en",
-        docTitle: "GGHub is under maintenance",
+        docTitle: "Pause Menu is under maintenance",
         badge: "Maintenance in progress",
         title: "We're under maintenance",
-        lead: "We're upgrading GGHub to serve you better.",
-        body: "We'll be back in the first week of November. Your account, lists and reviews are safe and nothing will be deleted. Thanks for your patience.",
-        footer: "The GGHub team",
-        svgLabel: "Animated drawing of cranes building the GGHub tower",
+        lead: "We're upgrading Pause Menu to serve you better.",
+        body: "We will be back shortly. Your account, lists and reviews are safe and nothing will be deleted. Thanks for your patience.",
+        footer: "The Pause Menu team",
+        svgLabel: "Animated drawing of cranes building the Pause Menu tower",
     },
 } as const;
 
@@ -96,7 +96,7 @@ export function appReleaseMaintenanceResponse(url: URL) {
 
 /*
  * Sahne (viewBox 720x420): solda buyuk kule vinc yerden sandik alip binanin tepesine birakir, sagda kucuk
- * vinc celik kiris tasir, binanin cephesinde "GGHub" tabelasi parlar, iskelede kaynak kivilcimi var.
+ * vinc celik kiris tasir, binanin cephesinde "Pause Menu" tabelasi parlar, iskelede kaynak kivilcimi var.
  * Hareketler SMIL (animate/animateTransform): ic ice donusumlerde CSS transform-origin karisiyor, SMIL'de
  * her pivot kendi yerel koordinatinda. Azaltilmis hareket isteyen ziyaretcide pauseAnimations() ile durur.
  * Buyuk vinc dongusu 10 sn: keyTimes araba (x), halat boyu (y2), sandik gorunurlugu ayni zaman cizelgesinde.
@@ -112,7 +112,7 @@ const SCENE_SVG = (label: string) => `
 <svg class="scene" viewBox="0 0 720 420" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#22d3ee"/><stop offset="0.5" stop-color="#3b82f6"/><stop offset="1" stop-color="#d946ef"/>
+      <stop offset="0" stop-color="#FF2E88"/><stop offset="0.5" stop-color="#FF5A4E"/><stop offset="1" stop-color="#FF8A1F"/>
     </linearGradient>
     <linearGradient id="ground" x1="0" y1="0" x2="720" y2="0" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#0f172a" stop-opacity="0"/><stop offset="0.12" stop-color="#0f172a"/>
@@ -132,13 +132,13 @@ const SCENE_SVG = (label: string) => `
     <linearGradient id="shine" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.5" stop-color="#fff" stop-opacity="0.85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
     </linearGradient>
-    <radialGradient id="glowC" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#22d3ee" stop-opacity="0.35"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
-    <radialGradient id="glowF" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#d946ef" stop-opacity="0.3"/><stop offset="1" stop-color="#d946ef" stop-opacity="0"/></radialGradient>
+    <radialGradient id="glowC" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FF2E88" stop-opacity="0.35"/><stop offset="1" stop-color="#FF2E88" stop-opacity="0"/></radialGradient>
+    <radialGradient id="glowF" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FF8A1F" stop-opacity="0.3"/><stop offset="1" stop-color="#FF8A1F" stop-opacity="0"/></radialGradient>
     <pattern id="hazard" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
       <rect width="8" height="16" fill="#fbbf24"/><rect x="8" width="8" height="16" fill="#111827"/>
       <animateTransform attributeName="patternTransform" type="translate" additive="sum" values="0 0;16 0" dur="1.6s" repeatCount="indefinite"/>
     </pattern>
-    <clipPath id="signClip"><text x="425" y="262" text-anchor="middle" font-size="46" font-weight="800" font-family="inherit" letter-spacing="1">GGHub</text></clipPath>
+    <clipPath id="signClip"><text x="425" y="262" text-anchor="middle" font-size="25" font-weight="800" font-family="inherit" letter-spacing="1.5">PAUSE MENU</text></clipPath>
     <g id="crate">
       <rect x="-15" y="0" width="30" height="24" rx="4" fill="url(#brand)"/>
       <rect x="-15" y="0" width="30" height="24" rx="4" fill="none" stroke="#fff" stroke-opacity="0.35"/>
@@ -170,7 +170,7 @@ const SCENE_SVG = (label: string) => `
     <animate attributeName="stroke-dashoffset" values="0;-48" dur="3s" repeatCount="indefinite"/>
   </line>
 
-  <!-- bina: iskele + kat pencereleri + GGHub tabelasi -->
+  <!-- bina: iskele + kat pencereleri + Pause Menu tabelasi -->
   <g>
     <rect x="330" y="210" width="190" height="130" rx="4" fill="url(#tower)" stroke="#334155"/>
     <g stroke="#475569" stroke-width="1.5" opacity="0.8">
@@ -190,7 +190,7 @@ const SCENE_SVG = (label: string) => `
       <rect x="470" y="318" width="18" height="12" rx="2" opacity="0.15"><animate attributeName="opacity" values="0.15;0.8;0.8;0.15" keyTimes="0;0.1;0.6;1" dur="6s" begin="4.2s" repeatCount="indefinite"/></rect>
     </g>
     <rect x="400" y="318" width="28" height="22" rx="2" fill="#0f172a" stroke="#475569"/>
-    <text x="425" y="262" text-anchor="middle" font-size="46" font-weight="800" font-family="inherit" letter-spacing="1" fill="url(#brand)">GGHub</text>
+    <text x="425" y="262" text-anchor="middle" font-size="25" font-weight="800" font-family="inherit" letter-spacing="1.5" fill="url(#brand)">PAUSE MENU</text>
     <g clip-path="url(#signClip)">
       <rect x="300" y="215" width="60" height="60" fill="url(#shine)" opacity="0.9">
         <animateTransform attributeName="transform" type="translate" values="0 0;0 0;260 0" keyTimes="0;0.55;1" dur="4.5s" repeatCount="indefinite"/>
@@ -317,7 +317,7 @@ export function renderMaintenancePage(locale: MaintenanceLocale) {
   }
   main { width: 100%; max-width: 760px; text-align: center; }
   .logo { display: inline-block; font-size: 28px; font-weight: 800; letter-spacing: .5px; margin: 0 0 8px;
-    background: linear-gradient(90deg,#22d3ee,#3b82f6,#d946ef); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    background: linear-gradient(90deg,#FF2E88,#FF5A4E,#FF8A1F); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .scene { display: block; width: 100%; height: auto; margin: 0 auto; }
   .badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 6px 12px; border-radius: 999px;
     font-size: 13px; font-weight: 600; color: #fde68a; background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.35); }
@@ -327,7 +327,7 @@ export function renderMaintenancePage(locale: MaintenanceLocale) {
   .body { margin: 0 auto; max-width: 560px; font-size: 15px; color: #94a3b8; line-height: 1.55; }
   .bar { position: relative; overflow: hidden; height: 6px; max-width: 320px; margin: 24px auto 0; border-radius: 999px; background: rgba(148,163,184,.15); }
   .bar::after { content: ""; position: absolute; inset: 0; width: 40%; border-radius: inherit;
-    background: linear-gradient(90deg,#22d3ee,#3b82f6,#d946ef); animation: slide 1.8s ease-in-out infinite; }
+    background: linear-gradient(90deg,#FF2E88,#FF5A4E,#FF8A1F); animation: slide 1.8s ease-in-out infinite; }
   footer { margin-top: 24px; font-size: 13px; color: #64748b; }
   @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
@@ -336,7 +336,7 @@ export function renderMaintenancePage(locale: MaintenanceLocale) {
 </head>
 <body>
 <main>
-  <p class="logo">GGHub</p>
+  <p class="logo">Pause Menu</p>
   ${SCENE_SVG(t.svgLabel)}
   <span class="badge"><span class="dot"></span>${t.badge}</span>
   <h1>${t.title}</h1>

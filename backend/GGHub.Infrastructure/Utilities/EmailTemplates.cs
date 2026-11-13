@@ -2,7 +2,7 @@
 {
     public static class EmailTemplates
     {
-        private const string LogoUrl = "https://assets.gghub.social/profiles/EmailLogo.png";
+        private const string LogoUrl = "https://assets.pausemenu.app/brand/email-logo.png";
 
         private const string BrandStart = "#00E5FF";
         private const string BrandEnd = "#7C4DFF";
@@ -15,7 +15,7 @@
             <head>
                 <meta charset='UTF-8'>
                 <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                <title>GGHub</title>
+                <title>Pause Menu</title>
             </head>
             <body style='margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, ""Segoe UI"", Roboto, ""Helvetica Neue"", Arial, sans-serif; background-color: #f4f4f5;'>
                 <table role='presentation' style='width: 100%; border-collapse: collapse;'>
@@ -29,18 +29,18 @@
                                     style=""
                                       padding: 18px 40px 16px 40px;
                                       text-align: center;
-                                      background: linear-gradient(135deg, #061423 0%, #0B0F1B 45%, #1A1440 100%);
+                                      background: linear-gradient(135deg, #14101F 0%, #1C1033 55%, #3A0F45 100%);
                                       border-radius: 8px 8px 0 0;
                                     ""
                                   >
                                     <img
-                                      src=""https://assets.gghub.social/profiles/EmailLogo.png""
-                                      alt=""GGHub""
+                                      src=""https://assets.pausemenu.app/brand/email-logo.png""
+                                      alt=""Pause Menu""
                                       width=""88""
                                       height=""88""
                                       style=""display:block;margin:0 auto 8px;border:0;outline:none;""
                                     />
-                                    <h1 style=""margin:0;color:#ffffff;font-size:26px;font-weight:800;letter-spacing:.2px;"">GGHub</h1>
+                                    <h1 style=""margin:0;color:#ffffff;font-size:26px;font-weight:800;letter-spacing:.2px;"">Pause Menu</h1>
                                     <div style=""margin-top:6px;color:rgba(255,255,255,.9);font-size:14px;font-weight:300;font-style:italic;letter-spacing:.15px;"">
                                       Türkiye'nin oyuncu sosyal platformu.
                                     </div>
@@ -58,10 +58,10 @@
                                 <tr>
                                     <td style='padding: 30px 40px; background-color: #fafafa; border-radius: 0 0 8px 8px; border-top: 1px solid #e5e7eb;'>
                                         <p style='margin: 0 0 10px 0; color: #6b7280; font-size: 14px; text-align: center;'>
-                                            Bu e-posta <strong>GGHub</strong> tarafından gönderilmiştir.
+                                            Bu e-posta <strong>Pause Menu</strong> tarafından gönderilmiştir.
                                         </p>
                                         <p style='margin: 0; color: #9ca3af; font-size: 12px; text-align: center;'>
-                                            © 2025 GGHub. Tüm hakları saklıdır.
+                                            © 2025 Pause Menu. Tüm hakları saklıdır.
                                         </p>
                                         <p style='margin: 16px 0 0; text-align:center;'>
                                             <a href='https://gghub.social' style='color: {BrandEnd}; text-decoration: none; font-size: 13px;'>Ana Sayfa</a>
@@ -89,14 +89,14 @@
                     Merhaba {username}! 👋
                 </h2>
                 <p style='margin: 0 0 20px 0; color: #4b5563; font-size: 16px; line-height: 1.6;'>
-                    GGHub'a hoş geldin! Hesabını aktif etmek için aşağıdaki butona tıklaman yeterli.
+                    Pause Menu'ye hoş geldin! Hesabını aktif etmek için aşağıdaki butona tıklaman yeterli.
                 </p>
                 <div style='text-align: center; margin: 30px 0;'>
                   <a href='{verificationLink}'
                      style='
                        display:inline-block;
                        padding:14px 32px;
-                       background: linear-gradient(135deg, #061423 0%, #0B0F1B 45%, #1A1440 100%);
+                       background: linear-gradient(135deg, #14101F 0%, #1C1033 55%, #3A0F45 100%);
                        color:#ffffff;
                        text-decoration:none;
                        border-radius:10px;
@@ -165,7 +165,7 @@
                     Merhaba {username},
                 </p>
                 <p style='margin: 0 0 20px 0; color: #4b5563; font-size: 16px; line-height: 1.6;'>
-                    GGHub hesabının şifresi başarıyla değiştirildi.
+                    Pause Menu hesabının şifresi başarıyla değiştirildi.
                 </p>
                 <div style='margin: 30px 0; padding: 20px; background-color: #f0fdf4; border-left: 4px solid #10b981; border-radius: 4px;'>
                     <p style='margin: 0; color: #065f46; font-size: 14px;'>
@@ -206,8 +206,8 @@
 
             var heading = en ? $"Happy birthday, {safeName}! 🎉" : $"İyi ki doğdun, {safeName}! 🎉";
             var intro = en
-                ? "Today is your day. Everyone at GGHub is wishing you a great one."
-                : "Bugün senin günün. GGHub ekibi olarak yeni yaşını kutluyoruz.";
+                ? "Today is your day. Everyone at Pause Menu is wishing you a great one."
+                : "Bugün senin günün. Pause Menu ekibi olarak yeni yaşını kutluyoruz.";
             var cta = en ? "Open Your Celebration" : "Kutlamanı Aç";
             var wish = en
                 ? "🎂 Here is to a new year full of great games and hard-won victories."
@@ -228,7 +228,7 @@
                      style='
                        display:inline-block;
                        padding:14px 32px;
-                       background: linear-gradient(135deg, #061423 0%, #0B0F1B 45%, #1A1440 100%);
+                       background: linear-gradient(135deg, #14101F 0%, #1C1033 55%, #3A0F45 100%);
                        color:#ffffff;
                        text-decoration:none;
                        border-radius:10px;

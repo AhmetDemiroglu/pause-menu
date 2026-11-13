@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -13,7 +12,7 @@ import { getImageUrl } from "@/core/lib/get-image-url";
 import type { AuthenticatedUser } from "@/models/auth/auth.model";
 import { buildLocalizedPathname, stripLocaleFromPathname } from "@/i18n/config";
 import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
-import logoSrc2 from "@core/assets/logo2.png";
+import { BrandLogo } from "@core/components/base/brand-logo";
 
 interface AdminSidebarNavProps {
     user: AuthenticatedUser | null;
@@ -48,7 +47,7 @@ export const AdminSidebarNav = ({ user, onLinkClick }: AdminSidebarNavProps) => 
         <div className="flex h-full flex-col">
             <div className="mb-6 flex flex-col gap-6">
                 <Link href={buildLocalizedPathname("/", locale)} className="group flex w-full items-center justify-center gap-2.5" onClick={onLinkClick}>
-                    <Image src={logoSrc2} alt="GGHub logo" width={120} className="transition-transform group-hover:scale-110" />
+                    <BrandLogo className="h-5 transition-transform group-hover:scale-105" />
                 </Link>
                 {user ? (
                     <div className="flex flex-row items-center gap-3 rounded-md border p-3">

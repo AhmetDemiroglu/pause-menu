@@ -22,7 +22,7 @@ export type PageMetadataInput = {
 
 export const toOgLocale = (locale: AppLocale) => (locale === "tr" ? "tr_TR" : "en_US");
 
-/** "Elden Ring | GGHub": marka eki tek yerden, sayfa zaten iceriyorsa tekrar eklenmez. */
+/** "Elden Ring | Pause Menu": marka eki tek yerden, sayfa zaten iceriyorsa tekrar eklenmez. */
 export const withSiteName = (title: string) => (title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`);
 
 const normalizeImage = (image: PageMetadataInput["image"]): SeoImage => {

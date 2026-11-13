@@ -3,10 +3,10 @@
  *
  * download-analytics.ts'nin sitenin tamamina genisletilmis hali. Iki kimlik var, ikisi de
  * localStorage'da ve kisisel veri tasimayan rastgele UUID:
- *  - Oturum (gghub.sa.sid): 30 dk hareketsizlikte yenilenir, TUM SEKMELER ORTAK. Eskiden
+ *  - Oturum (pm.sa.sid): 30 dk hareketsizlikte yenilenir, TUM SEKMELER ORTAK. Eskiden
  *    sessionStorage'daydi; her yeni sekme yeni, tek sayfalik bir oturum aciyor ve hemen cikma
  *    oranini yapay olarak sisiriyordu (1 Eki 2026).
- *  - Tarayici (gghub.sa.vid): kalici. Gunler arasi gercek tekil ziyaretci sayimi ve "yonetici bu
+ *  - Tarayici (pm.sa.vid): kalici. Gunler arasi gercek tekil ziyaretci sayimi ve "yonetici bu
  *    cihazda bir kez giris yaptiysa cikis yapmis gezintisi de onundur" ayiklamasi bununla yapilir.
  *
  * Kimlik ISTEMCIDEN GONDERILMEZ: yalnizca Authorization basligi iletilir, kullaniciyi backend
@@ -15,10 +15,10 @@
  */
 
 const ENDPOINT = "/api/track/site";
-const SESSION_KEY = "gghub.sa.sid";
-const LAST_SEEN_KEY = "gghub.sa.last";
-const ENTRY_KEY = "gghub.sa.entry";
-const VISITOR_KEY = "gghub.sa.vid";
+const SESSION_KEY = "pm.sa.sid";
+const LAST_SEEN_KEY = "pm.sa.last";
+const ENTRY_KEY = "pm.sa.entry";
+const VISITOR_KEY = "pm.sa.vid";
 const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
 export type SiteActionName =
@@ -134,7 +134,7 @@ function externalReferrerHost(): string | undefined {
     if (typeof document === "undefined" || !document.referrer) return undefined;
     try {
         const host = new URL(document.referrer).hostname.toLowerCase();
-        if (host.endsWith("gghub.social") || host === "localhost") return undefined;
+        if (host.endsWith("pausemenu.app") || host === "localhost") return undefined;
         return host.replace(/^www\./, "");
     } catch {
         return undefined;
@@ -146,8 +146,8 @@ function safeStorage(): Storage | null {
     if (typeof window === "undefined") return null;
     try {
         const storage = window.localStorage;
-        storage.setItem("gghub.sa.probe", "1");
-        storage.removeItem("gghub.sa.probe");
+        storage.setItem("pm.sa.probe", "1");
+        storage.removeItem("pm.sa.probe");
         return storage;
     } catch {
         try {

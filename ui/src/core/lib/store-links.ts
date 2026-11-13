@@ -1,10 +1,10 @@
 /**
- * Mobile app store links for GGHub.
+ * Mobile app store links for Pause Menu.
  *
  * Both stores are live: iOS on the App Store and Android on Google Play.
  * Every store button reads these URLs; a null URL would render a "coming soon" state.
  */
-export const APP_STORE_URL = "https://apps.apple.com/us/app/gghub-games-community/id6781281375";
+export const APP_STORE_URL = "https://apps.apple.com/app/id6781281375";
 
 export const ANDROID_PACKAGE = "com.gghub.mobile";
 

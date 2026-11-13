@@ -3,9 +3,9 @@ export const locales = ["tr", "en-US"] as const;
 export type AppLocale = (typeof locales)[number];
 
 export const defaultLocale: AppLocale = "en-US";
-export const localeCookieName = "gghub-locale";
-export const localeManualCookieName = "gghub-locale-manual";
-export const localeStorageKey = "gghub-locale";
+export const localeCookieName = "pm-locale";
+export const localeManualCookieName = "pm-locale-manual";
+export const localeStorageKey = "pm-locale";
 /**
  * Middleware'in her sayfa istegine ekledigi baslik: URL'den (ya da yonlendirmeden) cozulen dil.
  * Sunucu bilesenleri dili once buradan okur. Cerez tek basina yetmiyordu: /tr/... ilk kez
@@ -13,7 +13,7 @@ export const localeStorageKey = "gghub-locale";
  * mesaj paketini en-US olarak uretiyordu (Googlebot/AI tarayicilari icin Turkce sayfa Ingilizce
  * geliyordu, istemci hydration sonrasi duzeltiyordu).
  */
-export const localeHeaderName = "x-gghub-locale";
+export const localeHeaderName = "x-pm-locale";
 
 export const countryToLocale = (countryCode?: string | null): AppLocale => {
     return countryCode?.toUpperCase() === "TR" ? "tr" : "en-US";

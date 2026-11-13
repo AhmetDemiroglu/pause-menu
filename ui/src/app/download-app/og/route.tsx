@@ -14,12 +14,12 @@ export const runtime = "edge";
 const COPY = {
     tr: {
         kicker: "MOBİL UYGULAMA YAYINDA",
-        title: "GGHub'ı indir",
+        title: "Pause Menu'yü indir",
         sub: "Oyunları keşfet, puanla, listele ve oyuncu topluluğuna katıl.",
     },
     en: {
         kicker: "THE APP IS LIVE",
-        title: "Download GGHub",
+        title: "Download Pause Menu",
         sub: "Discover games, rate what you play, build lists and join the community.",
     },
 } as const;
@@ -34,8 +34,8 @@ export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url);
     const lang = (searchParams.get("lang") || "en").toLowerCase().startsWith("tr") ? "tr" : "en";
     const c = COPY[lang];
-    const shot = `${origin}/gghub-app-${lang}.jpg`;
-    const logo = `${origin}/og/gghub-logo.png`;
+    const shot = `${origin}/app-screen-${lang}.jpg`;
+    const logo = `${origin}/og/logo.png`;
 
     return new ImageResponse(
         (
@@ -59,7 +59,7 @@ export async function GET(request: Request) {
                         width: "520px",
                         height: "520px",
                         display: "flex",
-                        background: "radial-gradient(circle, rgba(34,211,238,0.25), rgba(34,211,238,0) 70%)",
+                        background: "radial-gradient(circle, rgba(255,46,136,0.25), rgba(255,46,136,0) 70%)",
                     }}
                 />
                 <div
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
                         width: "660px",
                         height: "660px",
                         display: "flex",
-                        background: "radial-gradient(circle, rgba(139,92,246,0.32), rgba(139,92,246,0) 70%)",
+                        background: "radial-gradient(circle, rgba(255,138,31,0.32), rgba(255,138,31,0) 70%)",
                     }}
                 />
 
@@ -87,9 +87,9 @@ export async function GET(request: Request) {
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <img src={logo} width={66} height={66} alt="" />
-                        <div style={{ display: "flex", marginLeft: "18px", fontSize: "44px", fontWeight: 800, color: "white" }}>GGHub</div>
+                        <div style={{ display: "flex", marginLeft: "18px", fontSize: "44px", fontWeight: 800, color: "white" }}>Pause Menu</div>
                     </div>
-                    <div style={{ display: "flex", marginTop: "38px", fontSize: "20px", letterSpacing: "5px", color: "#34d3ee", fontWeight: 700 }}>
+                    <div style={{ display: "flex", marginTop: "38px", fontSize: "20px", letterSpacing: "5px", color: "#FF8A1F", fontWeight: 700 }}>
                         {c.kicker}
                     </div>
                     <div style={{ display: "flex", marginTop: "12px", fontSize: "66px", fontWeight: 800, color: "white", lineHeight: 1.05 }}>
@@ -132,7 +132,7 @@ export async function GET(request: Request) {
                                 <div style={{ display: "flex", marginLeft: "12px", color: "white", fontSize: "24px", fontWeight: 700 }}>Google Play</div>
                             </div>
                         </div>
-                        <div style={{ display: "flex", marginTop: "20px", color: "rgba(255,255,255,0.55)", fontSize: "22px" }}>gghub.social</div>
+                        <div style={{ display: "flex", marginTop: "20px", color: "rgba(255,255,255,0.55)", fontSize: "22px" }}>pausemenu.app</div>
                     </div>
                 </div>
 

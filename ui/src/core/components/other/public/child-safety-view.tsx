@@ -15,18 +15,18 @@ const META = [
 const COPY = {
     "en-US": {
         title: "Child Safety Standards",
-        intro: "GGHub has zero tolerance for child sexual abuse and exploitation (CSAE). This page explains our standards and how to report concerns.",
+        intro: "Pause Menu has zero tolerance for child sexual abuse and exploitation (CSAE). This page explains our standards and how to report concerns.",
         updated: "Last updated: 20 June 2026",
         contactTitle: "Child safety contact",
         contactLead: "To report a child safety concern, contact us at:",
         sections: [
             {
                 title: "1. Our commitment",
-                lead: "We strictly prohibit child sexual abuse and exploitation (CSAE) and child sexual abuse material (CSAM). Any such content or behavior is forbidden on GGHub and is removed.",
+                lead: "We strictly prohibit child sexual abuse and exploitation (CSAE) and child sexual abuse material (CSAM). Any such content or behavior is forbidden on Pause Menu and is removed.",
             },
             {
                 title: "2. Prevention and moderation",
-                lead: "We work to keep GGHub safe through:",
+                lead: "We work to keep Pause Menu safe through:",
                 list: [
                     "Tools to report content and users, and to block other users",
                     "Review of reported content by our moderators",
@@ -39,7 +39,7 @@ const COPY = {
                 lead: "If you see content or behavior that puts a child at risk:",
                 list: [
                     "Use the report option on a profile, comment, review, or list, in the app or on the web",
-                    "Or email info@gghub.social with the subject “Child safety”",
+                    "Or email info@pausemenu.app with the subject “Child safety”",
                 ],
                 after: "We treat child safety reports as a priority and act on them quickly.",
             },
@@ -51,18 +51,18 @@ const COPY = {
     },
     tr: {
         title: "Çocuk Güvenliği Standartları",
-        intro: "GGHub, çocukların cinsel istismarı ve sömürüsüne (CSAE) karşı sıfır tolerans uygular. Bu sayfa standartlarımızı ve nasıl bildirim yapılacağını anlatır.",
+        intro: "Pause Menu, çocukların cinsel istismarı ve sömürüsüne (CSAE) karşı sıfır tolerans uygular. Bu sayfa standartlarımızı ve nasıl bildirim yapılacağını anlatır.",
         updated: "Son güncelleme: 20 Haziran 2026",
         contactTitle: "Çocuk güvenliği iletişim",
         contactLead: "Çocuk güvenliğiyle ilgili bir endişeyi bildirmek için bize ulaş:",
         sections: [
             {
                 title: "1. Taahhüdümüz",
-                lead: "Çocukların cinsel istismarı ve sömürüsünü (CSAE) ve çocukların cinsel istismarı nitelikli materyali (CSAM) kesinlikle yasaklıyoruz. Bu tür içerik veya davranış GGHub'da yasaktır ve kaldırılır.",
+                lead: "Çocukların cinsel istismarı ve sömürüsünü (CSAE) ve çocukların cinsel istismarı nitelikli materyali (CSAM) kesinlikle yasaklıyoruz. Bu tür içerik veya davranış Pause Menu'de yasaktır ve kaldırılır.",
             },
             {
                 title: "2. Önleme ve moderasyon",
-                lead: "GGHub'ı güvenli tutmak için:",
+                lead: "Pause Menu'yü güvenli tutmak için:",
                 list: [
                     "İçerik ve kullanıcıları bildirme, diğer kullanıcıları engelleme araçları sunarız",
                     "Bildirilen içerik moderatörlerimiz tarafından incelenir",
@@ -75,7 +75,7 @@ const COPY = {
                 lead: "Bir çocuğu riske atan içerik veya davranış görürsen:",
                 list: [
                     "Uygulamada veya web'de bir profil, yorum, değerlendirme ya da listedeki bildirme seçeneğini kullan",
-                    "Ya da info@gghub.social adresine “Çocuk güvenliği” konusuyla e-posta gönder",
+                    "Ya da info@pausemenu.app adresine “Çocuk güvenliği” konusuyla e-posta gönder",
                 ],
                 after: "Çocuk güvenliği bildirimlerini öncelikli sayar ve hızla işleme alırız.",
             },
@@ -151,8 +151,8 @@ export function ChildSafetyView() {
                         <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
                             <p>
                                 {t.contactLead}{" "}
-                                <a href="mailto:info@gghub.social" className="font-medium text-primary hover:underline">
-                                    info@gghub.social
+                                <a href="mailto:info@pausemenu.app" className="font-medium text-primary hover:underline">
+                                    info@pausemenu.app
                                 </a>
                             </p>
                         </div>

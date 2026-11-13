@@ -16,14 +16,14 @@ const META = [
 const COPY = {
     "en-US": {
         title: "Delete Your Account & Data",
-        intro: "You can permanently delete your GGHub account and all associated data at any time, from the web or the app. This page explains how.",
+        intro: "You can permanently delete your Pause Menu account and all associated data at any time, from the web or the app. This page explains how.",
         updated: "Last updated: 19 June 2026",
         contactTitle: "Questions?",
         contactLead: "For anything about account or data deletion, contact us at:",
         sections: [
             {
                 title: "1. Delete on the web (fastest)",
-                lead: "If you can sign in at gghub.social, you can delete your account directly:",
+                lead: "If you can sign in at pausemenu.app, you can delete your account directly:",
                 list: [
                     "Sign in and open your Profile page",
                     "Scroll to the “Danger Zone” section",
@@ -33,7 +33,7 @@ const COPY = {
             },
             {
                 title: "2. Delete in the app",
-                lead: "In the GGHub mobile app:",
+                lead: "In the Pause Menu mobile app:",
                 list: [
                     "Open the app and sign in",
                     "Go to Profile → Settings",
@@ -45,7 +45,7 @@ const COPY = {
                 title: "3. Request deletion by email",
                 lead: "If you can no longer access the web or the app, send us a deletion request:",
                 list: [
-                    "Email info@gghub.social from the address registered to your account",
+                    "Email info@pausemenu.app from the address registered to your account",
                     "Use the subject line “Account deletion”",
                     "Include your username so we can locate the account",
                 ],
@@ -69,14 +69,14 @@ const COPY = {
     },
     tr: {
         title: "Hesabını ve Verilerini Sil",
-        intro: "GGHub hesabını ve ona bağlı tüm verileri, web'den veya uygulamadan, istediğin zaman kalıcı olarak silebilirsin. Bu sayfa nasıl yapacağını anlatır.",
+        intro: "Pause Menu hesabını ve ona bağlı tüm verileri, web'den veya uygulamadan, istediğin zaman kalıcı olarak silebilirsin. Bu sayfa nasıl yapacağını anlatır.",
         updated: "Son güncelleme: 19 Haziran 2026",
         contactTitle: "Soruların mı var?",
         contactLead: "Hesap veya veri silmeyle ilgili her şey için bize ulaş:",
         sections: [
             {
                 title: "1. Web'den sil (en hızlısı)",
-                lead: "gghub.social'da giriş yapabiliyorsan hesabını doğrudan silebilirsin:",
+                lead: "pausemenu.app'da giriş yapabiliyorsan hesabını doğrudan silebilirsin:",
                 list: [
                     "Giriş yap ve Profil sayfanı aç",
                     "“Tehlikeli Bölge” bölümüne in",
@@ -86,7 +86,7 @@ const COPY = {
             },
             {
                 title: "2. Uygulamadan sil",
-                lead: "GGHub mobil uygulamasında:",
+                lead: "Pause Menu mobil uygulamasında:",
                 list: [
                     "Uygulamayı aç ve giriş yap",
                     "Profil → Ayarlar adımına git",
@@ -98,7 +98,7 @@ const COPY = {
                 title: "3. E-posta ile silme talebi",
                 lead: "Web'e veya uygulamaya artık erişemiyorsan bize silme talebi gönder:",
                 list: [
-                    "Hesabına kayıtlı e-posta adresinden info@gghub.social adresine yaz",
+                    "Hesabına kayıtlı e-posta adresinden info@pausemenu.app adresine yaz",
                     "Konu satırına “Hesap silme” yaz",
                     "Hesabı bulabilmemiz için kullanıcı adını ekle",
                 ],
@@ -186,8 +186,8 @@ export function DataDeletionView() {
                         <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
                             <p>
                                 {t.contactLead}{" "}
-                                <a href="mailto:info@gghub.social" className="font-medium text-primary hover:underline">
-                                    info@gghub.social
+                                <a href="mailto:info@pausemenu.app" className="font-medium text-primary hover:underline">
+                                    info@pausemenu.app
                                 </a>
                             </p>
                         </div>

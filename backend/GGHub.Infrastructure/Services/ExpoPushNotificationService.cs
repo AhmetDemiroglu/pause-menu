@@ -103,7 +103,7 @@ namespace GGHub.Infrastructure.Services
                     byLocale[locale] = body;
                 }
 
-                payloads.Add((token.Token, title ?? "GGHub", body));
+                payloads.Add((token.Token, title ?? "Pause Menu", body));
             }
 
             await SendAsync(userId, payloads, link, notificationId);

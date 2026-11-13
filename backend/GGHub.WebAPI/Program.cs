@@ -55,22 +55,8 @@ builder.Services.AddCors(options =>
 
                           if (builder.Environment.IsProduction())
                           {
-                              var vercelUrl = "https://gg-hub-kappa.vercel.app";
-                              var gghubUrl = "https://gghub.social";
-                              var wwwGghubUrl = "https://www.gghub.social";
-
-                              if (!allowedOrigins.Contains(vercelUrl))
-                              {
-                                  allowedOrigins = allowedOrigins.Append(vercelUrl).ToArray();
-                              }
-                              if (!allowedOrigins.Contains(gghubUrl))
-                              {
-                                  allowedOrigins = allowedOrigins.Append(gghubUrl).ToArray();
-                              }
-                              if (!allowedOrigins.Contains(wwwGghubUrl))
-                              {
-                                  allowedOrigins = allowedOrigins.Append(wwwGghubUrl).ToArray();
-                              }
+                              var siteOrigins = new[] { "https://pausemenu.app", "https://www.pausemenu.app" };
+                              allowedOrigins = allowedOrigins.Union(siteOrigins).ToArray();
                           }
 
                           policy.WithOrigins(allowedOrigins)
@@ -592,7 +578,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "GGHub API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pause Menu API v1");
         c.RoutePrefix = "swagger";
     });
 }
@@ -619,7 +605,7 @@ app.MapControllers();
 
 app.MapHub<ChatHub>("/hubs/chat");
 
-app.MapGet("/", () => "GGHub API is running!").AllowAnonymous();
+app.MapGet("/", () => "Pause Menu API is running!").AllowAnonymous();
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow })).AllowAnonymous();
 
 app.Run();

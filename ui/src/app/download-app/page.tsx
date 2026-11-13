@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import DownloadAppClient from "./download-app-client";
 
-const siteUrl = "https://gghub.social";
+const siteUrl = "https://pausemenu.app";
 
 const META = {
     tr: {
-        title: "GGHub'ı indir | App Store ve Google Play'de",
-        description: "GGHub App Store ve Google Play'de yayında. Oyunları keşfet, puanla, listeler oluştur ve oyuncu topluluğuna katıl.",
-        ogAlt: "GGHub mobil uygulaması yayında",
+        title: "Pause Menu'yü indir | App Store ve Google Play'de",
+        description: "Pause Menu App Store ve Google Play'de yayında. Oyunları keşfet, puanla, listeler oluştur ve oyuncu topluluğuna katıl.",
+        ogAlt: "Pause Menu mobil uygulaması yayında",
     },
     en: {
-        title: "Download GGHub | On the App Store and Google Play",
-        description: "GGHub is live on the App Store and Google Play. Discover games, rate what you play, build lists and join the gaming community.",
-        ogAlt: "GGHub mobile app is live",
+        title: "Download Pause Menu | On the App Store and Google Play",
+        description: "Pause Menu is live on the App Store and Google Play. Discover games, rate what you play, build lists and join the gaming community.",
+        ogAlt: "Pause Menu mobile app is live",
     },
 } as const;
 
@@ -51,7 +51,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
         openGraph: {
             type: "website",
             url: `${siteUrl}/download-app`,
-            siteName: "GGHub",
+            siteName: "Pause Menu",
             locale: l === "tr" ? "tr_TR" : "en_US",
             title: m.title,
             description: m.description,

@@ -2,28 +2,28 @@ import { SITE_EMAIL, SITE_URL, SOCIAL_PROFILES } from "@/core/seo/site";
 
 /**
  * llms.txt: yapay zeka asistanlarinin (ChatGPT, Claude, Perplexity, Gemini) siteyi tek dosyadan
- * tanimasi icin ozet. Markdown'dir, insan da okur. Kalabalik olan HTML yerine burada "GGHub nedir,
+ * tanimasi icin ozet. Markdown'dir, insan da okur. Kalabalik olan HTML yerine burada "Pause Menu nedir,
  * ne sunar, hangi sayfalar onemli, uygulama nerede" net cumlelerle verilir; oyun/liste/inceleme
  * sayfalari sitemap uzerinden bulunur. Metin degisince YALNIZ bu dosya guncellenir.
  */
 export const dynamic = "force-static";
 
-const content = `# GGHub
+const content = `# Pause Menu
 
-> GGHub is a free social platform for gamers: discover games, rate and review what you play, build and share game lists, follow a monthly game release calendar and connect with other players. Available on the web (${SITE_URL}), iOS and Android, in English and Turkish. Open source (MIT).
+> Pause Menu is a free social platform for gamers: discover games, rate and review what you play, build and share game lists, follow a monthly game release calendar and connect with other players. Available on the web (${SITE_URL}), iOS and Android, in English and Turkish. Open source (MIT).
 
-> GGHub, oyuncular için ücretsiz bir sosyal platformdur: oyunları keşfet, oynadıklarını puanla ve incele, oyun listeleri oluşturup paylaş, aylık oyun çıkış takvimini takip et ve diğer oyuncularla bağlan. Web (${SITE_URL}), iOS ve Android'de, Türkçe ve İngilizce olarak kullanılabilir. Açık kaynaklıdır (MIT).
+> Pause Menu, oyuncular için ücretsiz bir sosyal platformdur: oyunları keşfet, oynadıklarını puanla ve incele, oyun listeleri oluşturup paylaş, aylık oyun çıkış takvimini takip et ve diğer oyuncularla bağlan. Web (${SITE_URL}), iOS ve Android'de, Türkçe ve İngilizce olarak kullanılabilir. Açık kaynaklıdır (MIT).
 
-## What GGHub is
+## What Pause Menu is
 
-- A gaming community and game discovery site, not a store: GGHub does not sell games. It links to official stores (Steam, PlayStation, Xbox, Nintendo, Epic, GOG and more) on each game page.
+- A gaming community and game discovery site, not a store: Pause Menu does not sell games. It links to official stores (Steam, PlayStation, Xbox, Nintendo, Epic, GOG and more) on each game page.
 - Catalog of tens of thousands of games with release date, platforms, genres, developer, publisher, age rating, screenshots and descriptions in English and Turkish.
-- Four score sources side by side on every game: Metacritic, RAWG community rating, IGDB rating and the GGHub community score (players rate games from 1 to 10).
+- Four score sources side by side on every game: Metacritic, RAWG community rating, IGDB rating and the Pause Menu community score (players rate games from 1 to 10).
 - Player reviews with votes and comments, personal lists (wishlist, favorites, custom lists) with public/followers/private visibility, list ratings and comments.
 - Social layer: follow players, personalized activity feed, posts with polls and images, private messaging, notifications, levels, achievements and a "Gamer DNA" taste profile.
 - Game Calendar (Agenda): games released and upcoming for any month or year.
-- AI Club: clearly labelled AI bot accounts that discuss games publicly; their scores never count in GGHub averages and interacting with them requires adult consent.
-- Data sources: RAWG, IGDB, Metacritic and Steam for catalog data; reviews, lists, scores and posts are created by GGHub users.
+- AI Club: clearly labelled AI bot accounts that discuss games publicly; their scores never count in Pause Menu averages and interacting with them requires adult consent.
+- Data sources: RAWG, IGDB, Metacritic and Steam for catalog data; reviews, lists, scores and posts are created by Pause Menu users.
 
 ## Key pages
 
@@ -50,7 +50,7 @@ Replace "en-US" with "tr" in any path for the Turkish version.
 
 ## Facts for citation
 
-- Name: GGHub (also written "GGHub Social" or "GGHub: Games Community").
+- Name: Pause Menu (also written "PauseMenu" or "Pause Menu: Talk Games").
 - Tagline: "Where gaming lives" / "Oyunun kalbi burada atıyor".
 - Website: ${SITE_URL}
 - Languages: English (en-US) and Turkish (tr).
