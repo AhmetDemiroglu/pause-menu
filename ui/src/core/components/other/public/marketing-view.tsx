@@ -10,7 +10,7 @@ const COLORS = ["text-orange-600 dark:text-orange-400", "text-violet-600 dark:te
 const COPY = {
     "en-US": {
         badge: "Early access",
-        titleLine: "Pause. Talk games.",
+        titleLine: "Press pause. Find your people.",
         subtitle: "A social platform for gamers. Discover games, build lists, rate, and follow the community. All in one place.",
         footer: "© 2026 Pause Menu. Built for gamers.",
         features: [
@@ -24,7 +24,7 @@ const COPY = {
     },
     tr: {
         badge: "Erken erişim",
-        titleLine: "Oyuna ara ver, oyunu konuş.",
+        titleLine: "Press pause. Find your people.",
         subtitle: "Oyuncular için sosyal platform. Oyun keşfet, listeler oluştur, puanla ve topluluğu takip et. Hepsi tek yerde.",
         footer: "© 2026 Pause Menu. Oyuncular için üretildi.",
         features: [

@@ -46,7 +46,7 @@ export const enUSMessages = {
         childSafetyDescription: "Pause Menu's zero-tolerance policy against child exploitation, the measures we take and how to report concerns.",
         dataDeletionTitle: "Delete Your Account and Data",
         dataDeletionDescription: "How to permanently delete your Pause Menu account and all of your data from the web or the mobile app.",
-        marketingTitle: "Pause Menu: Pause. Talk Games.",
+        marketingTitle: "Pause Menu: Press Pause. Find Your People.",
         marketingDescription: "Discover games, build lists, rate and follow the community. A social platform for gamers, all in one place.",
         loginTitle: "Sign In",
         loginDescription: "Sign in to your Pause Menu account with email, Google or Apple and pick up your lists, reviews and feed.",
@@ -127,7 +127,7 @@ export const enUSMessages = {
         theme: "Theme",
     },
     footer: {
-        tagline: "Pause. Talk games.",
+        tagline: "Press pause. Find your people.",
         version: "Version 2.0.0",
         company: "Company",
         legal: "Legal",

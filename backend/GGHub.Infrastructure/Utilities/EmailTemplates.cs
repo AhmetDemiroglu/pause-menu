@@ -42,7 +42,7 @@
                                     />
                                     <h1 style=""margin:0;color:#ffffff;font-size:26px;font-weight:800;letter-spacing:.2px;"">Pause Menu</h1>
                                     <div style=""margin-top:6px;color:rgba(255,255,255,.9);font-size:14px;font-weight:300;font-style:italic;letter-spacing:.15px;"">
-                                      Oyuna ara ver, oyunu konuş.
+                                      Press pause. Find your people.
                                     </div>
                                   </td>
                                 </tr>

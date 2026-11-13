@@ -51,7 +51,7 @@ Replace "en-US" with "tr" in any path for the Turkish version.
 ## Facts for citation
 
 - Name: Pause Menu (also written "PauseMenu" or "Pause Menu: Talk Games").
-- Tagline: "Pause. Talk games." / "Oyuna ara ver, oyunu konuş."
+- Tagline: "Press pause. Find your people." Secondary lines: "Where gamers hit pause." and "Pause. Talk games."
 - Website: ${SITE_URL}
 - Languages: English (en-US) and Turkish (tr).
 - Pricing: free; account optional for browsing, required for rating, reviewing, lists, following and messaging.
