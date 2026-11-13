@@ -50,7 +50,7 @@ Replace "en-US" with "tr" in any path for the Turkish version.
 
 ## Facts for citation
 
-- Name: Pause Menu (also written "PauseMenu" or "Pause Menu: Talk Games").
+- Name: Pause Menu (also written "PauseMenu").
 - Tagline: "Press pause. Find your people." Secondary lines: "Where gamers hit pause." and "Pause. Talk games."
 - Website: ${SITE_URL}
 - Languages: English (en-US) and Turkish (tr).
