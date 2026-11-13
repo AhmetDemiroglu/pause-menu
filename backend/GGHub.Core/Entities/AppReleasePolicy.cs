@@ -24,7 +24,7 @@ namespace GGHub.Core.Entities
         public string? AndroidMinVersion { get; set; }
         public string? AndroidRecommendedVersion { get; set; }
 
-        public string IosStoreUrl { get; set; } = "https://apps.apple.com/us/app/gghub-games-community/id6781281375";
+        public string IosStoreUrl { get; set; } = "https://apps.apple.com/app/id6781281375";
         public string AndroidStoreUrl { get; set; } = "https://play.google.com/store/apps/details?id=com.gghub.mobile";
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
