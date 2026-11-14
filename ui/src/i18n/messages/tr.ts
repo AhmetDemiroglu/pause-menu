@@ -46,7 +46,7 @@ export const trMessages = {
         childSafetyDescription: "Pause Menu'nün çocuk istismarına karşı sıfır tolerans politikası, önlemleri ve şikayet kanalları.",
         dataDeletionTitle: "Hesap ve Veri Silme",
         dataDeletionDescription: "Pause Menu hesabını ve tüm verilerini web'den veya mobil uygulamadan kalıcı olarak nasıl silersin.",
-        marketingTitle: "Pause Menu: Duraklat'a Bas. Kendi İnsanlarını Bul.",
+        marketingTitle: "Pause Menu: Mola Ver. Ekibini Bul.",
         marketingDescription: "Oyun keşfet, listeler oluştur, puanla ve topluluğu takip et. Oyuncular için sosyal platform, hepsi tek yerde.",
         loginTitle: "Giriş Yap",
         loginDescription: "Pause Menu hesabına e-posta, Google veya Apple ile giriş yap; listelerine, incelemelerine ve akışına devam et.",
@@ -127,7 +127,7 @@ export const trMessages = {
         theme: "Tema",
     },
     footer: {
-        tagline: "Duraklat'a bas. Kendi insanlarını bul.",
+        tagline: "Mola ver. Ekibini bul.",
         version: "Sürüm 2.0.0",
         company: "Şirket",
         legal: "Yasal",

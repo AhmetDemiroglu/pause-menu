@@ -12,8 +12,9 @@ import { APP_STORE_URL, GOOGLE_PLAY_URL } from "@/core/lib/store-links";
 
 // Yalnızca footer'daki dekoratif slogan için. preload:false olmadan next/font bunu <head>'e
 // preload olarak koyuyor ve LCP ile öncelik yarışıyordu; footer ekranın çok altında.
+// latin-ext sart: yoksa Turkce ı/İ/ş/ğ glifleri yedek fonttan gelip bozuk gorunuyor.
 const font = The_Girl_Next_Door({
-    subsets: ["latin"],
+    subsets: ["latin", "latin-ext"],
     weight: ["400"],
     display: "swap",
     preload: false,

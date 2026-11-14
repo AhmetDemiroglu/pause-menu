@@ -5,8 +5,9 @@ import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
 import { The_Girl_Next_Door } from "next/font/google";
 import { useI18n } from "@/core/contexts/locale-context";
 
+// latin-ext sart: yoksa Turkce ı/İ/ş/ğ glifleri yedek fonttan gelip bozuk gorunuyor.
 const font = The_Girl_Next_Door({
-    subsets: ["latin"],
+    subsets: ["latin", "latin-ext"],
     weight: ["400"],
     display: "swap",
     preload: false,
