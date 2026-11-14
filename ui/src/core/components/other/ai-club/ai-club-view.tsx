@@ -18,15 +18,16 @@ import { aiBotAvatarUrl, aiBotUsernames } from "@/core/lib/ai-bots";
 import { getImageUrl } from "@/core/lib/get-image-url";
 import { cn } from "@/core/lib/utils";
 import type { AiClubConversation, AiConversationKind } from "@/models/ai/ai-club.model";
+import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
 
 const PAGE_SIZE = 6;
 
 const KIND_STYLE: Record<AiConversationKind, { emoji: string; className: string }> = {
-    debate: { emoji: "🥊", className: "bg-rose-500/15 text-rose-300 ring-rose-500/30" },
-    plan: { emoji: "🗳️", className: "bg-amber-500/15 text-amber-300 ring-amber-500/30" },
-    askExpert: { emoji: "🧠", className: "bg-orange-500/15 text-orange-300 ring-orange-500/30" },
-    newRelease: { emoji: "🆕", className: "bg-lime-500/15 text-lime-300 ring-lime-500/30" },
-    post: { emoji: "💬", className: "bg-violet-500/15 text-violet-300 ring-violet-500/30" },
+    debate: { emoji: "🥊", className: "bg-rose-500/15 text-rose-600 ring-rose-500/30 dark:text-rose-300" },
+    plan: { emoji: "🗳️", className: "bg-amber-500/15 text-amber-700 ring-amber-500/30 dark:text-amber-300" },
+    askExpert: { emoji: "🧠", className: "bg-fuchsia-500/15 text-fuchsia-600 ring-fuchsia-500/30 dark:text-fuchsia-300" },
+    newRelease: { emoji: "🆕", className: "bg-orange-500/15 text-orange-600 ring-orange-500/30 dark:text-orange-300" },
+    post: { emoji: "💬", className: "bg-pink-500/15 text-pink-600 ring-pink-500/30 dark:text-pink-300" },
 };
 
 /**
@@ -62,19 +63,16 @@ export function AiClubView() {
     return (
         <div className="mx-auto max-w-5xl space-y-10 pb-16">
             {/* ---------------------------------------------------------------- baslik */}
-            <section className="relative overflow-hidden rounded-3xl ring-1 ring-white/10">
+            <section className="relative overflow-hidden rounded-3xl ring-1 ring-black/5 dark:ring-white/10">
                 <AiClubBackground />
                 <div className="relative z-10 grid gap-6 p-6 md:grid-cols-[1fr_360px] md:p-10">
                     <div className="flex flex-col justify-center gap-3">
-                        <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-yellow-200 ring-1 ring-white/20">
-                            <span aria-hidden>🤖</span>
-                            {t("aiClub.eyebrow")}
-                        </span>
+                        <BrandScriptLogo className="h-10 self-start md:h-12" />
                         <h1 className="text-3xl font-black tracking-tight md:text-5xl">
-                            <span className="bg-gradient-to-r from-yellow-200 via-pink-200 to-orange-200 bg-clip-text text-transparent">{t("aiClub.title")}</span>{" "}
+                            <span className="bg-gradient-to-r from-[#FF2E88] via-[#FF5A4E] to-[#FF8A1F] bg-clip-text text-transparent">{t("aiClub.title")}</span>{" "}
                             <span aria-hidden>{t("aiClub.titleEmoji")}</span>
                         </h1>
-                        <p className="max-w-lg text-sm text-white/80 md:text-base">{t("aiClub.subtitle")}</p>
+                        <p className="max-w-lg text-sm text-[#14101F]/70 md:text-base dark:text-white/80">{t("aiClub.subtitle")}</p>
                         <div className="flex flex-wrap gap-2 pt-1">
                             <StatChip emoji="🤖" value={club?.agents.length} label={t("aiClub.statBots")} />
                             <StatChip emoji="🟢" value={club?.activeConversations} label={t("aiClub.statLive")} />
@@ -106,7 +104,7 @@ export function AiClubView() {
                     {[
                         { emoji: "⭐", key: "what1", color: "from-amber-500/25 to-amber-500/5 ring-amber-500/30" },
                         { emoji: "📰", key: "what2", color: "from-orange-500/25 to-orange-500/5 ring-orange-500/30" },
-                        { emoji: "🗳️", key: "what3", color: "from-lime-500/25 to-lime-500/5 ring-lime-500/30" },
+                        { emoji: "🗳️", key: "what3", color: "from-fuchsia-500/25 to-fuchsia-500/5 ring-fuchsia-500/30" },
                         { emoji: "🥊", key: "what4", color: "from-rose-500/25 to-rose-500/5 ring-rose-500/30" },
                     ].map((item) => (
                         <div key={item.key} className={cn("rounded-2xl bg-gradient-to-br p-4 ring-1", item.color)}>
@@ -126,7 +124,7 @@ export function AiClubView() {
                     <ol className="grid grid-cols-1 gap-2 pt-2 sm:grid-cols-3">
                         {[1, 2, 3].map((n) => (
                             <li key={n} className="flex items-start gap-2 rounded-xl bg-muted/50 p-3">
-                                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-[11px] font-bold text-white">{n}</span>
+                                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#FF2E88] text-[11px] font-bold text-white">{n}</span>
                                 <span className="text-xs">
                                     <span className="block font-semibold">{t(`aiClub.flow${n}Title`)}</span>
                                     <span className="text-muted-foreground">{t(`aiClub.flow${n}Text`)}</span>
@@ -148,7 +146,7 @@ export function AiClubView() {
                 <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
                     {["🏷️", "📊", "🔞", "✋", "🚫", "🎭"].map((emoji, index) => (
                         <div key={emoji} className="flex items-start gap-3 rounded-2xl border border-border/60 bg-card/40 p-3.5">
-                            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-violet-500/15 text-lg" aria-hidden>
+                            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#FF2E88]/15 text-lg" aria-hidden>
                                 {emoji}
                             </span>
                             <span className="text-sm">
@@ -178,7 +176,7 @@ export function AiClubView() {
                             <Link
                                 key={agent.user.id}
                                 href={localizeHref(`/profiles/${agent.user.username}`)}
-                                className="group rounded-2xl border border-border/60 bg-card/40 p-4 transition-all hover:-translate-y-0.5 hover:border-violet-500/50 hover:bg-card"
+                                className="group rounded-2xl border border-border/60 bg-card/40 p-4 transition-all hover:-translate-y-0.5 hover:border-[#FF2E88]/50 hover:bg-card"
                             >
                                 <div className="flex items-center gap-3">
                                     <img
@@ -273,10 +271,10 @@ function SectionTitle({ emoji, title }: { emoji: string; title: string }) {
 
 function StatChip({ emoji, value, label }: { emoji: string; value?: number; label: string }) {
     return (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-black/30 px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/15 backdrop-blur-sm">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 text-xs font-semibold text-[#14101F] ring-1 ring-black/10 backdrop-blur-sm dark:bg-black/30 dark:text-white dark:ring-white/15">
             <span aria-hidden>{emoji}</span>
             <span className="tabular-nums">{value ?? "-"}</span>
-            <span className="text-white/70">{label}</span>
+            <span className="text-[#14101F]/60 dark:text-white/70">{label}</span>
         </span>
     );
 }
@@ -339,7 +337,7 @@ function JoinSection() {
     const reason = profile?.aiInteractionBlockReason ?? null;
 
     return (
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600/30 via-fuchsia-500/20 to-orange-500/20 p-6 ring-1 ring-violet-500/30 md:p-8">
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#7A1FD0]/20 via-[#FF2E88]/15 to-[#FF8A1F]/20 p-6 ring-1 ring-[#FF2E88]/30 md:p-8">
             <SectionTitle emoji="🚪" title={t("aiClub.joinTitle")} />
             <p className="mt-2 text-sm text-muted-foreground">{t("aiClub.joinText")}</p>
 
@@ -357,7 +355,7 @@ function JoinSection() {
                                 <span className="text-xs text-muted-foreground">{t(`aiClub.${step.key}Text`)}</span>
                             </span>
                         </div>
-                        {index < 2 ? <ArrowRight className="hidden h-5 w-5 shrink-0 text-violet-400 sm:block" aria-hidden /> : null}
+                        {index < 2 ? <ArrowRight className="hidden h-5 w-5 shrink-0 text-[#FF2E88] sm:block" aria-hidden /> : null}
                     </div>
                 ))}
             </div>
@@ -375,7 +373,7 @@ function JoinSection() {
                     <span className="text-sm text-muted-foreground">{t("ai.underage")}</span>
                 ) : (
                     <Button
-                        className="cursor-pointer bg-gradient-to-r from-yellow-300 to-pink-400 font-bold text-black hover:opacity-90"
+                        className="cursor-pointer bg-gradient-to-r from-[#FF2E88] to-[#FF8A1F] font-bold text-white hover:opacity-90"
                         onClick={() => void open(reason === "needsBirthDate" ? "needsBirthDate" : "consentRequired")}
                     >
                         {t("aiClub.joinCta")}
@@ -412,7 +410,7 @@ function ConversationCard({ item }: { item: AiClubConversation }) {
             </div>
             <PostCard post={item.root} className="border-0 bg-transparent" />
             {item.replies.length > 0 ? (
-                <div className="ml-6 space-y-0 border-l-2 border-violet-500/30 md:ml-10">
+                <div className="ml-6 space-y-0 border-l-2 border-[#FF2E88]/30 md:ml-10">
                     {hidden > 0 ? (
                         <Link href={localizeHref(`/posts/${item.root.id}`)} className="block px-4 py-2 text-xs font-medium text-primary hover:underline">
                             {t("aiClub.moreReplies", { count: hidden })}

@@ -3,6 +3,7 @@
 import { Gamepad2, ListChecks, Star, Users, MessageCircle, Trophy, Sparkles } from "lucide-react";
 import { AppDownloadCTA } from "@core/components/other/public/app-cta";
 import { useCurrentLocale } from "@/core/contexts/locale-context";
+import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
 
 const ICONS = [Gamepad2, ListChecks, Star, Users, MessageCircle, Trophy];
 const COLORS = ["text-orange-600 dark:text-orange-400", "text-violet-600 dark:text-violet-400", "text-amber-600 dark:text-amber-400", "text-pink-600 dark:text-pink-400", "text-emerald-600 dark:text-emerald-400", "text-fuchsia-600 dark:text-fuchsia-400"];
@@ -45,21 +46,21 @@ export function MarketingView() {
     return (
         <div className="relative w-full p-5">
             {/* Hero */}
-            <section className="relative overflow-hidden rounded-3xl border border-border/50 bg-card/60 px-6 py-16 text-center md:py-20">
+            <section className="relative overflow-hidden rounded-3xl bg-[#FFF6EE] px-6 py-16 text-center ring-1 ring-black/5 md:py-20 dark:bg-[#14101F] dark:ring-white/10">
                 <div
                     aria-hidden
-                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,138,31,0.12),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(139,92,246,0.12),_transparent_60%)]"
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,46,136,0.18),_transparent_55%),radial-gradient(circle_at_bottom_right,_rgba(255,138,31,0.2),_transparent_60%)]"
                 />
-                <div className="relative">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-background/40 px-3 py-1 text-xs uppercase tracking-[0.25em] text-muted-foreground">
+                <div className="relative flex flex-col items-center">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 text-xs uppercase tracking-[0.25em] text-[#14101F]/70 ring-1 ring-black/10 dark:bg-white/10 dark:text-white/70 dark:ring-white/15">
                         <Sparkles className="h-3.5 w-3.5 text-orange-700 dark:text-orange-300" /> {t.badge}
                     </span>
-                    <h1 className="mt-5 text-balance text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
-                        <span className="bg-gradient-to-r from-[#FF2E88] via-[#FF5A4E] to-[#FF8A1F] bg-clip-text text-transparent">Pause Menu</span>
-                        <br />
-                        {t.titleLine}
+                    <h1 className="mt-6">
+                        <span className="sr-only">Pause Menu</span>
+                        <BrandScriptLogo priority className="mx-auto h-16 md:h-24" />
                     </h1>
-                    <p className="mx-auto mt-5 max-w-2xl text-pretty text-base text-muted-foreground md:text-lg">{t.subtitle}</p>
+                    <p className="mt-6 text-balance text-2xl font-extrabold tracking-tight text-[#14101F] md:text-4xl dark:text-white">{t.titleLine}</p>
+                    <p className="mx-auto mt-5 max-w-2xl text-pretty text-base text-[#14101F]/70 md:text-lg dark:text-white/70">{t.subtitle}</p>
                 </div>
             </section>
 

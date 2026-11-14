@@ -17,6 +17,7 @@ import { PlatformIcons } from "@/core/components/other/platform-icons";
 import { IgdbLogo } from "@/core/components/other/igdb-logo";
 import { StoreButtons } from "@/core/components/other/public/store-buttons";
 import logoSrc from "@core/assets/brand-mark.png";
+import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
 import AiClubPromoSlide from "./ai-club-promo-slide";
 import metacriticLogoSrc from "@core/assets/metacritic_logo.png";
 import rawgLogoSrc from "@core/assets/rawg_logo.png";
@@ -158,30 +159,27 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
 
                     {/* Sabit 2. slayt: Oyun Gündemi. Bu ayın yeni çıkanları + sayfaya CTA. */}
                     <CarouselItem key="agenda-promo">
-                        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#0D0915] ring-1 ring-white/10 md:h-[420px]">
-                            <div className="absolute inset-0 z-0 bg-gradient-to-br from-amber-500/15 via-[#0D0915] to-rose-600/20" />
+                        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#FFF6EE] ring-1 ring-black/5 md:h-[420px] dark:bg-[#14101F] dark:ring-white/10">
+                            <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#FF8A1F]/15 via-transparent to-[#FF2E88]/15" />
                             <div
                                 aria-hidden
                                 className="absolute inset-0 z-0 opacity-[0.35]"
                                 style={{
                                     backgroundImage:
-                                        "linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)",
+                                        "linear-gradient(var(--promo-grid) 1px, transparent 1px), linear-gradient(90deg, var(--promo-grid) 1px, transparent 1px)",
                                     backgroundSize: "56px 56px",
                                     maskImage: "radial-gradient(ellipse 90% 70% at 30% 40%, black 30%, transparent 75%)",
                                 }}
                             />
-                            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 z-0 h-80 w-80 rounded-full bg-amber-500/10 blur-3xl" />
-                            <div aria-hidden className="pointer-events-none absolute -bottom-28 right-1/4 z-0 h-96 w-96 rounded-full bg-rose-600/15 blur-3xl" />
+                            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 z-0 h-80 w-80 rounded-full bg-[#FF8A1F]/20 blur-3xl" />
+                            <div aria-hidden className="pointer-events-none absolute -bottom-28 right-1/4 z-0 h-96 w-96 rounded-full bg-[#FF2E88]/20 blur-3xl" />
 
                             <div className="relative z-10 flex h-full flex-col justify-center gap-3 px-5 pb-12 pt-5 md:max-w-[55%] md:gap-4 md:p-12 md:pb-16 lg:px-16">
-                                <div className="flex items-center gap-2 text-amber-300/90">
-                                    <CalendarDays className="h-5 w-5 md:h-6 md:w-6" />
-                                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">Pause Menu</span>
-                                </div>
-                                <h2 className="text-2xl font-black tracking-tight text-white drop-shadow-xl md:text-3xl lg:text-[2.6rem] lg:leading-[1.05]">
+                                <BrandScriptLogo className="h-9 self-start md:h-11" />
+                                <h2 className="text-2xl font-black tracking-tight text-[#14101F] md:text-3xl lg:text-[2.6rem] lg:leading-[1.05] dark:text-white dark:drop-shadow-xl">
                                     {t("home.agendaPromoTitle")}
                                 </h2>
-                                <p className="line-clamp-2 max-w-md text-sm text-white/65 md:line-clamp-none md:text-base">{t("home.agendaPromoSubtitle")}</p>
+                                <p className="line-clamp-2 max-w-md text-sm text-[#14101F]/65 md:line-clamp-none md:text-base dark:text-white/65">{t("home.agendaPromoSubtitle")}</p>
                                 <div className="pt-1.5">
                                     <Link href={buildLocalizedPathname("/agenda", locale)} className="inline-flex">
                                         <Button size="lg" className="text-md cursor-pointer gap-2 font-semibold shadow-[0_8px_30px_-8px_rgba(0,0,0,0.6)] transition-transform hover:scale-[1.03]">
@@ -211,7 +209,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                                     style={{ zIndex: 10 + index }}
                                                 >
                                                     <div style={{ transform: `rotate(${rotation}deg) translateY(${lift}px)` }}>
-                                                        <div className="w-[118px] overflow-hidden rounded-xl bg-zinc-900 shadow-[0_18px_45px_-12px_rgba(0,0,0,0.9)] ring-1 ring-white/15 transition-all duration-300 group-hover/poster:-translate-y-3 group-hover/poster:shadow-[0_26px_60px_-12px_rgba(0,0,0,0.95)] group-hover/poster:ring-white/40 lg:w-[148px]">
+                                                        <div className="w-[118px] overflow-hidden rounded-xl bg-zinc-900 shadow-[0_18px_45px_-14px_rgba(20,16,31,0.45)] ring-1 ring-black/10 dark:shadow-[0_18px_45px_-12px_rgba(0,0,0,0.9)] dark:ring-white/15 transition-all duration-300 group-hover/poster:-translate-y-3 group-hover/poster:shadow-[0_26px_60px_-12px_rgba(0,0,0,0.95)] group-hover/poster:ring-white/40 lg:w-[148px]">
                                                             <div className="relative aspect-[3/4]">
                                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                                                 <img
@@ -225,7 +223,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                                                     <p className="line-clamp-2 text-[11px] font-bold leading-tight text-white drop-shadow lg:text-xs">{game.name}</p>
                                                                     <span
                                                                         className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-semibold lg:text-[10px] ${
-                                                                            isUpcoming ? "bg-amber-400/90 text-black" : "bg-emerald-400/90 text-black"
+                                                                            isUpcoming ? "bg-[#FF8A1F] text-white" : "bg-[#FF2E88] text-white"
                                                                         }`}
                                                                     >
                                                                         <CalendarDays className="h-2.5 w-2.5" />
@@ -247,34 +245,28 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                     {/* Sabit 3. slayt: mobil uygulama. Mağaza düğmeleri masaüstünde QR'lı indirme
                         penceresini açar, telefonda doğrudan mağazaya gider. */}
                     <CarouselItem key="app-promo">
-                        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#0D0915] ring-1 ring-white/10 md:h-[420px]">
-                            <div className="absolute inset-0 z-0 bg-gradient-to-br from-orange-500/20 via-[#0D0915] to-violet-600/25" />
+                        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#FFF6EE] ring-1 ring-black/5 md:h-[420px] dark:bg-[#14101F] dark:ring-white/10">
+                            <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#FF2E88]/15 via-transparent to-[#7A1FD0]/15" />
                             <div
                                 aria-hidden
                                 className="absolute inset-0 z-0 opacity-[0.35]"
                                 style={{
                                     backgroundImage:
-                                        "linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)",
+                                        "linear-gradient(var(--promo-grid) 1px, transparent 1px), linear-gradient(90deg, var(--promo-grid) 1px, transparent 1px)",
                                     backgroundSize: "56px 56px",
                                     maskImage: "radial-gradient(ellipse 90% 70% at 30% 40%, black 30%, transparent 75%)",
                                 }}
                             />
-                            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 z-0 h-80 w-80 rounded-full bg-orange-500/15 blur-3xl" />
-                            <div aria-hidden className="pointer-events-none absolute -bottom-28 right-1/4 z-0 h-96 w-96 rounded-full bg-violet-600/20 blur-3xl" />
+                            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 z-0 h-80 w-80 rounded-full bg-[#FF8A1F]/20 blur-3xl" />
+                            <div aria-hidden className="pointer-events-none absolute -bottom-28 right-1/4 z-0 h-96 w-96 rounded-full bg-[#7A1FD0]/15 blur-3xl dark:bg-[#5B0FB0]/35" />
 
                             {/* Mobilde slayt sabit 340px: dolgu ve boşluklar dar tutulmazsa
                                 içerik taşıp overflow-hidden tarafından kırpılıyor. md: ve
                                 üstünde eski ferah düzen aynen korunuyor. */}
                             <div className="relative z-10 flex h-full max-w-[620px] flex-col items-center justify-center gap-2.5 px-4 pb-12 pt-5 text-center md:max-w-[58%] md:items-start md:gap-4 md:p-12 md:pb-16 md:text-left lg:px-16">
-                                <Image
-                                    src={logoSrc}
-                                    alt={t("common.appName")}
-                                    width={150}
-                                    height={42}
-                                    className="h-7 w-auto drop-shadow-[0_2px_12px_rgba(0,0,0,0.55)] md:h-9"
-                                />
-                                <h2 className="text-2xl font-black tracking-tight text-white drop-shadow-xl md:text-3xl lg:text-[2.6rem] lg:leading-[1.05]">{t("home.promoTitle")}</h2>
-                                <p className="line-clamp-2 max-w-md text-sm text-white/65 md:line-clamp-none md:text-base">{t("home.promoSubtitle")}</p>
+                                <BrandScriptLogo className="h-9 self-center md:h-11 md:self-start" />
+                                <h2 className="text-2xl font-black tracking-tight text-[#14101F] md:text-3xl lg:text-[2.6rem] lg:leading-[1.05] dark:text-white dark:drop-shadow-xl">{t("home.promoTitle")}</h2>
+                                <p className="line-clamp-2 max-w-md text-sm text-[#14101F]/65 md:line-clamp-none md:text-base dark:text-white/65">{t("home.promoSubtitle")}</p>
                                 <div className="w-full pt-1 sm:max-w-sm md:pt-2">
                                     {/* Butonlar dar ekranda da yan yana: alt alta dizilmeleri
                                         slaytın sabit yüksekliğinde ~58px yiyip taşmaya yol açıyordu. */}
@@ -350,7 +342,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                                     <ScoreBadge score={String(Math.round(game.igdbRating))} logoAlt="IGDB" accentClassName="text-indigo-300" />
                                                 ) : null}
                                                 {game.gghubRating > 0 ? (
-                                                    <ScoreBadge score={game.gghubRating.toFixed(1)} logo={logoSrc} logoAlt="Pause Menu" accentClassName="text-violet-400" />
+                                                    <ScoreBadge score={game.gghubRating.toFixed(1)} logo={logoSrc} logoAlt="Pause Menu" accentClassName="text-pink-400" />
                                                 ) : null}
 
                                                 <span className="rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-xs font-medium text-white/70 backdrop-blur-md">
