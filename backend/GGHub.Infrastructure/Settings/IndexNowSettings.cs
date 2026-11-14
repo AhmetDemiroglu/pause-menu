@@ -3,7 +3,7 @@ namespace GGHub.Infrastructure.Settings
     /// <summary>
     /// IndexNow bildirim job'u ayarlari. Bolum ~/.gghub-bot/appsettings.json icinde hic yoksa
     /// buradaki varsayilanlar gecerlidir. Anahtar gizli DEGIL: IndexNow geregi sitede
-    /// https://gghub.social/{Key}.txt olarak yayinda (ui/public).
+    /// https://pausemenu.app/{Key}.txt olarak yayinda (ui/public).
     /// </summary>
     public class IndexNowSettings
     {
@@ -11,7 +11,7 @@ namespace GGHub.Infrastructure.Settings
 
         public int RunIntervalHours { get; set; } = 6;
 
-        public string Host { get; set; } = "gghub.social";
+        public string Host { get; set; } = "pausemenu.app";
 
         public string Key { get; set; } = "0d9dcdee6eca4a47b9c5ade81124cbc0";
 

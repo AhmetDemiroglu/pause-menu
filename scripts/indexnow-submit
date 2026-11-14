@@ -22,7 +22,7 @@ import sys
 import urllib.error
 import urllib.request
 
-HOST = "gghub.social"
+HOST = "pausemenu.app"
 SITE = f"https://{HOST}"
 KEY = "0d9dcdee6eca4a47b9c5ade81124cbc0"
 KEY_LOCATION = f"{SITE}/{KEY}.txt"

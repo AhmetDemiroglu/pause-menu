@@ -15,7 +15,7 @@
 #                                             # + eski @fake.gghub.social hesaplari ve
 #                                             #   TUM icerikleri (inceleme, liste, yorum,
 #                                             #   oy, mesaj, takip). GERI ALINAMAZ.
-#   scripts/seed-demo --token <JWT> --api https://api.gghub.social
+#   scripts/seed-demo --token <JWT> --api https://api.pausemenu.app
 #
 # Token: Admin rolune sahip bir hesapla giris yapip access token'i kullan.
 

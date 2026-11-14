@@ -4,8 +4,8 @@
     {
         private const string LogoUrl = "https://assets.pausemenu.app/brand/email-logo.png";
 
-        private const string BrandStart = "#00E5FF";
-        private const string BrandEnd = "#7C4DFF";
+        private const string BrandStart = "#FF8A1F";
+        private const string BrandEnd = "#C2187A";
 
         private static string GetBaseTemplate(string content)
         {
@@ -61,14 +61,14 @@
                                             Bu e-posta <strong>Pause Menu</strong> tarafından gönderilmiştir.
                                         </p>
                                         <p style='margin: 0; color: #9ca3af; font-size: 12px; text-align: center;'>
-                                            © 2025 Pause Menu. Tüm hakları saklıdır.
+                                            © {DateTime.UtcNow.Year} Pause Menu. Tüm hakları saklıdır.
                                         </p>
                                         <p style='margin: 16px 0 0; text-align:center;'>
-                                            <a href='https://gghub.social' style='color: {BrandEnd}; text-decoration: none; font-size: 13px;'>Ana Sayfa</a>
+                                            <a href='https://pausemenu.app' style='color: {BrandEnd}; text-decoration: none; font-size: 13px;'>Ana Sayfa</a>
                                             <span style='color: #d1d5db; margin: 0 10px;'>|</span>
-                                            <a href='https://gghub.social/about' style='color: {BrandEnd}; text-decoration: none; font-size: 13px;'>Hakkımızda</a>
+                                            <a href='https://pausemenu.app/about' style='color: {BrandEnd}; text-decoration: none; font-size: 13px;'>Hakkımızda</a>
                                             <span style='color: #d1d5db; margin: 0 10px;'>|</span>
-                                            <a href='https://gghub.social/terms' style='color: {BrandEnd}; text-decoration: none; font-size: 13px;'>Kullanım Şartları</a>
+                                            <a href='https://pausemenu.app/terms' style='color: {BrandEnd}; text-decoration: none; font-size: 13px;'>Kullanım Şartları</a>
                                         </p>
                                     </td>
                                 </tr>
@@ -179,7 +179,7 @@
                     <ul style='margin: 0; padding-left: 20px; color: #7f1d1d; font-size: 13px;'>
                         <li>Hesabının güvenliği tehlikede olabilir</li>
                         <li>Hemen şifreni değiştir</li>
-                        <li>Bizimle iletişime geç: support@gghub.social</li>
+                        <li>Bizimle iletişime geç: info@pausemenu.app</li>
                     </ul>
                 </div>
                 <p style='margin: 30px 0 0 0; color: #6b7280; font-size: 14px; line-height: 1.6;'>
@@ -240,7 +240,7 @@
                     {cta}
                   </a>
                 </div>
-                <div style='margin: 30px 0; padding: 16px; background-color: #f5f3ff; border-left: 4px solid {BrandEnd}; border-radius: 4px;'>
+                <div style='margin: 30px 0; padding: 16px; background-color: #fff1f7; border-left: 4px solid {BrandEnd}; border-radius: 4px;'>
                     <p style='margin: 0; color: #4c1d95; font-size: 14px;'>
                         {wish}
                     </p>

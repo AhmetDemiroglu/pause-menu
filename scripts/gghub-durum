@@ -18,17 +18,17 @@ proxied() {
 
 echo "GGHub durum  $(date '+%Y-%m-%d %H:%M')"
 echo "DNS"
-info "gghub.social" "$(proxied gghub.social)"
-info "api.gghub.social" "$(proxied api.gghub.social)"
-info "www.gghub.social" "$(proxied www.gghub.social)"
+info "pausemenu.app" "$(proxied pausemenu.app)"
+info "api.pausemenu.app" "$(proxied api.pausemenu.app)"
+info "www.pausemenu.app" "$(proxied www.pausemenu.app)"
 
 echo "Canli cevaplar"
-web_code=$(curl -s -m 15 -o /tmp/.gghub-durum.html -w '%{http_code}' https://gghub.social/tr)
+web_code=$(curl -s -m 15 -o /tmp/.gghub-durum.html -w '%{http_code}' https://pausemenu.app/tr)
 if grep -q 'Bakımdayız\|under maintenance' /tmp/.gghub-durum.html 2>/dev/null; then web="BAKIM"; else web="ACIK"; fi
 [ "$web_code" = "200" ] && ok "web" "$web_code $web" || info "web" "$web_code $web"
 rm -f /tmp/.gghub-durum.html
 
-api_status=$(curl -s -m 15 "https://api.gghub.social$CHECK" | sed -n 's/.*"status":"\([a-z]*\)".*/\1/p')
+api_status=$(curl -s -m 15 "https://api.pausemenu.app$CHECK" | sed -n 's/.*"status":"\([a-z]*\)".*/\1/p')
 case "$api_status" in
   ok) ok "mobil kapi" "ok (uygulama normal acilir)";;
   maintenance) info "mobil kapi" "maintenance (bakim ekrani)";;
@@ -38,7 +38,7 @@ esac
 be=$(curl -s -m 15 "$BACKEND_DIRECT$CHECK" | sed -n 's/.*"status":"\([a-z]*\)".*/\1/p')
 case "$be" in ok|maintenance|recommended|required) ok "backend (Railway)" "calisiyor ($be)";; *) info "backend (Railway)" "kapali (Railway: ${be:-cevap yok})";; esac
 
-www=$(curl -s -m 15 -o /dev/null -w '%{http_code} %{redirect_url}' https://www.gghub.social/)
+www=$(curl -s -m 15 -o /dev/null -w '%{http_code} %{redirect_url}' https://www.pausemenu.app/)
 info "www" "$www"
 
 echo "Ozet"
