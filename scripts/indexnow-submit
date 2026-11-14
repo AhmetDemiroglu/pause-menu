@@ -28,7 +28,7 @@ KEY = "0d9dcdee6eca4a47b9c5ade81124cbc0"
 KEY_LOCATION = f"{SITE}/{KEY}.txt"
 ENDPOINT = "https://api.indexnow.org/indexnow"
 BATCH = 10000  # IndexNow tek istekte en fazla 10.000 URL kabul ediyor.
-UA = "GGHub-IndexNow/1.0"
+UA = "PauseMenu-IndexNow/1.0"
 
 
 def fetch(url: str) -> str:
