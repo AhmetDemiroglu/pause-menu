@@ -10,8 +10,11 @@ Yedek sloganlar: "Where gamers hit pause." ve "Pause. Talk games."
 | Alan | Değer | Sınır |
 |---|---|---|
 | App Store adı | `Pause Menu` | 30 |
-| App Store alt başlık (TR ve EN) | `Press pause. Find your people.` | 30 |
-| Google Play uygulama adı | `Pause Menu: Find Your People` | 30 |
+| App Store adı (TR) | `Pause Menu: Oyun Topluluğu` | 30 |
+| App Store alt başlık (EN) | `Press pause. Find your people.` | 30 |
+| App Store alt başlık (TR) | `Mola ver. Ekibini bul.` | 30 |
+| Google Play adı (EN) | `Pause Menu: Find Your People` | 30 |
+| Google Play adı (TR) | `Pause Menu: Oyun Topluluğu` | 30 |
 | Destek e-postası | `info@pausemenu.app` | |
 | Pazarlama URL | `https://pausemenu.app` | |
 | Destek URL | `https://pausemenu.app/about` | |
@@ -23,7 +26,7 @@ Yedek sloganlar: "Where gamers hit pause." ve "Pause. Talk games."
 ## 1. App Store açıklaması (Türkçe)
 
 ```text
-Press pause. Find your people.
+Mola ver. Ekibini bul.
 
 Pause Menu, oyuna ara verdiğinde uğradığın sosyal alan. Oynadığın oyunları puanla, listelerini oluştur, yeni çıkışları takip et ve seninle aynı zevkteki oyuncularla tanış.
 
@@ -104,7 +107,7 @@ Available in English and Turkish. Sign in with email, Google or Apple.
 
 TR:
 ```text
-Yeni adımız Pause Menu. Aynı topluluk, yeni görünüm: oyunları puanla, listele, konuş. Press pause. Find your people.
+Yeni adımız Pause Menu. Aynı topluluk, yeni görünüm: oyunları puanla, listele, konuş. Mola ver. Ekibini bul.
 ```
 
 EN:
@@ -128,7 +131,7 @@ We are now Pause Menu! New logo and a new sunset theme. Your account, lists and 
 
 TR:
 ```text
-Press pause. Find your people. Oyunları puanla, listele, konuş.
+Mola ver. Ekibini bul. Oyunları puanla, listele, konuş.
 ```
 
 EN:
@@ -193,7 +196,7 @@ Privacy Policy: https://pausemenu.app/privacy
 |---|---|---|
 | App Store alt başlık | 30 | 30 |
 | Play uygulama adı | 28 | 30 |
-| Promo TR | 116 | 170 |
+| Promo TR | 108 | 170 |
 | Promo EN | 125 | 170 |
-| Play kısa TR | 63 | 80 |
+| Play kısa TR | 55 | 80 |
 | Play kısa EN | 57 | 80 |
