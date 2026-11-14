@@ -14,6 +14,7 @@ import { Input } from "@/core/components/ui/input";
 import { useDebounce } from "@/core/hooks/use-debounce";
 import { PlatformIcons } from "@/core/components/other/platform-icons";
 import { IgdbLogo } from "@/core/components/other/igdb-logo";
+import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
 import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { buildLocalizedPathname } from "@/i18n/config";
 import { getGameImageUrl } from "@/core/lib/get-image-url";
@@ -310,10 +311,7 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
 
                 <div className="relative flex flex-col gap-5 p-6 md:flex-row md:items-end md:justify-between md:p-8">
                     <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-amber-300/90">
-                            <CalendarDays className="h-5 w-5" />
-                            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">Pause Menu</span>
-                        </div>
+                        <BrandScriptLogo tone="dark" className="h-9 md:h-10" />
                         <h1 className="text-3xl font-black tracking-tight text-white md:text-4xl">{t("agenda.title")}</h1>
                         <p className="max-w-2xl text-sm text-white/60">{t("agenda.subtitle")}</p>
                         {data ? (

@@ -24,7 +24,7 @@ const COPY = {
     },
     tr: {
         badge: "Erken erişim",
-        titleLine: "Press pause. Find your people.",
+        titleLine: "Duraklat'a bas. Kendi insanlarını bul.",
         subtitle: "Oyuncular için sosyal platform. Oyun keşfet, listeler oluştur, puanla ve topluluğu takip et. Hepsi tek yerde.",
         footer: "© 2026 Pause Menu. Oyuncular için üretildi.",
         features: [
