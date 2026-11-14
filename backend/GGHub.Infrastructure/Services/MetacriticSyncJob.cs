@@ -23,6 +23,14 @@ namespace GGHub.Infrastructure.Services
         private static readonly TimeSpan NoResultsRetryInterval = TimeSpan.FromDays(180);
         private static readonly TimeSpan TransientRetryInterval = TimeSpan.FromMinutes(30);
 
+        // Yeni cikan oyun: elestiriler cikistan sonraki haftalarda gelir. Cikis gunu "puan yok"
+        // donen oyun eskiden 180 gun bekliyordu; puani gelen oyunun puani da hic tazelenmiyordu
+        // (14 Kas 2026 olcumu: Witcher 3 Remastered katalog 94 / Metacritic 92, Vampire Crawlers 50 / 82).
+        private static readonly TimeSpan RecentWindow = TimeSpan.FromDays(120);
+        private static readonly TimeSpan RecentRetryInterval = TimeSpan.FromDays(3);
+        private static readonly TimeSpan RecentRefreshInterval = TimeSpan.FromDays(7);
+        private const int RefreshPerBatch = 10;
+
         // Ozet log'un siklik siniri. Ozet tum tabloyu taramak zorunda; dakikada bir degil saatte bir.
         private static readonly TimeSpan SnapshotInterval = TimeSpan.FromHours(1);
         private DateTime _lastSnapshotAt = DateTime.MinValue;
@@ -106,6 +114,10 @@ namespace GGHub.Infrastructure.Services
         {
             List<int> gameIdsToSync;
             var now = DateTime.UtcNow;
+            var recentFrom = (now - RecentWindow).ToString("yyyy-MM-dd");
+            var todayIso = now.ToString("yyyy-MM-dd");
+            var noScoreMarker = BuildStatusMarker(MetacriticService.StatusNoScore);
+            var noResultsMarker = BuildStatusMarker(MetacriticService.StatusNoResults);
 
             using (var scope = _serviceProvider.CreateScope())
             {
@@ -115,8 +127,11 @@ namespace GGHub.Infrastructure.Services
                     .Where(g => g.Metacritic == null && !string.IsNullOrEmpty(g.Name))
                     .Where(g =>
                         g.MetacriticUrl == null ||
-                        (g.MetacriticUrl == BuildStatusMarker(MetacriticService.StatusNoScore) && g.LastSyncedAt <= now - NoScoreRetryInterval) ||
-                        (g.MetacriticUrl == BuildStatusMarker(MetacriticService.StatusNoResults) && g.LastSyncedAt <= now - NoResultsRetryInterval) ||
+                        (g.MetacriticUrl == noScoreMarker && g.LastSyncedAt <= now - NoScoreRetryInterval) ||
+                        (g.MetacriticUrl == noResultsMarker && g.LastSyncedAt <= now - NoResultsRetryInterval) ||
+                        ((g.MetacriticUrl == noScoreMarker || g.MetacriticUrl == noResultsMarker)
+                            && g.Released != null && string.Compare(g.Released, recentFrom) >= 0 && string.Compare(g.Released, todayIso) <= 0
+                            && g.LastSyncedAt <= now - RecentRetryInterval) ||
                         (g.MetacriticUrl == BuildStatusMarker(MetacriticService.StatusTimeout) && g.LastSyncedAt <= now - TransientRetryInterval) ||
                         (g.MetacriticUrl == BuildStatusMarker(MetacriticService.StatusHttpError) && g.LastSyncedAt <= now - TransientRetryInterval) ||
                         (g.MetacriticUrl == BuildStatusMarker(MetacriticService.StatusParseError) && g.LastSyncedAt <= now - TransientRetryInterval) ||
@@ -133,6 +148,17 @@ namespace GGHub.Infrastructure.Services
                     .Take(30)
                     .Select(g => g.Id)
                     .ToListAsync(stoppingToken);
+
+                // Puani olan yeni cikmis oyunlar haftada bir yeniden sorgulanir.
+                var refreshIds = await context.Games
+                    .Where(g => g.Metacritic != null && g.Released != null
+                        && string.Compare(g.Released, recentFrom) >= 0 && string.Compare(g.Released, todayIso) <= 0
+                        && (g.LastSyncedAt == null || g.LastSyncedAt <= now - RecentRefreshInterval))
+                    .OrderByDescending(g => g.RawgAdded ?? 0)
+                    .Take(RefreshPerBatch)
+                    .Select(g => g.Id)
+                    .ToListAsync(stoppingToken);
+                gameIdsToSync.AddRange(refreshIds.Where(id => !gameIdsToSync.Contains(id)));
 
                 if (now - _lastSnapshotAt >= SnapshotInterval)
                 {
@@ -238,10 +264,26 @@ namespace GGHub.Infrastructure.Services
             }
 
             var status = result?.DebugInfo ?? MetacriticService.StatusException;
+            var definitive = status == MetacriticService.StatusNoScore || status == MetacriticService.StatusNoResults;
             game.LastSyncedAt = now;
-            game.MetacriticUrl = BuildStatusMarker(status);
-
             context.Entry(game).Property(x => x.LastSyncedAt).IsModified = true;
+
+            if (game.Metacritic != null && !definitive)
+            {
+                // Puani olan oyunu tazelerken gecici hata: eldeki puan ve adres kalir.
+                LogToFile($"REFRESH SKIPPED ({status}) -> '{game.Name}'");
+                await context.SaveChangesAsync(stoppingToken);
+                return;
+            }
+
+            if (game.Metacritic != null)
+            {
+                // Eslestirici artik bu oyunu tanimiyor (remake'e orijinal puani yazilmisti vb.).
+                game.Metacritic = null;
+                context.Entry(game).Property(x => x.Metacritic).IsModified = true;
+            }
+
+            game.MetacriticUrl = BuildStatusMarker(status);
             context.Entry(game).Property(x => x.MetacriticUrl).IsModified = true;
 
             var message = status switch
