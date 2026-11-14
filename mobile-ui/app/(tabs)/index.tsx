@@ -104,17 +104,20 @@ export default function HomeScreen() {
 
   if (isError || !homeContent) {
     return (
-      <View style={[styles.safe, styles.centered, { backgroundColor: colors.background }]}>
+      <View style={[styles.safe, { backgroundColor: colors.background }]}>
         <AppTopBar showLogo />
-        <Text style={[styles.errorText, { color: colors.error }]}>
-          {messages.common.genericError}
-        </Text>
-        <Text
-          style={[styles.retryText, { color: colors.primary }]}
-          onPress={() => refetch()}
-        >
-          {messages.common.retry}
-        </Text>
+        {/* Topbar ortalanan kutunun DISINDA: icinde kalinca genisligi icerige siner. */}
+        <View style={[styles.scroll, styles.centered]}>
+          <Text style={[styles.errorText, { color: colors.error }]}>
+            {messages.common.genericError}
+          </Text>
+          <Text
+            style={[styles.retryText, { color: colors.primary }]}
+            onPress={() => refetch()}
+          >
+            {messages.common.retry}
+          </Text>
+        </View>
       </View>
     );
   }
