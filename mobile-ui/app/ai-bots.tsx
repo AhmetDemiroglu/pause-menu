@@ -15,6 +15,7 @@ import { ScreenHeader } from '@/src/components/shell';
 import { useLocale } from '@/src/hooks/use-locale';
 import { useTabBarHeight } from '@/src/hooks/use-tab-bar-height';
 import { useTheme } from '@/src/hooks/use-theme';
+import { BrandLogo } from '@/src/components/common/BrandLogo';
 import { getImageUrl } from '@/src/utils/image';
 import * as haptics from '@/src/utils/haptics';
 import { BorderRadius, FontSize, Spacing } from '@/src/constants/theme';
@@ -25,9 +26,9 @@ const PAGE_SIZE = 6;
 const KIND_STYLE: Record<AiConversationKind, { emoji: string; color: string }> = {
   debate: { emoji: '🥊', color: '#fb7185' },
   plan: { emoji: '🗳️', color: '#fbbf24' },
-  askExpert: { emoji: '🧠', color: '#22d3ee' },
-  newRelease: { emoji: '🆕', color: '#a3e635' },
-  post: { emoji: '💬', color: '#a78bfa' },
+  askExpert: { emoji: '🧠', color: '#FF8A1F' },
+  newRelease: { emoji: '🆕', color: '#FF8A1F' },
+  post: { emoji: '💬', color: '#C9A6FF' },
 };
 
 /**
@@ -124,6 +125,7 @@ function ClubHeader() {
             <FloatingBot key={bot.username} username={bot.username} src={bot.src} size={34} delay={index * 350} />
           ))}
         </View>
+        <BrandLogo variant="primary" height={40} tone="onDark" style={styles.heroLogo} />
         <Text style={styles.heroTitle}>{m.heroTitle}</Text>
         <Text style={styles.heroSubtitle}>{m.heroSubtitle}</Text>
         <View style={styles.statsRow}>
@@ -151,8 +153,8 @@ function ClubHeader() {
         <View style={styles.grid}>
           {[
             { emoji: '⭐', title: m.what1Title, text: m.what1Text, tint: 'rgba(245,158,11,0.14)' },
-            { emoji: '📰', title: m.what2Title, text: m.what2Text, tint: 'rgba(34,211,238,0.14)' },
-            { emoji: '🗳️', title: m.what3Title, text: m.what3Text, tint: 'rgba(163,230,53,0.14)' },
+            { emoji: '📰', title: m.what2Title, text: m.what2Text, tint: 'rgba(255,138,31,0.14)' },
+            { emoji: '🗳️', title: m.what3Title, text: m.what3Text, tint: 'rgba(255,46,136,0.12)' },
             { emoji: '🥊', title: m.what4Title, text: m.what4Text, tint: 'rgba(251,113,133,0.14)' },
           ].map((card) => (
             <View key={card.title} style={[styles.gridCard, { backgroundColor: card.tint, borderColor: colors.border }]}>
@@ -221,7 +223,7 @@ function ClubHeader() {
                 <Text style={styles.joinEmoji}>{step.emoji}</Text>
                 <Text style={[styles.joinText, { color: colors.text }]}>{step.text}</Text>
               </View>
-              {index < 2 ? <Ionicons name="chevron-forward" size={16} color="#a78bfa" /> : null}
+              {index < 2 ? <Ionicons name="chevron-forward" size={16} color="#C9A6FF" /> : null}
             </React.Fragment>
           ))}
         </View>
@@ -235,13 +237,13 @@ function ClubHeader() {
           <Text style={[styles.muted, { color: colors.textSecondary }]}>{messages.ai.underage}</Text>
         ) : (
           <Pressable
-            style={[styles.joinCta, { backgroundColor: '#fde047' }]}
+            style={[styles.joinCta, { backgroundColor: colors.primary }]}
             onPress={() => {
               haptics.impactLight();
               void open(reason === 'needsBirthDate' ? 'needsBirthDate' : 'consentRequired');
             }}
           >
-            <Text style={[styles.joinCtaText, { color: '#111827' }]}>{m.joinCta}</Text>
+            <Text style={[styles.joinCtaText, { color: '#ffffff' }]}>{m.joinCta}</Text>
           </Pressable>
         )}
         <Text style={[styles.hint, { color: colors.textSecondary }]}>{m.joinNote}</Text>
@@ -353,7 +355,8 @@ const styles = StyleSheet.create({
     minHeight: 250,
   },
   heroFloaters: { flexDirection: 'row', gap: 4 },
-  heroTitle: { color: '#ffffff', fontSize: FontSize.xxl, fontWeight: '900' },
+  heroLogo: { alignSelf: 'flex-start', marginLeft: -2 },
+  heroTitle: { color: '#FBF6EA', fontSize: FontSize.xxl, fontWeight: '900' },
   heroSubtitle: { color: 'rgba(255,255,255,0.85)', fontSize: FontSize.sm, lineHeight: 19 },
   statsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   statChip: {
@@ -378,7 +381,7 @@ const styles = StyleSheet.create({
   panel: { marginHorizontal: Spacing.lg, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.lg, borderRadius: BorderRadius.lg, borderWidth: 1 },
   schema: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: Spacing.md, marginVertical: Spacing.sm },
   flowRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  flowBadge: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#7c3aed', alignItems: 'center', justifyContent: 'center' },
+  flowBadge: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#7A1FD0', alignItems: 'center', justifyContent: 'center' },
   flowBadgeText: { color: '#ffffff', fontSize: 11, fontWeight: '800' },
   ruleRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, borderWidth: 1, borderRadius: BorderRadius.md, padding: Spacing.md },
   ruleEmoji: { fontSize: 18 },
@@ -388,9 +391,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.lg,
     borderRadius: BorderRadius.lg,
-    backgroundColor: 'rgba(139,92,246,0.14)',
+    backgroundColor: 'rgba(162,75,255,0.14)',
     borderWidth: 1,
-    borderColor: 'rgba(139,92,246,0.35)',
+    borderColor: 'rgba(162,75,255,0.35)',
   },
   joinSteps: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   joinStep: { flex: 1, alignItems: 'center', gap: 4, borderWidth: 1, borderRadius: BorderRadius.md, paddingVertical: Spacing.sm, paddingHorizontal: 4 },
@@ -413,7 +416,7 @@ const styles = StyleSheet.create({
   convHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.md, paddingTop: Spacing.md },
   kindChip: { fontSize: 12, fontWeight: '800', borderWidth: 1, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 3, overflow: 'hidden' },
   live: { color: '#34d399', fontSize: 11, fontWeight: '800', letterSpacing: 0.8, textTransform: 'uppercase' },
-  replies: { marginLeft: Spacing.lg, borderLeftWidth: 2, borderLeftColor: 'rgba(139,92,246,0.35)' },
+  replies: { marginLeft: Spacing.lg, borderLeftWidth: 2, borderLeftColor: 'rgba(162,75,255,0.35)' },
   moreReplies: { fontSize: 12, fontWeight: '700', paddingHorizontal: Spacing.md, paddingTop: Spacing.sm },
   openThread: { alignSelf: 'flex-end', padding: Spacing.md },
   openThreadText: { fontSize: 13, fontWeight: '700' },

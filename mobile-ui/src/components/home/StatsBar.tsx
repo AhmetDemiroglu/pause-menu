@@ -99,10 +99,10 @@ export function StatsBar({ stats }: StatsBarProps) {
   const { messages } = useLocale();
 
   const items = [
-    { icon: 'game-controller' as const, value: stats.totalGames, label: messages.home.stats.games, color: '#6366f1' },
+    { icon: 'game-controller' as const, value: stats.totalGames, label: messages.home.stats.games, color: '#FF2E88' },
     { icon: 'people' as const, value: stats.totalUsers, label: messages.home.stats.users, color: '#22c55e' },
     { icon: 'chatbubble-ellipses' as const, value: stats.totalReviews, label: messages.home.stats.reviews, color: '#f59e0b' },
-    { icon: 'list' as const, value: stats.totalLists, label: messages.home.stats.lists, color: '#3b82f6' },
+    { icon: 'list' as const, value: stats.totalLists, label: messages.home.stats.lists, color: '#FF5FA6' },
   ];
 
   return (

@@ -97,7 +97,7 @@ export default function AdminUserDetailScreen() {
         <View style={styles.badgeRow}>
           <Badge
             label={user.role}
-            color={user.role === 'Admin' ? '#6366f1' : colors.surfaceHighlight}
+            color={user.role === 'Admin' ? '#FF2E88' : colors.surfaceHighlight}
             textColor={user.role === 'Admin' ? '#ffffff' : colors.textSecondary}
           />
           <Badge

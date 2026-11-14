@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { getLocales } from 'expo-localization';
 import { setLocaleGetter } from '@/src/api/client';
 import { APP_CONFIG } from '@/src/constants/config';
+import { StorageKeys, LegacyStorageKeys, getItemMigrating } from '@/src/utils/storage-keys';
 import {
   AppLocale,
   Messages,
@@ -12,7 +13,7 @@ import {
   normalizeLocale,
 } from '@/src/i18n';
 
-const LOCALE_STORAGE_KEY = 'gghub-locale';
+const LOCALE_STORAGE_KEY = StorageKeys.locale;
 
 export interface LocaleContextType {
   locale: AppLocale;
@@ -59,7 +60,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 
     const loadLocale = async () => {
       try {
-        const stored = await SecureStore.getItemAsync(LOCALE_STORAGE_KEY);
+        const stored = await getItemMigrating(LOCALE_STORAGE_KEY, LegacyStorageKeys.locale);
         const normalized = normalizeLocale(stored);
         if (normalized) {
           apply(normalized);

@@ -34,11 +34,11 @@ const NOTIFICATION_ICONS: Record<NotificationType, keyof typeof Ionicons.glyphMa
 };
 
 const NOTIFICATION_COLORS: Record<NotificationType, string> = {
-  [NotificationType.Follow]: '#6366f1',
-  [NotificationType.ListFollow]: '#8b5cf6',
-  [NotificationType.Message]: '#3b82f6',
+  [NotificationType.Follow]: '#FF2E88',
+  [NotificationType.ListFollow]: '#A24BFF',
+  [NotificationType.Message]: '#FF5FA6',
   [NotificationType.Review]: '#22c55e',
-  [NotificationType.ListComment]: '#0ea5e9',
+  [NotificationType.ListComment]: '#FF8A1F',
   [NotificationType.CommentReply]: '#14b8a6',
   [NotificationType.CommentLike]: '#ef4444',
   [NotificationType.ListRating]: '#f59e0b',
@@ -47,7 +47,7 @@ const NOTIFICATION_COLORS: Record<NotificationType, string> = {
   [NotificationType.ReviewCommentLike]: '#ef4444',
   [NotificationType.Mention]: '#a855f7',
   [NotificationType.PostLike]: '#f43f5e',
-  [NotificationType.PostReply]: '#0ea5e9',
+  [NotificationType.PostReply]: '#FF8A1F',
   [NotificationType.PostRepost]: '#10b981',
   [NotificationType.Birthday]: '#d946ef',
 };

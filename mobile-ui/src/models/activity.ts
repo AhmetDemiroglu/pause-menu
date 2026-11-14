@@ -2,7 +2,7 @@ import { GameSummary } from './review';
 import type { Post } from './post';
 
 /**
- * Backend aynasi (GGHub.Application/Dtos/ActivityDto.cs). SADECE sona eklenir.
+ * Backend aynasi (Application/Dtos/ActivityDto.cs). SADECE sona eklenir.
  */
 export enum ActivityType {
   Review = 0,

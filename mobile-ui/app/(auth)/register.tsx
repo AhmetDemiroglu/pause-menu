@@ -14,6 +14,7 @@ import { useLocale } from '@/src/hooks/use-locale';
 import { register as registerApi } from '@/src/api/auth';
 import { Input } from '@/src/components/common/Input';
 import { Button } from '@/src/components/common/Button';
+import { BrandLogo } from '@/src/components/common/BrandLogo';
 import { SocialAuthButtons } from '@/src/components/auth/SocialAuthButtons';
 import { useToast } from '@/src/components/common/Toast';
 import { FontSize, Spacing } from '@/src/constants/theme';
@@ -117,7 +118,7 @@ export default function RegisterScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <Text style={[styles.appName, { color: colors.primary }]}>GGHub</Text>
+            <BrandLogo variant="primary" height={72} style={styles.logo} />
             <Text style={[styles.title, { color: colors.text }]}>{t.registerCreateTitle}</Text>
           </View>
 
@@ -215,10 +216,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.xxxl,
   },
-  appName: {
-    fontSize: FontSize.hero,
-    fontWeight: '800',
-    marginBottom: Spacing.sm,
+  logo: {
+    marginBottom: Spacing.lg,
   },
   title: {
     fontSize: FontSize.xxl,

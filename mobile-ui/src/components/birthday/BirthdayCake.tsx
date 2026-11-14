@@ -45,10 +45,10 @@ const SPRINKLES = [
   { x: 72, y: 112, r: -25, c: '#facc15' },
   { x: 92, y: 118, r: 15, c: '#f43f5e' },
   { x: 112, y: 110, r: 40, c: '#22c55e' },
-  { x: 128, y: 119, r: -10, c: '#38bdf8' },
+  { x: 128, y: 119, r: -10, c: '#FFA94D' },
   { x: 52, y: 150, r: 20, c: '#f43f5e' },
   { x: 70, y: 159, r: -30, c: '#facc15' },
-  { x: 90, y: 149, r: 45, c: '#38bdf8' },
+  { x: 90, y: 149, r: 45, c: '#FFA94D' },
   { x: 110, y: 160, r: 10, c: '#22c55e' },
   { x: 130, y: 150, r: -20, c: '#facc15' },
   { x: 148, y: 158, r: 35, c: '#f43f5e' },
@@ -217,7 +217,7 @@ export function BirthdayCake() {
     transform: [{ scale: 0.9 + entrance.value * 0.1 }, { translateY: (1 - entrance.value) * 20 }],
   }));
 
-  const plateColor = isDark ? '#ffffff' : '#0f172a';
+  const plateColor = isDark ? '#ffffff' : '#14101F';
 
   return (
     <Animated.View style={[{ width: SIZE, height: SIZE }, entranceStyle]}>
@@ -225,7 +225,7 @@ export function BirthdayCake() {
         <Svg width={SIZE} height={SIZE} viewBox="0 0 200 200">
           <Defs>
             <LinearGradient id="cake-frosting" x1="0" y1="0" x2="1" y2="1">
-              <Stop offset="0%" stopColor="#7C4DFF" />
+              <Stop offset="0%" stopColor="#7A1FD0" />
               <Stop offset="100%" stopColor={colors.primaryLight} />
             </LinearGradient>
             <LinearGradient id="cake-drip" x1="0" y1="0" x2="0" y2="1">
@@ -247,9 +247,9 @@ export function BirthdayCake() {
                 strokeLinecap="round"
               />
               <Rect x={candle.x - 3.5} y={62} width={7} height={30} rx={3} fill="#fdf4ff" />
-              <Rect x={candle.x - 3.5} y={68} width={7} height={3.5} fill="#7C4DFF" opacity={0.55} />
+              <Rect x={candle.x - 3.5} y={68} width={7} height={3.5} fill="#7A1FD0" opacity={0.55} />
               <Rect x={candle.x - 3.5} y={76} width={7} height={3.5} fill="#f43f5e" opacity={0.5} />
-              <Rect x={candle.x - 3.5} y={84} width={7} height={3.5} fill="#7C4DFF" opacity={0.55} />
+              <Rect x={candle.x - 3.5} y={84} width={7} height={3.5} fill="#7A1FD0" opacity={0.55} />
             </G>
           ))}
 

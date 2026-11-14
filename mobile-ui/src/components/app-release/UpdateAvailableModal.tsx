@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/hooks/use-theme';
 import { useLocale } from '@/src/hooks/use-locale';
-import { BorderRadius, FontSize, Shadows, Spacing } from '@/src/constants/theme';
+import { BorderRadius, FontSize, Gradients, Shadows, Spacing } from '@/src/constants/theme';
 import type { AppReleaseCheck } from '@/src/models/app-release';
 
 interface UpdateAvailableModalProps {
@@ -43,7 +43,7 @@ export function UpdateAvailableModal({ result, visible, onDismiss }: UpdateAvail
           accessibilityViewIsModal
           onPress={() => {}}
         >
-          <LinearGradient colors={['#6366f1', '#8b5cf6', '#22d3ee']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
+          <LinearGradient colors={Gradients.dusk} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
             <Ionicons name="rocket" size={30} color="#ffffff" />
           </LinearGradient>
 

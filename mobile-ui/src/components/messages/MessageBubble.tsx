@@ -55,7 +55,7 @@ export function MessageBubble({ content, sentAt, isMine, isRead }: MessageBubble
               <Ionicons
                 name={isRead ? 'checkmark-done' : 'checkmark'}
                 size={14}
-                color={isRead ? '#a5f3fc' : 'rgba(255,255,255,0.7)'}
+                color={isRead ? '#FFD3A8' : 'rgba(255,255,255,0.7)'}
               />
             </Animated.View>
           ) : null}

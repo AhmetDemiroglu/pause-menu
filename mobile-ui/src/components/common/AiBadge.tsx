@@ -30,14 +30,14 @@ const styles = StyleSheet.create({
   },
   badge: {
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.45)',
-    backgroundColor: 'rgba(139, 92, 246, 0.12)',
+    borderColor: 'rgba(162, 75, 255, 0.45)',
+    backgroundColor: 'rgba(162, 75, 255, 0.12)',
     borderRadius: 5,
     paddingHorizontal: 4,
     paddingVertical: 0,
   },
   text: {
-    color: '#8b5cf6',
+    color: '#A24BFF',
     fontSize: 10,
     fontWeight: '700',
     lineHeight: 14,

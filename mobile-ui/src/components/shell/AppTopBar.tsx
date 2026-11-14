@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
   StyleSheet,
   Platform,
@@ -16,6 +15,7 @@ import { useAuth } from '@/src/hooks/use-auth';
 import { useShell } from '@/src/contexts/shell-context';
 import { useUnreadCounts } from '@/src/hooks/use-unread-counts';
 import { Avatar } from '@/src/components/common/Avatar';
+import { BrandLogo } from '@/src/components/common/BrandLogo';
 import { Spacing, FontSize } from '@/src/constants/theme';
 import * as haptics from '@/src/utils/haptics';
 
@@ -106,11 +106,7 @@ export function AppTopBar({ title, showLogo = false, rightExtra, blur = false, s
         {/* Orta: Logo veya Başlık */}
         <View style={styles.center} pointerEvents="none">
           {showLogo ? (
-            <Image
-              source={require('@/assets/images/logo2.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+            <BrandLogo variant="horizontal" height={22} tone={blur ? 'onDark' : 'auto'} />
           ) : title ? (
             <Text
               style={[styles.title, { color: blur ? '#ffffff' : colors.text }]}
@@ -182,10 +178,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: Spacing.xs,
-  },
-  logo: {
-    width: 100,
-    height: 32,
   },
   title: {
     fontSize: FontSize.lg,

@@ -1,21 +1,21 @@
 {
   "expo": {
-    "name": "GGHub",
+    "name": "Pause Menu",
     "slug": "gghub",
-    "version": "1.4.0",
+    "version": "2.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon-beyaz.png",
-    "scheme": "gghub",
+    "icon": "./assets/images/icon.png",
+    "scheme": "pausemenu",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0f172a"
+      "backgroundColor": "#14101F"
     },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.gghub.mobile",
-      "buildNumber": "16",
+      "buildNumber": "20",
       "usesAppleSignIn": true,
       "entitlements": {
         "aps-environment": "production"
@@ -31,11 +31,11 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#d2c6f6",
+        "backgroundColor": "#14101F",
         "foregroundImage": "./assets/images/adaptive-icon.png"
       },
       "package": "com.gghub.mobile",
-      "versionCode": 19,
+      "versionCode": 20,
       "googleServicesFile": "./android/app/google-services.json",
       "permissions": [
         "android.permission.INTERNET",
@@ -55,7 +55,7 @@
       [
         "expo-secure-store",
         {
-          "faceIDPermission": "Allow GGHub to use Face ID to keep your account securely signed in."
+          "faceIDPermission": "Allow Pause Menu to use Face ID to keep your account securely signed in."
         }
       ],
       "expo-localization",
@@ -65,14 +65,15 @@
       [
         "expo-notifications",
         {
-          "color": "#0f172a"
+          "color": "#FF2E88",
+          "icon": "./assets/images/android-icon-monochrome.png"
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow GGHub to access your photos for profile picture upload.",
-          "cameraPermission": "Allow GGHub to access your camera for profile picture upload.",
+          "photosPermission": "Allow Pause Menu to access your photos for profile picture upload.",
+          "cameraPermission": "Allow Pause Menu to access your camera for profile picture upload.",
           "microphonePermission": false
         }
       ],

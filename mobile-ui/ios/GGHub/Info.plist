@@ -9,7 +9,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>GGHub</string>
+	<string>Pause Menu</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,7 +26,7 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4.0</string>
+	<string>2.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -34,7 +34,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>gghub</string>
+				<string>pausemenu</string>
 				<string>com.gghub.mobile</string>
 			</array>
 		</dict>
@@ -46,7 +46,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>16</string>
+	<string>20</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSMinimumSystemVersion</key>
@@ -61,11 +61,11 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow GGHub to access your camera for profile picture upload.</string>
+	<string>Allow Pause Menu to access your camera for profile picture upload.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Allow GGHub to use Face ID to keep your account securely signed in.</string>
+	<string>Allow Pause Menu to use Face ID to keep your account securely signed in.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow GGHub to access your photos for profile picture upload.</string>
+	<string>Allow Pause Menu to access your photos for profile picture upload.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>

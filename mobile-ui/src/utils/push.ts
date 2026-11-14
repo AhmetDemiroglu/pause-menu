@@ -15,8 +15,8 @@ Notifications.setNotificationHandler({
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-// getExpoPushTokenAsync needs a real EAS project UUID. The app.json placeholder
-// ("gghub-mobile") is not valid; run `eas init` to set extra.eas.projectId, then rebuild.
+// getExpoPushTokenAsync needs a real EAS project UUID (app.json > extra.eas.projectId).
+// Anything that is not a UUID is treated as missing and no token is minted.
 function getProjectId(): string | undefined {
   const eas = (Constants.expoConfig?.extra as { eas?: { projectId?: string } } | undefined)?.eas;
   const id = eas?.projectId;
@@ -37,10 +37,10 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
     // HIGH: heads-up banner + ses (DEFAULT bunlari her zaman gostermiyordu). Kanal kimligi
     // 'default' backend push payload'undaki channelId ile bire bir eslesir.
     await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
+      name: 'Pause Menu',
       importance: Notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#0f172a',
+      lightColor: '#FF2E88',
     });
   }
 

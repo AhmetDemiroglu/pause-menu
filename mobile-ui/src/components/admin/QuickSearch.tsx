@@ -40,7 +40,7 @@ export function QuickSearch() {
         </View>
         <Badge
           label={item.role}
-          color={item.role === 'Admin' ? '#6366f1' : colors.surfaceHighlight}
+          color={item.role === 'Admin' ? '#FF2E88' : colors.surfaceHighlight}
           textColor={item.role === 'Admin' ? '#ffffff' : colors.textSecondary}
         />
       </TouchableOpacity>

@@ -42,7 +42,7 @@ function ActivityItem({ item }: { item: Activity }) {
         const listName = item.listData?.name ?? '';
         return {
           icon: 'list' as const,
-          iconColor: '#3b82f6',
+          iconColor: '#FF5FA6',
           text: `${messages.home.listCreated}: ${listName}`,
           onPress: () => {
             if (item.listData?.listId) {

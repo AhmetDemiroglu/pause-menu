@@ -72,8 +72,8 @@ export function GameCard({ game, variant = 'compact' }: GameCardProps) {
           <ScorePillRow
             metacritic={game.metacritic}
             rawg={game.rating}
-            gghub={game.gghubRating}
-            gghubCount={game.gghubRatingCount}
+            site={game.gghubRating}
+            siteCount={game.gghubRatingCount}
             igdb={game.igdbRating}
             size="sm"
             gap={5}
@@ -105,8 +105,8 @@ export function GameCard({ game, variant = 'compact' }: GameCardProps) {
         <ScorePillRow
           metacritic={game.metacritic}
           rawg={game.rating}
-          gghub={game.gghubRating}
-          gghubCount={game.gghubRatingCount}
+          site={game.gghubRating}
+          siteCount={game.gghubRatingCount}
           igdb={game.igdbRating}
           size="sm"
           gap={5}

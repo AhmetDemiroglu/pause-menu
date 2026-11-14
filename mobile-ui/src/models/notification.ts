@@ -12,7 +12,7 @@ export interface NotificationDto {
   createdAt: string;
 }
 
-/** Backend enum'unun aynası (GGHub.Core/Enums/NotificartionType.cs). SADECE sona eklenir. */
+/** Backend enum'unun aynası (Core/Enums/NotificartionType.cs). SADECE sona eklenir. */
 export enum NotificationType {
   Follow = 0,
   ListFollow = 1,

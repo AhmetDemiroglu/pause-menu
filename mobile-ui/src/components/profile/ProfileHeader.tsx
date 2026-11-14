@@ -20,6 +20,7 @@ import { AVATAR_MAX_EDGE, getImageUrl, shrinkForUpload } from '@/src/utils/image
 import { formatCalendarMonthDay, formatNumericDate } from '@/src/utils/date';
 import { uploadProfilePhoto } from '@/src/api/photo';
 import { Spacing, FontSize, BorderRadius, Springs, Shadows } from '@/src/constants/theme';
+import { APP_CONFIG } from '@/src/constants/config';
 import * as haptics from '@/src/utils/haptics';
 
 const AVATAR_SIZE = 88;
@@ -228,7 +229,7 @@ export function ProfileHeader({
 
         <Text style={[styles.joinDate, { color: colors.textMuted }]}>
           <Ionicons name="calendar-outline" size={12} color={colors.textMuted} />{' '}
-          {h.joinedAt.replace('{date}', joinDate).replace('{appName}', 'GGHub')}
+          {h.joinedAt.replace('{date}', joinDate).replace('{appName}', APP_CONFIG.appName)}
         </Text>
 
         {birthdayLabel ? (

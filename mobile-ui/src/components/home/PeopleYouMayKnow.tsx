@@ -12,7 +12,7 @@ import { useUserLink } from '@/src/components/common/UserLink';
 import { useToast } from '@/src/components/common/Toast';
 import { useTheme } from '@/src/hooks/use-theme';
 import { useLocale } from '@/src/hooks/use-locale';
-import { FontSize, Spacing, BorderRadius, Shadows } from '@/src/constants/theme';
+import { FontSize, Gradients, Spacing, BorderRadius, Shadows } from '@/src/constants/theme';
 import { followUser, unfollowUser } from '@/src/api/social';
 import { HorizontalScrollGuard } from '@/src/components/home/HorizontalScrollGuard';
 import { displayName } from '@/src/utils/display-name';
@@ -26,7 +26,7 @@ interface PeopleYouMayKnowProps {
   agents?: SuggestedUser[];
 }
 
-const BOT_VIOLET = '#8b5cf6';
+const BOT_VIOLET = '#A24BFF';
 
 /**
  * Tek serit, karisik: her iki kisiden sonra bir bot, artan botlar sona. Mobilde alani ikiye
@@ -216,7 +216,7 @@ export function PeopleYouMayKnow({ suggestions, agents = [] }: PeopleYouMayKnowP
         >
           {bot ? (
             <LinearGradient
-              colors={['rgba(139, 92, 246, 0.20)', 'rgba(217, 70, 239, 0.06)', 'rgba(139, 92, 246, 0)']}
+              colors={['rgba(162, 75, 255, 0.20)', 'rgba(255, 46, 136, 0.06)', 'rgba(162, 75, 255, 0)']}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={styles.botTint}
@@ -305,7 +305,7 @@ export function PeopleYouMayKnow({ suggestions, agents = [] }: PeopleYouMayKnowP
           >
             {gradientButton ? (
               <LinearGradient
-                colors={['#7c3aed', '#c026d3']}
+                colors={Gradients.dusk}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}
@@ -417,8 +417,8 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: BorderRadius.full,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.35)',
-    backgroundColor: 'rgba(139, 92, 246, 0.10)',
+    borderColor: 'rgba(162, 75, 255, 0.35)',
+    backgroundColor: 'rgba(162, 75, 255, 0.10)',
   },
   clubLinkText: {
     color: BOT_VIOLET,
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   },
   botCard: {
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.40)',
+    borderColor: 'rgba(162, 75, 255, 0.40)',
   },
   botTint: {
     ...StyleSheet.absoluteFillObject,
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   botAvatarRing: {
-    borderColor: 'rgba(139, 92, 246, 0.65)',
+    borderColor: 'rgba(162, 75, 255, 0.65)',
   },
   infoBox: {
     height: 30,

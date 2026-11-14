@@ -38,7 +38,7 @@ export function RecentUsersList({ users }: RecentUsersListProps) {
             <Text style={[styles.email, { color: colors.textSecondary }]}>{user.email}</Text>
           </View>
           <View style={styles.badges}>
-            <Badge label={user.role} color={user.role === 'Admin' ? '#6366f1' : colors.surfaceHighlight} textColor={user.role === 'Admin' ? '#ffffff' : colors.textSecondary} />
+            <Badge label={user.role} color={user.role === 'Admin' ? '#FF2E88' : colors.surfaceHighlight} textColor={user.role === 'Admin' ? '#ffffff' : colors.textSecondary} />
             {user.isBanned ? (
               <Badge label={m.statusBanned} color="#ef444420" textColor="#ef4444" />
             ) : null}

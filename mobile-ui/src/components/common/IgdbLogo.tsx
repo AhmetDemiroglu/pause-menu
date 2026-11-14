@@ -4,7 +4,7 @@ import { Image } from 'react-native';
 /**
  * IGDB marka logosu (mor, seffaf arka plan).
  *
- * DIKKAT: logo ~2.08:1 oraninda YATAY. RAWG/Metacritic/GGHub logolari kare oldugu icin
+ * DIKKAT: logo ~2.08:1 oraninda YATAY. RAWG/Metacritic/site logolari kare oldugu icin
  * ayni kare kutuya konursa yuksekligi bir kac piksele duser ve okunmaz. Bu yuzden bilesen
  * YUKSEKLIK alir, genisligi orandan hesaplar.
  */

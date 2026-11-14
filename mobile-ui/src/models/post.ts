@@ -1,6 +1,6 @@
 /**
- * Backend aynasi: GGHub.Application/Dtos/PostDto.cs ve
- * GGHub.Core/Enums/MentionTargetType.cs. Sayisal degerler SONA eklenir.
+ * Backend aynasi: Application/Dtos/PostDto.cs ve
+ * Core/Enums/MentionTargetType.cs. Sayisal degerler SONA eklenir.
  */
 
 export enum MentionTargetType {
@@ -9,14 +9,14 @@ export enum MentionTargetType {
   List = 2,
 }
 
-/** Backend aynasi: GGHub.Core/Enums/PostVisibilitySetting.cs */
+/** Backend aynasi: Core/Enums/PostVisibilitySetting.cs */
 export enum PostVisibilitySetting {
   Everyone = 0,
   Followers = 1,
   Private = 2,
 }
 
-/** Backend aynasi: GGHub.Core/Enums/PostReplyPermissionSetting.cs */
+/** Backend aynasi: Core/Enums/PostReplyPermissionSetting.cs */
 export enum PostReplyPermissionSetting {
   Everyone = 0,
   Followers = 1,

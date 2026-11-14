@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/hooks/use-theme';
+import { BrandLogo } from '@/src/components/common/BrandLogo';
 import { useLocale } from '@/src/hooks/use-locale';
 import { useTabBarHeight } from '@/src/hooks/use-tab-bar-height';
 import { Spacing, FontSize, BorderRadius } from '@/src/constants/theme';
@@ -70,7 +71,7 @@ export default function AboutScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={[styles.hero, { backgroundColor: colors.primary + '10' }]}>
-          <Ionicons name="game-controller" size={48} color={colors.primary} />
+          <BrandLogo variant="primary" height={64} />
           <Text style={[styles.heroTitle, { color: colors.text }]}>{m.title}</Text>
           <Text style={[styles.heroDescription, { color: colors.textSecondary }]}>
             {m.subtitle}
@@ -123,8 +124,8 @@ export default function AboutScreen() {
           </View>
         ))}
 
-        <View style={[styles.whySection, { backgroundColor: colors.card, borderColor: 'rgba(139, 92, 246, 0.4)' }]}>
-          <Ionicons name="hardware-chip-outline" size={32} color="#8b5cf6" />
+        <View style={[styles.whySection, { backgroundColor: colors.card, borderColor: 'rgba(162, 75, 255, 0.4)' }]}>
+          <Ionicons name="hardware-chip-outline" size={32} color="#A24BFF" />
           <Text style={[styles.whyTitle, { color: colors.text }]}>{m.aiTitle}</Text>
           <Text style={[styles.whyDescription, { color: colors.textSecondary }]}>{m.aiDescription}</Text>
         </View>

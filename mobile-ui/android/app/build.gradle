@@ -92,12 +92,12 @@ android {
         applicationId 'com.gghub.mobile'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 19
+        versionCode 20
         // Android surum adi gerektiginde iOS'tan ayrik tutulabilir.
         // app.json'daki tek "version" alani iOS'un kaynagidir; asimetriyi
         // `npm run bump <version> [iosBuild] [vc] [androidVersionName]` ile
         // dorduncu argumani vererek koru, yoksa bu satir iOS surumuyle EZILIR.
-        versionName "1.4.0"
+        versionName "2.0.0"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }

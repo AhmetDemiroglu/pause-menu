@@ -13,15 +13,17 @@ import {
 } from '@/src/api/client';
 import { AuthenticatedUser, JwtPayload, LoginResponse } from '@/src/models/auth';
 import { APP_CONFIG } from '@/src/constants/config';
+import { StorageKeys, LegacyStorageKeys, getItemMigrating } from '@/src/utils/storage-keys';
 
 // Tek anahtarda saklanan oturum blob'u: uc ayri setItemAsync yerine atomik tek yazim.
 // Boylece Android'de yazimlar arasinda process olurse yarim/bozuk durum kalmaz.
-const SESSION_KEY = 'gghub_session';
+const SESSION_KEY = StorageKeys.session;
 
 // Eski surumden migrasyon + temizlik icin legacy anahtarlar.
-const LEGACY_ACCESS_KEY = 'gghub_access_token';
-const LEGACY_REFRESH_KEY = 'gghub_refresh_token';
-const LEGACY_USER_KEY = 'gghub_user';
+const LEGACY_SESSION_KEY = LegacyStorageKeys.session;
+const LEGACY_ACCESS_KEY = LegacyStorageKeys.accessToken;
+const LEGACY_REFRESH_KEY = LegacyStorageKeys.refreshToken;
+const LEGACY_USER_KEY = LegacyStorageKeys.user;
 
 interface StoredSession {
   accessToken: string;
@@ -67,6 +69,7 @@ async function persistSession(session: StoredSession): Promise<void> {
 
 async function clearLegacy(): Promise<void> {
   await Promise.all([
+    SecureStore.deleteItemAsync(LEGACY_SESSION_KEY).catch(() => {}),
     SecureStore.deleteItemAsync(LEGACY_ACCESS_KEY).catch(() => {}),
     SecureStore.deleteItemAsync(LEGACY_REFRESH_KEY).catch(() => {}),
     SecureStore.deleteItemAsync(LEGACY_USER_KEY).catch(() => {}),
@@ -78,10 +81,11 @@ async function clearSession(): Promise<void> {
   await clearLegacy();
 }
 
-// Once yeni blob'u, yoksa eski uc-anahtar formatini oku (migrasyon). Mevcut giris yapmis
-// kullanicilar guncellemede logout OLMAZ.
+// Once yeni blob'u (yoksa eski adli blob'u tasiyarak), sonra eski uc-anahtar formatini oku
+// (migrasyon). Mevcut giris yapmis kullanicilar guncellemede logout OLMAZ.
 async function readSession(): Promise<StoredSession | null> {
-  const raw = await getItemWithRetry(SESSION_KEY);
+  const raw =
+    (await getItemWithRetry(SESSION_KEY)) ?? (await getItemMigrating(SESSION_KEY, LEGACY_SESSION_KEY));
   if (raw) {
     try {
       const parsed = JSON.parse(raw) as StoredSession;

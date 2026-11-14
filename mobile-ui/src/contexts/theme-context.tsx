@@ -2,10 +2,11 @@ import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { useColorScheme as useSystemScheme } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { Colors, ThemeColors } from '@/src/constants/theme';
+import { StorageKeys, LegacyStorageKeys, getItemMigrating } from '@/src/utils/storage-keys';
 
 export type ThemeMode = 'dark' | 'light' | 'system';
 
-const THEME_STORAGE_KEY = 'gghub_theme';
+const THEME_STORAGE_KEY = StorageKeys.theme;
 
 export interface ThemeContextType {
   themeMode: ThemeMode;
@@ -51,7 +52,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const loadTheme = async () => {
       try {
-        const stored = await SecureStore.getItemAsync(THEME_STORAGE_KEY);
+        const stored = await getItemMigrating(THEME_STORAGE_KEY, LegacyStorageKeys.theme);
         if (stored === 'dark' || stored === 'light' || stored === 'system') {
           setThemeModeState(stored);
         }

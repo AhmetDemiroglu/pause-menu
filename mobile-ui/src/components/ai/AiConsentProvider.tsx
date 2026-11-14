@@ -12,7 +12,7 @@ import { useToast } from '@/src/components/common/Toast';
 import { useAuth } from '@/src/hooks/use-auth';
 import { useLocale } from '@/src/hooks/use-locale';
 import { useTheme } from '@/src/hooks/use-theme';
-import { BorderRadius, FontSize, Shadows, Spacing } from '@/src/constants/theme';
+import { BorderRadius, FontSize, Gradients, Shadows, Spacing } from '@/src/constants/theme';
 import { AI_CONSENT_VERSION } from '@/src/models/profile';
 import { registerAiConsentHandler, type AiConsentReason } from '@/src/utils/ai-consent-bridge';
 
@@ -160,7 +160,7 @@ function AiConsentModal({ pending, onClose }: { pending: Pending | null; onClose
           accessibilityViewIsModal
           onPress={() => {}}
         >
-          <LinearGradient colors={['#d946ef', '#8b5cf6', '#22d3ee']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
+          <LinearGradient colors={Gradients.dusk} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
             <Text style={styles.heroEmoji}>🤖 💬 🎮</Text>
           </LinearGradient>
 
@@ -208,7 +208,7 @@ function AiConsentModal({ pending, onClose }: { pending: Pending | null; onClose
                   onPress={() => setAccepted((value) => !value)}
                   accessibilityRole="checkbox"
                   accessibilityState={{ checked: accepted }}
-                  style={[styles.checkRow, { borderColor: 'rgba(139, 92, 246, 0.45)', backgroundColor: 'rgba(139, 92, 246, 0.08)' }]}
+                  style={[styles.checkRow, { borderColor: 'rgba(162, 75, 255, 0.45)', backgroundColor: 'rgba(162, 75, 255, 0.08)' }]}
                 >
                   <Ionicons name={accepted ? 'checkbox' : 'square-outline'} size={22} color={accepted ? colors.primary : colors.textSecondary} />
                   <Text style={[styles.checkText, { color: colors.text }]}>{m.checkbox}</Text>

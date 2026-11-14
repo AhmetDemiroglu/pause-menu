@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { FontSize, BorderRadius } from '@/src/constants/theme';
 import { IgdbLogo } from './IgdbLogo';
 
-export type ScoreType = 'metacritic' | 'rawg' | 'gghub' | 'igdb';
+export type ScoreType = 'metacritic' | 'rawg' | 'site' | 'igdb';
 export type ScoreSize = 'sm' | 'md' | 'lg';
 
 interface ScorePillProps {
@@ -18,7 +18,7 @@ const DASH = '-';
 const LOGOS = {
   rawg: require('@/assets/images/rawg_logo.png'),
   metacritic: require('@/assets/images/metacritic_logo.png'),
-  gghub: require('@/assets/images/gghub_logo.png'),
+  site: require('@/assets/images/brand/mark.png'),
 } as const;
 
 // Web `list-game-card.tsx` ile birebir uyum:
@@ -26,7 +26,7 @@ const LOGOS = {
 const PALETTE = {
   rawg:       { bg: 'rgba(59,130,246,0.10)', fg: '#60a5fa', border: 'rgba(59,130,246,0.20)' },
   metacritic: { bg: 'rgba(34,197,94,0.10)',  fg: '#4ade80', border: 'rgba(34,197,94,0.20)' },
-  gghub:      { bg: 'rgba(168,85,247,0.10)', fg: '#c084fc', border: 'rgba(168,85,247,0.20)' },
+  site:       { bg: 'rgba(255,46,136,0.10)', fg: '#FF5FA6', border: 'rgba(255,46,136,0.22)' },
   igdb:       { bg: 'rgba(99,102,241,0.10)', fg: '#a5b4fc', border: 'rgba(99,102,241,0.20)' },
 } as const;
 
@@ -38,7 +38,7 @@ const SIZE_MAP = {
 
 function formatValue(type: ScoreType, value: number | null | undefined): string {
   if (value == null || Number.isNaN(value)) return DASH;
-  // IGDB de Metacritic gibi 0-100 araliginda gelir; RAWG/GGHub ondalikli.
+  // IGDB de Metacritic gibi 0-100 araliginda gelir; RAWG ve site puani ondalikli.
   if (type === 'metacritic' || type === 'igdb') return String(Math.round(value));
   return value.toFixed(1);
 }
@@ -82,7 +82,7 @@ export function ScorePill({ type, value, count, size = 'sm' }: ScorePillProps) {
       <Text style={[styles.value, { color: fg, fontSize: dims.fontSize }]}>
         {formatValue(type, value)}
       </Text>
-      {type === 'gghub' && count != null && count > 0 ? (
+      {type === 'site' && count != null && count > 0 ? (
         <Text style={[styles.count, { color: fg, fontSize: dims.countFontSize }]}>({count})</Text>
       ) : null}
     </View>
@@ -92,8 +92,8 @@ export function ScorePill({ type, value, count, size = 'sm' }: ScorePillProps) {
 interface ScorePillRowProps {
   metacritic?: number | null;
   rawg?: number | null;
-  gghub?: number | null;
-  gghubCount?: number | null;
+  site?: number | null;
+  siteCount?: number | null;
   igdb?: number | null;
   size?: ScoreSize;
   gap?: number;
@@ -102,8 +102,8 @@ interface ScorePillRowProps {
 export function ScorePillRow({
   metacritic,
   rawg,
-  gghub,
-  gghubCount,
+  site,
+  siteCount,
   igdb,
   size = 'sm',
   gap = 6,
@@ -114,7 +114,7 @@ export function ScorePillRow({
       <ScorePill type="metacritic" value={metacritic} size={size} />
       {/* Dort kaynak da HER ZAMAN gorunur; puani olmayan "-" yazar (web ile ayni kural). */}
       <ScorePill type="igdb" value={igdb} size={size} />
-      <ScorePill type="gghub" value={gghub} count={gghubCount} size={size} />
+      <ScorePill type="site" value={site} count={siteCount} size={size} />
     </View>
   );
 }

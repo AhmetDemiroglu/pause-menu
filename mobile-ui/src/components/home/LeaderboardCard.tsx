@@ -17,9 +17,9 @@ interface LeaderboardCardProps {
 
 function getRankColor(index: number): string {
   if (index === 0) return '#f59e0b';
-  if (index === 1) return '#cbd5e1';
+  if (index === 1) return '#D9D2E6';
   if (index === 2) return '#cd7f32';
-  return '#64748b';
+  return '#8A809E';
 }
 
 function getRankIcon(index: number): keyof typeof Ionicons.glyphMap {

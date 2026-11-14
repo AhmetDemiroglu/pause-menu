@@ -1,32 +1,51 @@
-# GGHub Mobile - Build Guide
+# Pause Menu Mobile: build guide
 
 ## Prerequisites
-- Node.js 18+, Android Studio, JDK 17, Android SDK 34+
+
+- Node.js 20+, Xcode (with CocoaPods), Android Studio, JDK 17
+- Android SDK path in `android/local.properties`
 
 ## Setup
+
 ```bash
-cd mobile-ui && npm install
+cd mobile-ui
+npm install
+cd ios && pod install && cd ..
 ```
 
-Create `.env`: `EXPO_PUBLIC_API_URL=https://api.gghub.social`
+`expo prebuild` is never used. Native changes go directly into `ios/` and `android/`.
 
-## Development
+## Version bump
+
+One command updates `app.json`, `package.json`, `ios/GGHub/Info.plist`, the Xcode project and
+`android/app/build.gradle`:
+
 ```bash
-npx expo start          # Dev server
-npx expo run:android    # Android device/emulator
+npm run bump <version> [iosBuild] [androidVersionCode] [androidVersionName]
 ```
 
-## Release Build (AAB)
-1. Keystore: `keytool -genkeypair -v -storetype PKCS12 -keystore android/app/gghub-release.keystore -alias gghub -keyalg RSA -keysize 2048 -validity 10000`
-2. Add to `android/gradle.properties`: store/key passwords
-3. Add signing config to `android/app/build.gradle`
-4. Build: `cd android && ./gradlew bundleRelease`
-5. Output: `android/app/build/outputs/bundle/release/app-release.aab`
+Example: `npm run bump 2.0.0 20 20 2.0.0`
 
-## Android Studio
-Open `android/` folder > Build > Generate Signed Bundle/APK
+## iOS
 
-## Prebuild
-`npx expo prebuild --platform android --clean`
+```bash
+open ios/GGHub.xcworkspace
+```
 
-## Package ID: `com.gghub.mobile`
+Product > Archive, then Distribute App > App Store Connect. Always open the `.xcworkspace`.
+
+## Android
+
+```bash
+open -a "Android Studio" android
+```
+
+Build > Generate Signed Bundle / APK > Android App Bundle, sign with the upload keystore
+(kept outside the repo, never committed). Output:
+`android/app/build/outputs/bundle/release/app-release.aab`.
+
+## Identifiers
+
+- iOS bundle id and Android package: `com.gghub.mobile`
+- Internal Xcode target and Gradle project name: `GGHub` (not user facing)
+- URL scheme: `pausemenu`

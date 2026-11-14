@@ -82,8 +82,8 @@ export function AiInteractionSetting({ variant = 'card', style }: AiInteractionS
       style={[
         variant === 'card' ? styles.card : styles.compact,
         {
-          borderColor: variant === 'card' ? colors.border : 'rgba(139, 92, 246, 0.35)',
-          backgroundColor: variant === 'card' ? 'transparent' : 'rgba(139, 92, 246, 0.06)',
+          borderColor: variant === 'card' ? colors.border : 'rgba(162, 75, 255, 0.35)',
+          backgroundColor: variant === 'card' ? 'transparent' : 'rgba(162, 75, 255, 0.06)',
         },
         style,
       ]}
@@ -91,7 +91,7 @@ export function AiInteractionSetting({ variant = 'card', style }: AiInteractionS
       <View style={styles.row}>
         <View style={styles.texts}>
           <View style={styles.titleRow}>
-            <Ionicons name="hardware-chip-outline" size={16} color="#8b5cf6" />
+            <Ionicons name="hardware-chip-outline" size={16} color="#A24BFF" />
             <Text style={[styles.title, { color: colors.text }]}>{m.interactionTitle}</Text>
           </View>
           {variant === 'card' ? (

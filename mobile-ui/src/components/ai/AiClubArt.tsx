@@ -45,18 +45,18 @@ export function aiPromoScript(locale: string): { speaker: string; key: (typeof A
 }
 
 const CONFETTI = [
-  { x: 18, y: 14, w: 12, h: 5, r: 25, c: '#facc15' },
-  { x: 120, y: 170, w: 10, h: 4, r: -30, c: '#22d3ee' },
+  { x: 18, y: 14, w: 12, h: 5, r: 25, c: '#F5B700' },
+  { x: 120, y: 170, w: 10, h: 4, r: -30, c: '#FF8A1F' },
   { x: 210, y: 22, w: 8, h: 8, r: 45, c: '#f472b6' },
-  { x: 300, y: 180, w: 12, h: 5, r: 15, c: '#a3e635' },
+  { x: 300, y: 180, w: 12, h: 5, r: 15, c: '#FF8A1F' },
   { x: 250, y: 120, w: 7, h: 7, r: 20, c: '#fb923c' },
   { x: 60, y: 110, w: 9, h: 4, r: -20, c: '#c084fc' },
-  { x: 330, y: 60, w: 10, h: 4, r: 60, c: '#fde047' },
+  { x: 330, y: 60, w: 10, h: 4, r: 60, c: '#FFD08A' },
 ];
 
 const STARS = [
-  { x: 160, y: 40, s: 7, c: '#fde047' },
-  { x: 40, y: 175, s: 6, c: '#67e8f9' },
+  { x: 160, y: 40, s: 7, c: '#FFD08A' },
+  { x: 40, y: 175, s: 6, c: '#FFB36B' },
   { x: 285, y: 95, s: 6, c: '#f9a8d4' },
   { x: 345, y: 150, s: 5, c: '#bef264' },
 ];
@@ -76,23 +76,23 @@ export function AiClubBackground({ style }: { style?: StyleProp<ViewStyle> }) {
       <Svg width="100%" height="100%" viewBox="0 0 360 200" preserveAspectRatio="xMidYMid slice">
         <Defs>
           <SvgGradient id="aiBg" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor="#3b0764" />
-            <Stop offset="0.55" stopColor="#1e1033" />
-            <Stop offset="1" stopColor="#0c4a6e" />
+            <Stop offset="0" stopColor="#2A0F4D" />
+            <Stop offset="0.55" stopColor="#1C1530" />
+            <Stop offset="1" stopColor="#5A1235" />
           </SvgGradient>
         </Defs>
         <Rect width="360" height="200" fill="url(#aiBg)" />
-        <Circle cx="0" cy="0" r="110" fill="#d946ef" opacity={0.28} />
-        <Circle cx="360" cy="30" r="90" fill="#22d3ee" opacity={0.2} />
+        <Circle cx="0" cy="0" r="110" fill="#FF2E88" opacity={0.28} />
+        <Circle cx="360" cy="30" r="90" fill="#FF8A1F" opacity={0.2} />
         <Circle cx="260" cy="220" r="100" fill="#f59e0b" opacity={0.18} />
-        <Circle cx="120" cy="230" r="80" fill="#8b5cf6" opacity={0.3} />
+        <Circle cx="120" cy="230" r="80" fill="#A24BFF" opacity={0.3} />
 
-        <G stroke="rgba(167,139,250,0.45)" strokeWidth={1.6} fill="none" strokeLinecap="round">
+        <G stroke="rgba(201,166,255,0.45)" strokeWidth={1.6} fill="none" strokeLinecap="round">
           <Path d="M0 150 H40 L60 130 H100" />
           <Path d="M360 70 H320 L300 90 H260" />
         </G>
-        <Circle cx="100" cy="130" r="3" fill="#a78bfa" />
-        <Circle cx="260" cy="90" r="3" fill="#a78bfa" />
+        <Circle cx="100" cy="130" r="3" fill="#C9A6FF" />
+        <Circle cx="260" cy="90" r="3" fill="#C9A6FF" />
 
         {CONFETTI.map((p, i) => (
           <Rect
@@ -123,11 +123,11 @@ export function AiClubBackground({ style }: { style?: StyleProp<ViewStyle> }) {
 
         {/* Gamepad */}
         <G transform="translate(318 178) rotate(-12)" opacity={0.75}>
-          <Rect x="-20" y="-9" width="40" height="18" rx="9" fill="#22d3ee" />
-          <Rect x="-13" y="-1.5" width="8" height="3" rx="1" fill="#1e1033" />
-          <Rect x="-10.5" y="-4.5" width="3" height="9" rx="1" fill="#1e1033" />
-          <Circle cx="8" cy="-2" r="2.2" fill="#1e1033" />
-          <Circle cx="13" cy="2.5" r="2.2" fill="#1e1033" />
+          <Rect x="-20" y="-9" width="40" height="18" rx="9" fill="#FF8A1F" />
+          <Rect x="-13" y="-1.5" width="8" height="3" rx="1" fill="#1C1530" />
+          <Rect x="-10.5" y="-4.5" width="3" height="9" rx="1" fill="#1C1530" />
+          <Circle cx="8" cy="-2" r="2.2" fill="#1C1530" />
+          <Circle cx="13" cy="2.5" r="2.2" fill="#1C1530" />
         </G>
       </Svg>
     </View>
@@ -233,5 +233,5 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   bubbleText: { color: '#18181b', fontSize: 13, lineHeight: 17 },
-  bubbleHandle: { color: '#6d28d9', fontWeight: '700', fontSize: 11 },
+  bubbleHandle: { color: '#5B0FB0', fontWeight: '700', fontSize: 11 },
 });

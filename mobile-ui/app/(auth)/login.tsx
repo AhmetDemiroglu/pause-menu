@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -16,6 +15,7 @@ import { useLocale } from '@/src/hooks/use-locale';
 import { login as loginApi } from '@/src/api/auth';
 import { Input } from '@/src/components/common/Input';
 import { Button } from '@/src/components/common/Button';
+import { BrandLogo } from '@/src/components/common/BrandLogo';
 import { SocialAuthButtons } from '@/src/components/auth/SocialAuthButtons';
 import { useToast } from '@/src/components/common/Toast';
 import { FontSize, Spacing, BorderRadius } from '@/src/constants/theme';
@@ -80,11 +80,7 @@ export default function LoginScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <Image
-              source={require('@/assets/images/logo2.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+            <BrandLogo variant="primary" height={84} style={styles.logo} />
             <Text style={[styles.title, { color: colors.text }]}>{t.loginTitle}</Text>
             <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{t.loginSubtitle}</Text>
           </View>
@@ -174,9 +170,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xxxl,
   },
   logo: {
-    width: 160,
-    height: 72,
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.lg,
   },
   title: {
     fontSize: FontSize.xxl,

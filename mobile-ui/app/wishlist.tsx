@@ -78,7 +78,7 @@ export default function WishlistScreen() {
               <View style={styles.ratingRow}>
                 <Ionicons name="star" size={14} color={colors.star} />
                 <Text style={[styles.ratingText, { color: colors.textSecondary }]}>
-                  {item.gghubRating.toFixed(1)} {messages.wishlistPage.gghubRating}
+                  {item.gghubRating.toFixed(1)} {messages.wishlistPage.siteRating}
                 </Text>
               </View>
             ) : null}

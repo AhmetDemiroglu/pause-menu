@@ -14,7 +14,7 @@ interface RecentReportsListProps {
 }
 
 const variantToColor: Record<string, { bg: string; text: string }> = {
-  info: { bg: '#3b82f620', text: '#3b82f6' },
+  info: { bg: '#FF5FA620', text: '#FF5FA6' },
   success: { bg: '#22c55e20', text: '#22c55e' },
   danger: { bg: '#ef444420', text: '#ef4444' },
 };

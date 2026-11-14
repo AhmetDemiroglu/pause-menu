@@ -85,7 +85,7 @@ export function MentionText({ body, style, mentionStyle, numberOfLines, linkify 
   const { colors, isDark } = useTheme();
   const parts = useMemo(() => parseMentions(body ?? ''), [body]);
 
-  // Koyu temada primary (#6366f1) koyu zeminde sonuk kaliyor; bir ton acigi
+  // Koyu temada primary (#FF2E88) koyu zeminde sonuk kaliyor; bir ton acigi
   // kullaniliyor. Web'deki --mention token'i da ayni iki degeri tasiyor.
   const accent = isDark ? colors.primaryLight : colors.primary;
   const mentionStyles = [{ color: accent, fontWeight: '600' as const }, mentionStyle];

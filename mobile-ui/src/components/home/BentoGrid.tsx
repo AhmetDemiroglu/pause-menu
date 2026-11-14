@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/src/hooks/use-theme';
 import { useLocale } from '@/src/hooks/use-locale';
+import { BrandLogo } from '@/src/components/common/BrandLogo';
 import { FontSize, Spacing, BorderRadius, Shadows } from '@/src/constants/theme';
 import * as haptics from '@/src/utils/haptics';
 import { TrendingGames } from './TrendingGames';
@@ -41,6 +42,7 @@ export function BentoGrid({ trendingGames, leaderboard, showJoinCta }: BentoGrid
           <Ionicons name="calendar" size={22} color={colors.primary} />
         </View>
         <View style={styles.agendaTextWrap}>
+          <BrandLogo variant="primary" height={22} style={styles.agendaLogo} />
           <Text style={[styles.agendaTitle, { color: colors.text }]}>
             {messages.agenda.homeCardTitle}
           </Text>
@@ -60,7 +62,7 @@ export function BentoGrid({ trendingGames, leaderboard, showJoinCta }: BentoGrid
           end={{ x: 1, y: 1 }}
           style={[styles.ctaCard, Shadows.md]}
         >
-          <Ionicons name="game-controller" size={32} color="#ffffff" />
+          <BrandLogo variant="primary" height={44} tone="onDark" />
           <Text style={styles.ctaTitle}>{messages.home.joinCta}</Text>
           <Text style={styles.ctaDescription}>{messages.home.joinDescription}</Text>
           <Pressable
@@ -103,6 +105,10 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 2,
   },
+  agendaLogo: {
+    alignSelf: 'flex-start',
+    marginBottom: 2,
+  },
   agendaTitle: {
     fontSize: FontSize.md,
     fontWeight: '700',
@@ -136,7 +142,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   ctaButtonText: {
-    color: '#6366f1',
+    color: '#FF2E88',
     fontSize: FontSize.md,
     fontWeight: '700',
   },

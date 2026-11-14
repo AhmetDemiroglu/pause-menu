@@ -38,7 +38,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     factory.startReactNative(withModuleName: "main", in: window, launchOptions: launchOptions)
   }
 
-  // Uygulama acikken gelen ozel sema baglantilari (gghub://, Google girisi donusu).
+  // Uygulama acikken gelen ozel sema baglantilari (pausemenu://, Google girisi donusu).
   func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
     guard let context = URLContexts.first else { return }
     var options: [UIApplication.OpenURLOptionsKey: Any] = [:]

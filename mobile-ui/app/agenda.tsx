@@ -318,7 +318,7 @@ function ReleaseBadge({ released, locale, tbaLabel }: { released: string | null;
   const hasDate = !!y && !!m && !!d;
   const upcoming = hasDate && isUnreleased(released);
   const label = hasDate ? formatShortCalendarDate(y, m, d, locale) : tbaLabel;
-  const background = !hasDate ? 'rgba(15,23,42,0.85)' : upcoming ? 'rgba(251,191,36,0.95)' : 'rgba(52,211,153,0.95)';
+  const background = !hasDate ? 'rgba(20,16,31,0.85)' : upcoming ? 'rgba(251,191,36,0.95)' : 'rgba(52,211,153,0.95)';
   const foreground = !hasDate ? '#ffffff' : '#000000';
 
   return (

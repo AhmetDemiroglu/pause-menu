@@ -47,7 +47,7 @@ export interface Game {
   esrbRating?: string;
   gghubRating?: number;
   gghubRatingCount?: number;
-  /** IGDB toplam puani (0-100). Metacritic/RAWG/GGHub uclusunun 4. kaynagi. */
+  /** IGDB toplam puani (0-100). Metacritic/RAWG/site puani uclusunun 4. kaynagi. */
   igdbRating?: number | null;
   igdbRatingCount?: number | null;
   isInWishlist?: boolean;

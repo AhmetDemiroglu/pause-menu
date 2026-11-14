@@ -1,6 +1,6 @@
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 
-const API_BASE = process.env.EXPO_PUBLIC_API_URL || 'https://api.gghub.social';
+const API_BASE = process.env.EXPO_PUBLIC_API_URL || 'https://api.pausemenu.app';
 
 /** Avatar 28-64 px'lik dairelerde gösteriliyor; 512 px her ekran yoğunluğu için yeterli. */
 export const AVATAR_MAX_EDGE = 512;

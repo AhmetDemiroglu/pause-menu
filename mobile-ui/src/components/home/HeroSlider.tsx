@@ -120,8 +120,8 @@ export function HeroSlider({ games }: HeroSliderProps) {
                   <ScorePillRow
                     metacritic={item.metacriticScore}
                     rawg={item.rawgRating}
-                    gghub={item.gghubRating > 0 ? item.gghubRating : null}
-                    gghubCount={item.gghubRatingCount}
+                    site={item.gghubRating > 0 ? item.gghubRating : null}
+                    siteCount={item.gghubRatingCount}
                     igdb={item.igdbRating}
                     size="sm"
                     gap={6}

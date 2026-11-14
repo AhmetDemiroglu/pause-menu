@@ -8,7 +8,7 @@ import { MentionTargetType, type PostMention } from '@/src/models/post';
 
 /**
  * Gonderi metnindeki TIPLI etiket token'i. Backend'deki
- * GGHub.Core/Specifications/MentionTokens.PatternSource ile AYNI olmali.
+ * Backend MentionTokens.PatternSource (Core/Specifications) ile AYNI olmali.
  *
  * Lookbehind YOK: Hermes her surumde desteklemiyor ve regex literal'i parse
  * edilemezse modul yuklenirken patlar (MentionText'teki ayni gerekce).

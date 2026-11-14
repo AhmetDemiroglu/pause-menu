@@ -17,7 +17,7 @@ const CYCLE_MS = 4200;
 const CYCLES = 3;
 
 /** Marka paleti (primary/accent) artı üç aksan. */
-const COLORS = ['#6366f1', '#8b5cf6', '#f59e0b', '#22c55e', '#f43f5e'];
+const COLORS = ['#FF2E88', '#A24BFF', '#f59e0b', '#22c55e', '#f43f5e'];
 
 /** Deterministik sozde-rastgele: her parca her acilista ayni yolu izler. */
 function seeded(index: number, salt: number): number {

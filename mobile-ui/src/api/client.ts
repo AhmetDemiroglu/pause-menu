@@ -14,7 +14,7 @@ type RateLimitedAxiosError = AxiosError & {
 };
 
 const API_BASE =
-  process.env.EXPO_PUBLIC_API_URL || 'https://api.gghub.social';
+  process.env.EXPO_PUBLIC_API_URL || 'https://api.pausemenu.app';
 
 export const axiosInstance = axios.create({
   baseURL: `${API_BASE}/api`,

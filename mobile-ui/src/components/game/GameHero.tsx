@@ -75,8 +75,8 @@ export function GameHero({ game, scrollY }: GameHeroProps) {
           <ScorePillRow
             metacritic={game.metacritic}
             rawg={game.rating}
-            gghub={game.gghubRating}
-            gghubCount={game.gghubRatingCount}
+            site={game.gghubRating}
+            siteCount={game.gghubRatingCount}
             igdb={game.igdbRating}
             size="md"
             gap={8}

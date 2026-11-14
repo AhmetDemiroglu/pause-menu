@@ -86,7 +86,7 @@ export interface Messages {
   similarGames: string;
   syncMetacritic: string;
   metacriticScore: string;
-  gghubRating: string;
+  siteRating: string;
   noReviews: string;
   noReviewsDescription: string;
   noReviewsLockedDescription: string;

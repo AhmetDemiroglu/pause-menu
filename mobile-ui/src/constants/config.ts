@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://api.gghub.social';
+export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://api.pausemenu.app';
 
 // OAuth (set in .env / EAS env). Social buttons stay hidden until the Google client IDs exist.
 export const GOOGLE_IOS_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || '';
@@ -6,7 +6,7 @@ export const GOOGLE_WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID
 export const OAUTH_ENABLED = Boolean(GOOGLE_IOS_CLIENT_ID || GOOGLE_WEB_CLIENT_ID);
 
 export const APP_CONFIG = {
-  appName: 'GGHub',
+  appName: 'Pause Menu',
   version: '1.0.0',
   defaultLocale: 'en-US' as const,
   supportedLocales: ['tr', 'en-US'] as const,

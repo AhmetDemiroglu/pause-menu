@@ -56,7 +56,7 @@ export function GamerDnaChart({ data, username }: GamerDnaChartProps) {
 
   function handleShare() {
     const displayName = username || g.defaultUserName;
-    const url = username ? `https://gghub.social/profiles/${username}` : 'https://gghub.social';
+    const url = username ? `https://pausemenu.app/profiles/${username}` : 'https://pausemenu.app';
     const text = g.shareText.replace('{displayName}', displayName).replace('{url}', url);
     Clipboard.setStringAsync(text);
     showToast('success', g.shareSuccess);

@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/src/hooks/use-theme';
 import { useLocale } from '@/src/hooks/use-locale';
-import { BorderRadius, FontSize, Spacing } from '@/src/constants/theme';
+import { BorderRadius, FontSize, Gradients, Spacing } from '@/src/constants/theme';
 import type { AppReleaseCheck } from '@/src/models/app-release';
 import { DinoRunner, type DinoRunnerHandle } from './DinoRunner';
 
@@ -59,7 +59,7 @@ export function BlockedScreen({ result, onRetry }: BlockedScreenProps) {
           Butonlar kendi Pressable'lari oldugu icin dokunusu kendileri alir, oyuna gitmez. */}
       <Pressable style={styles.content} onPress={() => game.current?.tap()}>
         <LinearGradient
-          colors={isMaintenance ? ['#f59e0b', '#ef4444'] : ['#6366f1', '#8b5cf6']}
+          colors={isMaintenance ? Gradients.alert : Gradients.sunset}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.badge}
