@@ -62,7 +62,7 @@ export function BentoGrid({ trendingGames, leaderboard, showJoinCta }: BentoGrid
           end={{ x: 1, y: 1 }}
           style={[styles.ctaCard, Shadows.md]}
         >
-          <BrandLogo variant="primary" height={44} tone="onDark" />
+          <BrandLogo variant="primary" height={44} tone="mono" />
           <Text style={styles.ctaTitle}>{messages.home.joinCta}</Text>
           <Text style={styles.ctaDescription}>{messages.home.joinDescription}</Text>
           <Pressable
