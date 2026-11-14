@@ -36,7 +36,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
     // take 5s+ on a cold start and WhatsApp's crawler timed out before the image
     // loaded, so the shared link showed no thumbnail. A static file is served
     // instantly and reliably by every crawler.
-    const ogImage = `${siteUrl}/og/download-app-${l}.jpg`;
+    const ogImage = `${siteUrl}/og/pausemenu-download-${l}.jpg`;
 
     return {
         title: m.title,

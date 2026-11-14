@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { Play } from "lucide-react";
 import { APP_STORE_URL, GOOGLE_PLAY_URL } from "@/core/lib/store-links";
 import { AppleLogo, StoreButton } from "@/core/components/other/public/store-buttons";
 import { startVisit, trackDownloadEvent } from "@/core/lib/download-analytics";
 import { metaPixelCustom } from "@/core/lib/meta-pixel";
-import logoSrc from "@core/assets/app-icon.png";
+import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
 
 /**
  * Standalone, shareable landing page (pausemenu.app/download-app).
@@ -93,10 +92,9 @@ export default function DownloadAppClient() {
             <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-violet-600/25 blur-3xl" />
 
             <div className="relative z-10 w-full max-w-sm rounded-3xl border border-white/10 bg-white/[0.03] p-6 text-center shadow-2xl backdrop-blur sm:p-8">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-white/10 sm:h-20 sm:w-20">
-                    <Image src={logoSrc} alt="Pause Menu" width={80} height={80} className="h-16 w-16 object-contain sm:h-20 sm:w-20" />
-                </div>
-                <h1 className="bg-gradient-to-r from-[#FF2E88] to-[#FF8A1F] bg-clip-text text-3xl font-black tracking-tight text-transparent">Pause Menu</h1>
+                <h1 className="flex justify-center">
+                    <BrandScriptLogo tone="dark" priority className="h-20 sm:h-24" />
+                </h1>
 
                 {/* Bilingual tagline: English primary, Turkish subtitle */}
                 <p className="mx-auto mt-3 max-w-xs text-[15px] font-medium leading-snug text-white/85">

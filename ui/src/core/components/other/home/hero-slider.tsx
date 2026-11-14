@@ -287,7 +287,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                         <div className="absolute left-1/2 top-[11px] z-20 h-[15px] w-[66px] -translate-x-1/2 rounded-full bg-black" />
                                         <div className="overflow-hidden rounded-[1.9rem] bg-black">
                                             <Image
-                                                src={locale === "tr" ? "/app-screen-tr.jpg" : "/app-screen-en.jpg"}
+                                                src={locale === "tr" ? "/pausemenu-app-tr.jpg" : "/pausemenu-app-en.jpg"}
                                                 alt={t("common.appName")}
                                                 width={540}
                                                 height={1174}

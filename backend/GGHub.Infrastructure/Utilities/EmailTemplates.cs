@@ -2,7 +2,7 @@
 {
     public static class EmailTemplates
     {
-        private const string LogoUrl = "https://assets.pausemenu.app/brand/email-logo.png";
+        private const string LogoUrl = "https://pausemenu.app/brand/email-wordmark.png";
 
         private const string BrandStart = "#FF8A1F";
         private const string BrandEnd = "#C2187A";
@@ -33,14 +33,15 @@
                                       border-radius: 8px 8px 0 0;
                                     ""
                                   >
-                                    <img
-                                      src=""https://assets.pausemenu.app/brand/email-logo.png""
-                                      alt=""Pause Menu""
-                                      width=""88""
-                                      height=""88""
-                                      style=""display:block;margin:0 auto 8px;border:0;outline:none;""
-                                    />
-                                    <h1 style=""margin:0;color:#ffffff;font-size:26px;font-weight:800;letter-spacing:.2px;"">Pause Menu</h1>
+                                    <h1 style=""margin:0;font-size:0;line-height:0;"">
+                                      <img
+                                        src=""https://pausemenu.app/brand/email-wordmark.png""
+                                        alt=""Pause Menu""
+                                        width=""240""
+                                        height=""97""
+                                        style=""display:block;margin:0 auto 8px;border:0;outline:none;""
+                                      />
+                                    </h1>
                                     <div style=""margin-top:6px;color:rgba(255,255,255,.9);font-size:14px;font-weight:300;font-style:italic;letter-spacing:.15px;"">
                                       Press pause. Find your people.
                                     </div>

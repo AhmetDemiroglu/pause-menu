@@ -6,7 +6,7 @@ import { ImageResponse } from "next/og";
 // on demand took 5s+ on a cold start (Satori + fetching the phone shot & logo), so
 // WhatsApp's crawler timed out and the shared link showed no thumbnail. The cards
 // are now pre-rendered to static files served instantly:
-//   public/og/download-app-en.jpg  ·  public/og/download-app-tr.jpg
+//   public/og/pausemenu-download-en.jpg  ·  public/og/pausemenu-download-tr.jpg
 // To refresh them after editing this layout: deploy, fetch
 //   /download-app/og?lang=en|tr, then flatten→JPEG (sharp) into public/og/.
 export const runtime = "edge";
@@ -34,8 +34,8 @@ export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url);
     const lang = (searchParams.get("lang") || "en").toLowerCase().startsWith("tr") ? "tr" : "en";
     const c = COPY[lang];
-    const shot = `${origin}/app-screen-${lang}.jpg`;
-    const logo = `${origin}/og/logo.png`;
+    const shot = `${origin}/pausemenu-app-${lang}.jpg`;
+    const wordmark = `${origin}/og/wordmark-on-dark.png`;
 
     return new ImageResponse(
         (
@@ -86,19 +86,18 @@ export async function GET(request: Request) {
                     }}
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <img src={logo} width={66} height={66} alt="" />
-                        <div style={{ display: "flex", marginLeft: "18px", fontSize: "44px", fontWeight: 800, color: "white" }}>Pause Menu</div>
+                        <img src={wordmark} width={230} height={93} alt="" />
                     </div>
-                    <div style={{ display: "flex", marginTop: "38px", fontSize: "20px", letterSpacing: "5px", color: "#FF8A1F", fontWeight: 700 }}>
+                    <div style={{ display: "flex", marginTop: "30px", fontSize: "20px", letterSpacing: "5px", color: "#FF8A1F", fontWeight: 700 }}>
                         {c.kicker}
                     </div>
-                    <div style={{ display: "flex", marginTop: "12px", fontSize: "66px", fontWeight: 800, color: "white", lineHeight: 1.05 }}>
+                    <div style={{ display: "flex", marginTop: "10px", fontSize: "54px", fontWeight: 800, color: "white", lineHeight: 1.05, whiteSpace: "nowrap" }}>
                         {c.title}
                     </div>
                     <div style={{ display: "flex", marginTop: "22px", fontSize: "27px", color: "rgba(255,255,255,0.72)", lineHeight: 1.4, maxWidth: "540px" }}>
                         {c.sub}
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", marginTop: "40px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", marginTop: "32px" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <div
                                 style={{
