@@ -95,8 +95,8 @@ export async function generateMetadata(): Promise<Metadata> {
         itunes: { appId: APP_STORE_ID },
         // Facebook/Meta App Links: paylasilan baglanti uygulama yukluyse uygulamada acilir.
         appLinks: {
-            ios: { url: "gghub://", app_store_id: APP_STORE_ID, app_name: SITE_NAME },
-            android: { package: ANDROID_PACKAGE, url: "gghub://", app_name: SITE_NAME },
+            ios: { url: "pausemenu://", app_store_id: APP_STORE_ID, app_name: SITE_NAME },
+            android: { package: ANDROID_PACKAGE, url: "pausemenu://", app_name: SITE_NAME },
         },
         formatDetection: { telephone: false },
         openGraph: {
