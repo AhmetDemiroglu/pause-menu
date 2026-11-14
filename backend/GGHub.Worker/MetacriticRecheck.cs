@@ -10,7 +10,7 @@ namespace GGHub.Worker;
 /// "--recheck-metacritic &lt;baslangic&gt; [--apply]": verilen tarihten bugune kadar cikmis ve
 /// Metacritic puani olan oyunlari yeniden sorgular. Eslestirici artik remake'i (ayni isim,
 /// yillar farkli) reddettigi icin, eski kuralla orijinalin puanini almis kayitlar burada
-/// "no_results"/"no_score" doner. Ornek: 2026 Ocarina of Time'da 1998 orijinalinin 96'si.
+/// "no_results"/"no_score" doner.
 ///
 /// Varsayilan KURU KOSU: yalniz listeler. --apply verilirse bu kayitlarda puan silinir ve
 /// durum isareti yazilir (MetacriticSyncJob normal araliklarla yeniden dener).

@@ -278,7 +278,7 @@ namespace GGHub.Infrastructure.Services
 
             if (game.Metacritic != null)
             {
-                // Eslestirici artik bu oyunu tanimiyor (remake'e orijinal puani yazilmisti vb.).
+                // Eslestirici artik bu oyunu tanimiyor (orn. remake'e orijinalin puani yazilmisti).
                 game.Metacritic = null;
                 context.Entry(game).Property(x => x.Metacritic).IsModified = true;
             }

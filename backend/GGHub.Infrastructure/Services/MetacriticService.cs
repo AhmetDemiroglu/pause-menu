@@ -221,8 +221,8 @@ namespace GGHub.Infrastructure.Services
 
                 var closest = ClosestByDate(nameMatches, targetDate, out var daysDiff);
 
-                // Remake/yeniden yapim: isim birebir ayni ama Metacritic'te yalniz orijinal var.
-                // 2026 Ocarina of Time'a 1998 orijinalinin 96'si boyle yazildi. Kaynaklar arasi
+                // Remake/yeniden yapim: isim birebir ayni ama Metacritic'te yalniz orijinal var
+                // (remake henuz puanlanmamis). Orijinalin puanini almasin. Kaynaklar arasi
                 // tarih kaymasi (erken erisim vs 1.0) birkac yili gecmez; 4 yil ustu ayri oyundur.
                 if (closest != null && daysDiff > MaxSameGameDateGapDays)
                 {
