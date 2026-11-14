@@ -14,7 +14,7 @@ export const LOGO_URL = `${SITE_URL}/og/logo.png`;
 export const APP_STORE_ID = "6781281375";
 
 export const SOCIAL_PROFILES = {
-    x: "https://x.com/gghub_tr",
+    x: "https://x.com/pauseMenu_",
     github: "https://github.com/AhmetDemiroglu/pause-menu",
     appStore: APP_STORE_URL,
     googlePlay: GOOGLE_PLAY_URL ?? "",
