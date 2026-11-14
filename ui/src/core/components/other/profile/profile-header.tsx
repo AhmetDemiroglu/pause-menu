@@ -7,7 +7,6 @@ import dayjs from "dayjs";
 import "dayjs/locale/tr";
 import { Avatar, AvatarFallback, AvatarImage } from "@/core/components/ui/avatar";
 import { Button } from "@/core/components/ui/button";
-import { Badge } from "@/core/components/ui/badge";
 import { Separator } from "@/core/components/ui/separator";
 import { Cake, Calendar, Mail, Phone, UserPlus, UserMinus, Settings, MessageSquareMore, MessageSquareLock, Ban, ShieldOff, Flag } from "lucide-react";
 import { ReportDialog } from "@core/components/base/report-dialog";
@@ -463,9 +462,9 @@ export default function ProfileHeader({ profile, isOwnProfile = false }: Profile
 
                     {profile.status && (
                         <div className="flex items-center gap-2 pt-1">
-                            <Badge variant="secondary" className="text-xs">
+                            <span className="text-xs font-semibold text-foreground/70">
                                 {t("profile.header.statusBadge")}
-                            </Badge>
+                            </span>
                             <p className="text-sm text-muted-foreground">{profile.status}</p>
                         </div>
                     )}
@@ -549,9 +548,9 @@ export default function ProfileHeader({ profile, isOwnProfile = false }: Profile
                     </div>
 
                     {isFollowing && (
-                        <Badge variant="secondary" className="shrink-0">
+                        <span className="shrink-0 text-xs font-medium text-muted-foreground">
                             {t("profile.header.followingBadge")}
-                        </Badge>
+                        </span>
                     )}
                 </div>
             </div>

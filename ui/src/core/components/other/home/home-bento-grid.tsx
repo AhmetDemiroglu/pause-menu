@@ -5,7 +5,6 @@ import Link from "next/link";
 import { HomeGame, LeaderboardUser } from "@/models/home/home.model";
 import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/core/components/ui/avatar";
-import { Badge } from "@/core/components/ui/badge";
 import { TrendingUp, Trophy, Star, Crown } from "lucide-react";
 import { getGameImageUrl, getImageUrl } from "@/core/lib/get-image-url";
 import { UserLink } from "@/core/components/base/user-link";
@@ -104,9 +103,9 @@ export default function HomeBentoGrid({ trending, leaders }: HomeBentoGridProps)
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center justify-between">
                                                     <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{user.username}</p>
-                                                    <Badge variant="secondary" className="text-[10px] h-5 px-1.5">
+                                                    <span className="text-[10px] font-medium text-muted-foreground">
                                                         Lvl {user.level}
-                                                    </Badge>
+                                                    </span>
                                                 </div>
                                                 <div className="flex items-center justify-between mt-0.5">
                                                     <p className="text-xs text-muted-foreground truncate">{user.levelName}</p>

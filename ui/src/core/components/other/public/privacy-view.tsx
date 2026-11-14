@@ -335,7 +335,7 @@ export function PrivacyView() {
                             <Bot className="h-5 w-5" />
                         </div>
                         <h2 className="text-base font-semibold tracking-tight">{t.consent.title}</h2>
-                        <span className="rounded-full bg-violet-500/15 px-2 py-0.5 text-[11px] font-semibold text-violet-700 dark:text-violet-300">{t.consent.version}</span>
+                        <span className="text-xs text-muted-foreground">{t.consent.version}</span>
                     </div>
                     <div className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
                         <p>{t.consent.lead}</p>

@@ -8,7 +8,6 @@ import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { buildLocalizedPathname } from "@/i18n/config";
 import { getGameImageUrl, getImageUrl } from "@/core/lib/get-image-url";
 import { Avatar, AvatarFallback, AvatarImage } from "@/core/components/ui/avatar";
-import { Badge } from "@/core/components/ui/badge";
 
 interface HomeRightSidebarProps {
     trending: HomeGame[];
@@ -88,9 +87,9 @@ export default function HomeRightSidebar({ trending, leaders }: HomeRightSidebar
                                 <div className="min-w-0 flex-1">
                                     <p className="truncate text-xs font-semibold transition-colors group-hover:text-primary">{user.username}</p>
                                     <div className="flex items-center gap-1.5">
-                                        <Badge variant="secondary" className="h-4 px-1 text-[9px]">
+                                        <span className="text-[10px] font-medium text-muted-foreground">
                                             {t("home.levelShort")} {user.level}
-                                        </Badge>
+                                        </span>
                                         <span className="text-[10px] font-medium text-primary">{user.xp.toLocaleString(locale === "tr" ? "tr-TR" : "en-US")} XP</span>
                                     </div>
                                 </div>

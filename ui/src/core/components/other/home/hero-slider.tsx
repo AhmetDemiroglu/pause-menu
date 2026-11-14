@@ -345,7 +345,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                                     <ScoreBadge score={game.gghubRating.toFixed(1)} logo={logoSrc} logoAlt="Pause Menu" accentClassName="text-pink-400" />
                                                 ) : null}
 
-                                                <span className="rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-xs font-medium text-white/70 backdrop-blur-md">
+                                                <span className="text-xs font-medium text-white/70 drop-shadow">
                                                     {releaseYear ?? t("common.tba")}
                                                 </span>
 
@@ -382,7 +382,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                     </div>
 
                                     {/* Slayt sayacı */}
-                                    <div className="absolute right-5 top-5 z-10 rounded-full border border-white/10 bg-black/40 px-2.5 py-1 font-mono text-[11px] tracking-widest text-white/60 backdrop-blur-md md:right-8 md:top-6">
+                                    <div className="absolute right-5 top-5 z-10 font-mono text-[11px] tracking-widest text-white/60 drop-shadow md:right-8 md:top-6">
                                         {String(index + FIXED_SLIDES + 1).padStart(2, "0")}&thinsp;/&thinsp;{String(slideCount).padStart(2, "0")}
                                     </div>
                                 </div>

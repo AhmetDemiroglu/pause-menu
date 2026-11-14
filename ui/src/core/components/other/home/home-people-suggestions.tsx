@@ -309,7 +309,7 @@ function SuggestionReasonChip({ user }: { user: SuggestedUser }) {
 
     if (user.followsYou) {
         return (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
                 <UserCheck className="h-3 w-3" />
                 {t("home.pymk.followsYou")}
             </span>
@@ -318,7 +318,7 @@ function SuggestionReasonChip({ user }: { user: SuggestedUser }) {
 
     if (user.reason === "mutual" && user.mutualFollowerCount > 0) {
         return (
-            <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-primary">
                 <Users className="h-3 w-3" />
                 {t("home.pymk.mutual", { count: user.mutualFollowerCount })}
             </span>
@@ -327,7 +327,7 @@ function SuggestionReasonChip({ user }: { user: SuggestedUser }) {
 
     if (user.reason === "taste" && user.sharedGameCount > 0) {
         return (
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-400">
                 <Gamepad2 className="h-3 w-3" />
                 {t("home.pymk.taste", { count: user.sharedGameCount })}
             </span>
@@ -335,7 +335,7 @@ function SuggestionReasonChip({ user }: { user: SuggestedUser }) {
     }
 
     return (
-        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
             {t("home.pymk.popular")}
         </span>
     );

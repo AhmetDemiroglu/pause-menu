@@ -1,6 +1,6 @@
 "use client";
 
-import { Gamepad2, ListChecks, Star, Users, MessageCircle, Trophy, Sparkles } from "lucide-react";
+import { Gamepad2, ListChecks, Star, Users, MessageCircle, Trophy } from "lucide-react";
 import { AppDownloadCTA } from "@core/components/other/public/app-cta";
 import { useCurrentLocale } from "@/core/contexts/locale-context";
 import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
@@ -52,9 +52,6 @@ export function MarketingView() {
                     className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,46,136,0.18),_transparent_55%),radial-gradient(circle_at_bottom_right,_rgba(255,138,31,0.2),_transparent_60%)]"
                 />
                 <div className="relative flex flex-col items-center">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 text-xs uppercase tracking-[0.25em] text-[#14101F]/70 ring-1 ring-black/10 dark:bg-white/10 dark:text-white/70 dark:ring-white/15">
-                        <Sparkles className="h-3.5 w-3.5 text-orange-700 dark:text-orange-300" /> {t.badge}
-                    </span>
                     <h1 className="mt-6">
                         <span className="sr-only">Pause Menu</span>
                         <BrandScriptLogo priority className="mx-auto h-16 md:h-24" />

@@ -2,7 +2,6 @@
 
 import { ListCategory, ListVisibilitySetting } from "@/models/list/list.model";
 import { useI18n } from "@/core/contexts/locale-context";
-import { Badge } from "@core/components/ui/badge";
 import { Separator } from "@core/components/ui/separator";
 import { Globe, Lock, Users, Tag, Star, List as ListIcon, Users as FollowersIcon } from "lucide-react";
 import React from "react";
@@ -37,25 +36,25 @@ const VisibilityInfo: React.FC<{
     switch (visibility) {
         case ListVisibilitySetting.Public:
             return (
-                <Badge variant="outline" className="border-green-500 text-green-500">
+                <span className="inline-flex items-center text-xs font-medium text-green-500">
                     <Globe className="mr-1 h-3 w-3" />
                     {!isCollapsed && t("lists.public")}
-                </Badge>
+                </span>
             );
         case ListVisibilitySetting.Followers:
             return (
-                <Badge variant="outline" className="border-pink-500 text-pink-500">
+                <span className="inline-flex items-center text-xs font-medium text-pink-500">
                     <Users className="mr-1 h-3 w-3" />
                     {!isCollapsed && t("lists.followers")}
-                </Badge>
+                </span>
             );
         case ListVisibilitySetting.Private:
         default:
             return (
-                <Badge variant="outline" className="border-red-500 text-red-500">
+                <span className="inline-flex items-center text-xs font-medium text-red-500">
                     <Lock className="mr-1 h-3 w-3" />
                     {!isCollapsed && t("lists.private")}
-                </Badge>
+                </span>
             );
     }
 };
@@ -120,15 +119,15 @@ export function ListCard({ list, footer }: ListCardProps) {
 
                 <div className="mb-4 flex flex-col items-start gap-2">
                     <VisibilityInfo visibility={list.visibility} isCollapsed={false} t={t} />
-                    <div className="flex items-center gap-2">
-                        <Badge variant="secondary">
+                    <div className="flex items-center gap-3 text-xs font-medium text-muted-foreground">
+                        <span className="inline-flex items-center">
                             <Tag className="mr-1 h-3 w-3" />
                             {getCategoryLabel(list.category, t)}
-                        </Badge>
-                        <Badge variant="secondary" className="text-yellow-500">
+                        </span>
+                        <span className="inline-flex items-center text-yellow-500">
                             <Star className="mr-1 h-3 w-3 fill-yellow-500" />
                             {list.averageRating.toFixed(1)} ({list.ratingCount})
-                        </Badge>
+                        </span>
                     </div>
                 </div>
 

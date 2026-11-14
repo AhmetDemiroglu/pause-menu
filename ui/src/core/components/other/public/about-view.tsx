@@ -24,10 +24,6 @@ export function AboutView() {
                     <div aria-hidden className="pointer-events-none absolute -bottom-28 -right-16 h-96 w-96 rounded-full bg-[#FF8A1F]/20 blur-3xl" />
                     <div aria-hidden className="pointer-events-none absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-[#7A1FD0]/10 blur-3xl dark:bg-[#5B0FB0]/30" />
                     <div className="relative z-10 flex flex-col items-center gap-5">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-1.5 text-xs font-medium text-[#14101F]/70 ring-1 ring-black/10 dark:bg-white/10 dark:text-white/70 dark:ring-white/15">
-                            <Gamepad2 className="h-4 w-4 text-[#FF2E88]" />
-                            {t("about.badge")}
-                        </span>
                         <BrandScriptLogo priority className="h-16 md:h-20" />
                         <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#FF2E88]">{t("footer.tagline")}</p>
                         <h1 className="text-2xl font-bold tracking-tight text-[#14101F] md:text-3xl dark:text-white">{t("about.title")}</h1>

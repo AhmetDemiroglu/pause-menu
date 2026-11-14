@@ -199,9 +199,9 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
 
         return (
             <span
-                className={`inline-flex items-center gap-1 rounded-full font-semibold ${
-                    size === "md" ? "px-2.5 py-1 text-xs" : "px-2 py-0.5 text-[10px]"
-                } ${game.isUpcoming ? "bg-amber-400/95 text-black" : "bg-emerald-400/95 text-black"}`}
+                className={`inline-flex items-center gap-1 font-semibold drop-shadow ${
+                    size === "md" ? "text-xs" : "text-[10px]"
+                } ${game.isUpcoming ? "text-amber-300" : "text-emerald-300"}`}
             >
                 <CalendarDays className={size === "md" ? "h-3.5 w-3.5" : "h-3 w-3"} />
                 {label}
@@ -275,11 +275,9 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
                 </h3>
                 <div className="flex items-center gap-2.5">
                     {game.platforms?.length ? <PlatformIcons platforms={game.platforms} /> : null}
-                    {game.genres?.slice(0, 2).map((genre) => (
-                        <span key={genre.slug} className="rounded-full border border-white/15 bg-black/40 px-2 py-0.5 text-[10px] text-white/70 backdrop-blur-sm">
-                            {genre.name}
-                        </span>
-                    ))}
+                    {game.genres?.length ? (
+                        <span className="text-[11px] text-white/70">{game.genres.slice(0, 2).map((genre) => genre.name).join(" · ")}</span>
+                    ) : null}
                 </div>
             </div>
         </Link>
@@ -315,11 +313,11 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
                         <h1 className="text-3xl font-black tracking-tight text-white md:text-4xl">{t("agenda.title")}</h1>
                         <p className="max-w-2xl text-sm text-white/60">{t("agenda.subtitle")}</p>
                         {data ? (
-                            <div className="flex items-center gap-2 pt-1">
-                                <span className="rounded-full bg-amber-400/15 px-2.5 py-1 text-xs font-semibold text-amber-300">
+                            <div className="flex items-center gap-3 pt-1 text-xs font-semibold">
+                                <span className="text-amber-300">
                                     {t("agenda.gamesCount", { count: data.counts.upcoming })} · {t("agenda.upcomingShort")}
                                 </span>
-                                <span className="rounded-full bg-emerald-400/15 px-2.5 py-1 text-xs font-semibold text-emerald-300">
+                                <span className="text-emerald-300">
                                     {t("agenda.gamesCount", { count: data.counts.released })} · {t("agenda.releasedShort")}
                                 </span>
                             </div>
@@ -389,7 +387,7 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
                     <div className="flex flex-wrap items-center gap-2">
                         <Search className="h-5 w-5 text-primary" />
                         <h2 className="text-xl font-bold text-foreground">{t("agenda.searchResults")}</h2>
-                        <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
+                        <span className="text-xs text-muted-foreground">
                             {t("agenda.searchHint")}
                         </span>
                     </div>
@@ -489,7 +487,7 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
                                     <div key={monthKey} className="space-y-3">
                                         <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
                                             {monthKey ? monthLabel(Number(monthKey.slice(5, 7))) : t("common.tba")}
-                                            <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-[11px] font-semibold tabular-nums">
+                                            <span className="ml-2 font-semibold tabular-nums text-muted-foreground/70">
                                                 {games.length}
                                             </span>
                                         </h3>
@@ -530,7 +528,7 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
                             <div className="flex items-center gap-2">
                                 <Hourglass className="h-5 w-5 text-violet-400" />
                                 <h2 className="text-xl font-bold text-foreground">{t("agenda.tbaTitle")}</h2>
-                                <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
+                                <span className="text-xs text-muted-foreground">
                                     {t("agenda.tbaHint")}
                                 </span>
                             </div>

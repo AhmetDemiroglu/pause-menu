@@ -144,10 +144,9 @@ const DialogBody = ({ initial }: { initial: MobilePlatform }) => {
                     <div className="min-w-0 pr-8 sm:pr-0">
                         <DialogPrimitive.Title className="text-lg font-bold leading-tight text-foreground">Pause Menu</DialogPrimitive.Title>
                         <p className="mt-0.5 text-sm text-muted-foreground">{t("mobileApp.subtitle")}</p>
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                            <span className="rounded-full bg-violet-500/15 px-2 py-0.5 text-[11px] font-semibold text-violet-600 dark:text-violet-400">{t("mobileApp.free")}</span>
-                            <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">{t("mobileApp.platforms")}</span>
-                        </div>
+                        <p className="mt-1 text-xs font-medium text-muted-foreground">
+                            <span className="text-violet-600 dark:text-violet-400">{t("mobileApp.free")}</span> · {t("mobileApp.platforms")}
+                        </p>
                     </div>
                 </div>
 

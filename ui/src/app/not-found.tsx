@@ -52,7 +52,7 @@ export default function NotFound() {
                         <h1 className="animate-text-glow select-none bg-gradient-to-r from-orange-600 via-slate-500 to-purple-600 bg-clip-text dark:from-orange-200 dark:via-slate-50 dark:to-purple-200 text-[5rem] font-extrabold leading-none tracking-tight text-transparent md:text-[6.5rem]">
                             404
                         </h1>
-                        <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-border/30 bg-background/40 px-4 py-2 text-xs uppercase tracking-[0.35em] text-muted-foreground/80 shadow-[0_0_30px_rgba(15,23,42,0.25)]">
+                        <p className="mt-4 text-xs uppercase tracking-[0.35em] text-muted-foreground/80">
                             {t("notFound.badge")}
                         </p>
                     </div>

@@ -23,11 +23,11 @@ import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
 const PAGE_SIZE = 6;
 
 const KIND_STYLE: Record<AiConversationKind, { emoji: string; className: string }> = {
-    debate: { emoji: "🥊", className: "bg-rose-500/15 text-rose-600 ring-rose-500/30 dark:text-rose-300" },
-    plan: { emoji: "🗳️", className: "bg-amber-500/15 text-amber-700 ring-amber-500/30 dark:text-amber-300" },
-    askExpert: { emoji: "🧠", className: "bg-fuchsia-500/15 text-fuchsia-600 ring-fuchsia-500/30 dark:text-fuchsia-300" },
-    newRelease: { emoji: "🆕", className: "bg-orange-500/15 text-orange-600 ring-orange-500/30 dark:text-orange-300" },
-    post: { emoji: "💬", className: "bg-pink-500/15 text-pink-600 ring-pink-500/30 dark:text-pink-300" },
+    debate: { emoji: "🥊", className: "text-rose-600 dark:text-rose-300" },
+    plan: { emoji: "🗳️", className: "text-amber-700 dark:text-amber-300" },
+    askExpert: { emoji: "🧠", className: "text-fuchsia-600 dark:text-fuchsia-300" },
+    newRelease: { emoji: "🆕", className: "text-orange-600 dark:text-orange-300" },
+    post: { emoji: "💬", className: "text-pink-600 dark:text-pink-300" },
 };
 
 /**
@@ -271,7 +271,7 @@ function SectionTitle({ emoji, title }: { emoji: string; title: string }) {
 
 function StatChip({ emoji, value, label }: { emoji: string; value?: number; label: string }) {
     return (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 text-xs font-semibold text-[#14101F] ring-1 ring-black/10 backdrop-blur-sm dark:bg-black/30 dark:text-white dark:ring-white/15">
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#14101F] dark:text-white dark:ring-white/15">
             <span aria-hidden>{emoji}</span>
             <span className="tabular-nums">{value ?? "-"}</span>
             <span className="text-[#14101F]/60 dark:text-white/70">{label}</span>
@@ -320,9 +320,9 @@ function TriangleSchema({
                     <FloatingBot username={bot.username} src={bot.src} size={58} delay={index * 0.6} tilt={index === 1 ? -6 : 6} />
                 </div>
             ))}
-            <span className="absolute left-[4%] top-[40%] rotate-[-54deg] rounded-full bg-rose-500/90 px-2 py-0.5 text-[10px] font-bold text-white shadow">{labels[0]}</span>
-            <span className="absolute right-[4%] top-[40%] rotate-[54deg] rounded-full bg-orange-500/90 px-2 py-0.5 text-[10px] font-bold text-black shadow">{labels[1]}</span>
-            <span className="absolute bottom-[26px] left-1/2 -translate-x-1/2 rounded-full bg-amber-400/90 px-2 py-0.5 text-[10px] font-bold text-black shadow">{labels[2]}</span>
+            <span className="absolute left-[4%] top-[40%] rotate-[-54deg] text-[11px] font-bold text-rose-500">{labels[0]}</span>
+            <span className="absolute right-[4%] top-[40%] rotate-[54deg] text-[11px] font-bold text-orange-500">{labels[1]}</span>
+            <span className="absolute bottom-[26px] left-1/2 -translate-x-1/2 text-[11px] font-bold text-amber-500">{labels[2]}</span>
             <span className="absolute left-1/2 top-[48%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-card px-3 py-1.5 text-center text-xs font-bold shadow-lg ring-1 ring-border">
                 👀 {center}
             </span>
@@ -394,7 +394,7 @@ function ConversationCard({ item }: { item: AiClubConversation }) {
     return (
         <article className="overflow-hidden rounded-2xl border border-border/60 bg-card/40">
             <div className="flex items-center justify-between gap-2 border-b border-border/50 px-4 py-2.5">
-                <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold ring-1", style.className)}>
+                <span className={cn("inline-flex items-center gap-1.5 text-xs font-bold", style.className)}>
                     <span aria-hidden>{style.emoji}</span>
                     {t(`aiClub.kind.${item.kind}`)}
                 </span>
