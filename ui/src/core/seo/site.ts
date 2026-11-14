@@ -15,7 +15,7 @@ export const APP_STORE_ID = "6781281375";
 
 export const SOCIAL_PROFILES = {
     x: "https://x.com/gghub_tr",
-    github: "https://github.com/AhmetDemiroglu/GGHub",
+    github: "https://github.com/AhmetDemiroglu/pause-menu",
     appStore: APP_STORE_URL,
     googlePlay: GOOGLE_PLAY_URL ?? "",
 } as const;

@@ -1,14 +1,14 @@
 <div align="center">
 
-<img src="ui/public/og/home.png" alt="GGHub, oyuncu sosyal platformu" width="100%">
+<img src="brand/social/og-default.png" alt="Pause Menu, oyuncu sosyal platformu" width="100%">
 
 <br>
 
-# GGHub
+# Pause Menu
 
 **Oyunları keşfet, kendi arşivini oluştur ve oyuncu topluluğuna katıl.**
 
-GGHub; oyun keşfini, kişisel listeleri, incelemeleri ve sosyal etkileşimi tek yerde buluşturan açık kaynaklı bir oyuncu platformudur. Web, iOS ve Android deneyimleri aynı API ve ortak ürün yaklaşımı üzerinde çalışır.
+Pause Menu; oyun keşfini, kişisel listeleri, incelemeleri ve sosyal etkileşimi tek yerde buluşturan açık kaynaklı bir oyuncu platformudur. Web, iOS ve Android deneyimleri aynı API ve ortak ürün yaklaşımı üzerinde çalışır.
 
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
@@ -17,13 +17,13 @@ GGHub; oyun keşfini, kişisel listeleri, incelemeleri ve sosyal etkileşimi tek
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-F5C518?style=flat-square)](LICENSE)
 
-[Canlı platform](https://gghub.social/) · [Mobil uygulama](https://gghub.social/download-app) · [Hata bildir](https://github.com/AhmetDemiroglu/GGHub/issues) · [Özellik öner](https://github.com/AhmetDemiroglu/GGHub/issues)
+[Canlı platform](https://pausemenu.app/) · [Mobil uygulama](https://pausemenu.app/download-app) · [Hata bildir](https://github.com/AhmetDemiroglu/pause-menu/issues) · [Özellik öner](https://github.com/AhmetDemiroglu/pause-menu/issues)
 
 </div>
 
-## GGHub ne sunuyor?
+## Pause Menu ne sunuyor?
 
-GGHub, yalnızca oyunların listelendiği bir katalog değil. Bir oyunu keşfetme anından o oyun hakkında konuşmaya, kişisel koleksiyon oluşturmaktan benzer zevklere sahip oyuncularla tanışmaya kadar bütün akışı tek üründe bir araya getirir.
+Pause Menu, yalnızca oyunların listelendiği bir katalog değil. Bir oyunu keşfetme anından o oyun hakkında konuşmaya, kişisel koleksiyon oluşturmaktan benzer zevklere sahip oyuncularla tanışmaya kadar bütün akışı tek üründe bir araya getirir.
 
 ### Oyun keşfi
 
@@ -110,7 +110,7 @@ GGHub, yalnızca oyunların listelendiği bir katalog değil. Bir oyunu keşfetm
 Backend, Clean Architecture yaklaşımına göre ayrılmıştır. Domain katmanı dış sistemleri tanımaz; veritabanı ve üçüncü taraf servis detayları Infrastructure katmanında tutulur. Web ve mobil istemciler aynı REST API ile SignalR hub'ını kullanır.
 
 ```text
-GGHub/
+pause-menu/
 ├── backend/
 │   ├── GGHub.Core/                # Entity'ler, enum'lar ve domain kuralları
 │   ├── GGHub.Application/         # DTO'lar ve servis sözleşmeleri
@@ -178,8 +178,8 @@ Gemini kullanan işler çağrı ve bütçe limitleriyle çalışır. Katalog iş
 ### 1. Repoyu alın
 
 ```bash
-git clone https://github.com/AhmetDemiroglu/GGHub.git
-cd GGHub
+git clone https://github.com/AhmetDemiroglu/pause-menu.git
+cd pause-menu
 ```
 
 ### 2. PostgreSQL veritabanını hazırlayın
@@ -247,7 +247,7 @@ Web uygulaması `http://localhost:3000` adresinde açılır.
 `mobile-ui/.env` dosyasını oluşturun:
 
 ```env
-EXPO_PUBLIC_API_URL=https://api.gghub.social
+EXPO_PUBLIC_API_URL=https://api.pausemenu.app
 EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=
 EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=
 ```
@@ -333,23 +333,23 @@ cd mobile-ui && npx tsc --noEmit
 
 ## Katkıda bulunma
 
-Katkılar memnuniyetle karşılanır. Başlamadan önce açık [issue'lara](https://github.com/AhmetDemiroglu/GGHub/issues) göz atabilir veya yapmak istediğiniz değişikliği yeni bir issue ile paylaşabilirsiniz.
+Katkılar memnuniyetle karşılanır. Başlamadan önce açık [issue'lara](https://github.com/AhmetDemiroglu/pause-menu/issues) göz atabilir veya yapmak istediğiniz değişikliği yeni bir issue ile paylaşabilirsiniz.
 
 1. Repository'yi fork edin.
 2. Değişikliğiniz için ayrı bir branch açın.
 3. İlgili backend, web veya mobil doğrulamalarını çalıştırın.
 4. Ne değiştiğini ve nasıl test edildiğini anlatan bir pull request gönderin.
 
-GGHub üzerinde çalışmalar aktif biçimde sürüyor. Yeni özellikler eklerken yalnızca özellik sayısını artırmaya değil, oyun keşfini ve topluluk deneyimini gerçekten iyileştirmeye odaklanıyoruz.
+Pause Menu üzerinde çalışmalar aktif biçimde sürüyor. Yeni özellikler eklerken yalnızca özellik sayısını artırmaya değil, oyun keşfini ve topluluk deneyimini gerçekten iyileştirmeye odaklanıyoruz.
 
 ## Lisans
 
-GGHub, [MIT Lisansı](LICENSE) ile yayımlanır.
+Pause Menu, [MIT Lisansı](LICENSE) ile yayımlanır.
 
 <div align="center">
 
 **Oyunun kalbi burada atıyor.**
 
-[Ahmet Demiroğlu](https://github.com/AhmetDemiroglu) · [gghub.social](https://gghub.social/)
+[Ahmet Demiroğlu](https://github.com/AhmetDemiroglu) · [pausemenu.app](https://pausemenu.app/)
 
 </div>

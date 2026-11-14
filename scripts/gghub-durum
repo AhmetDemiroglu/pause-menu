@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# GGHub canli durum ozeti: bakim mi, acik mi, karisik mi? Yalniz okur (curl + dig), hicbir seyi degistirmez.
+# Pause Menu canli durum ozeti: bakim mi, acik mi, karisik mi? Yalniz okur (curl + dig), hicbir seyi degistirmez.
 # Kullanim: scripts/gghub-durum
-# Ayrinti ve acma/kapama adimlari: docs/bakim-modu.md
 
 CF_NS="addyson.ns.cloudflare.com"
 CHECK="/api/app-release/check?platform=ios&version=1.4.0"
@@ -16,7 +15,7 @@ proxied() {
   case "$ip" in 104.*|172.6*|172.7*|188.114.*) echo "turuncu (Cloudflare)";; *) echo "gri -> $(dig +short "$1" @"$CF_NS" | head -1)";; esac
 }
 
-echo "GGHub durum  $(date '+%Y-%m-%d %H:%M')"
+echo "Pause Menu durum  $(date '+%Y-%m-%d %H:%M')"
 echo "DNS"
 info "pausemenu.app" "$(proxied pausemenu.app)"
 info "api.pausemenu.app" "$(proxied api.pausemenu.app)"
@@ -44,4 +43,4 @@ info "www" "$www"
 echo "Ozet"
 if [ "$web" = "BAKIM" ] && [ "$api_status" = "maintenance" ]; then echo "  MOD: BAKIM"
 elif [ "$web" = "ACIK" ] && [ "$api_status" = "ok" ]; then echo "  MOD: ACIK"
-else echo "  MOD: KARISIK (web=$web, mobil=$api_status) -> docs/bakim-modu.md"; fi
+else echo "  MOD: KARISIK (web=$web, mobil=$api_status)"; fi
