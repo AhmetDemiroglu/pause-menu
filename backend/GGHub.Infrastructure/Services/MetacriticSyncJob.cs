@@ -303,7 +303,7 @@ namespace GGHub.Infrastructure.Services
             LogToFile(summary);
         }
 
-        private static string BuildStatusMarker(string status)
+        public static string BuildStatusMarker(string status)
         {
             return $"{StatusPrefix}{status}";
         }

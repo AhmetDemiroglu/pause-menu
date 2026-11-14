@@ -35,8 +35,12 @@ const getScoreStyling = (type: ScoreType, score: number | null | undefined) => {
 export function ScoreBadge({ type, score }: ScoreBadgeProps) {
   // IGDB puanı 0-100 aralığında gelir (Metacritic gibi tam sayı gösterilir),
   // RAWG ve Pause Menu 0-5 / 0-10 aralığında ondalıklı.
+  // 0 = puan yok (RAWG yeterli oy toplanana kadar 0.0 dondurur). "0.0" gostermek
+  // oyunu kotu puanli gibi gosteriyordu; kartlar ve hero zaten 0'i gizliyor.
   const scoreValue =
-    typeof score === "number"
+    typeof score === "number" && score <= 0
+      ? null
+      : typeof score === "number"
       ? type === "rawg" || type === "gghub"
         ? score.toFixed(1)
         : Math.round(score)

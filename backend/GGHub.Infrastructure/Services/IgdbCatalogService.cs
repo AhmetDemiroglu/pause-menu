@@ -890,6 +890,9 @@ namespace GGHub.Infrastructure.Services
                 // cikacak" gorunuyordu (ayni sekilde S.T.A.L.K.E.R. 2 vb.).
                 // Dogru kural: CIKMIS bir oyunun tarihine ASLA dokunma; yalnizca tarihi hic
                 // olmayan veya henuz cikmamis kayitlarda guncelle (erteleme senaryosu).
+                // RAWG satirlarinda (RawgId > 0) tarihin sahibi RawgUpcomingSyncJob'dur; IGDB
+                // yalniz bos tarihi doldurur. Ikisi de yazarsa ertelenen oyunda (God of War
+                // Laufey: RAWG 2027-05-20) her kosu bir oncekinin tarihini ezer.
                 var todayIso = DateTime.UtcNow.ToString("yyyy-MM-dd");
                 var existingAlreadyOut = existing.Released != null
                     && string.CompareOrdinal(existing.Released, todayIso) <= 0;
@@ -900,6 +903,7 @@ namespace GGHub.Infrastructure.Services
                     dirty = true;
                 }
                 else if (!existingAlreadyOut && released != null
+                    && existing.RawgId <= 0
                     && string.CompareOrdinal(released, todayIso) > 0
                     && existing.Released != released)
                 {

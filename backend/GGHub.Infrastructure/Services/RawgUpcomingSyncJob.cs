@@ -81,15 +81,40 @@ namespace GGHub.Infrastructure.Services
             var context = scope.ServiceProvider.GetRequiredService<GGHubDbContext>();
             var httpClient = _httpClientFactory.CreateClient();
 
-            var start = DateTime.UtcNow.ToString("yyyy-MM-dd");
-            var end = DateTime.UtcNow.AddMonths(_settings.MonthsAhead).ToString("yyyy-MM-dd");
+            var today = DateTime.UtcNow;
+            var stats = new RunStats();
 
-            var added = 0;
-            var updated = 0;
-            var reconciled = 0;
-            var processed = 0;
+            // 1) Ileri pencere: bugun -> +N ay (gundem, ertelemeler).
+            await ScanWindowAsync(context, httpClient,
+                today.ToString("yyyy-MM-dd"), today.AddMonths(_settings.MonthsAhead).ToString("yyyy-MM-dd"),
+                _settings.MaxPagesPerRun, stats, ct);
 
-            for (var page = 1; page <= _settings.MaxPagesPerRun; page++)
+            // 2) Geri pencere: son N ay. Yeni cikan oyunlarin puani ve son dakika tarih
+            //    duzeltmeleri burada gelir; ileri pencere cikan oyunu bir daha gormez.
+            if (_settings.MonthsBack > 0 && _settings.MaxPagesBackPerRun > 0)
+            {
+                await ScanWindowAsync(context, httpClient,
+                    today.AddMonths(-_settings.MonthsBack).ToString("yyyy-MM-dd"), today.AddDays(-1).ToString("yyyy-MM-dd"),
+                    _settings.MaxPagesBackPerRun, stats, ct);
+            }
+
+            _logger.LogInformation(
+                "[RawgUpcoming] Kosu bitti: {Processed} islendi, {Added} yeni, {Updated} guncellendi, {Reconciled} Steam satiri uzlastirildi.",
+                stats.Processed, stats.Added, stats.Updated, stats.Reconciled);
+        }
+
+        private sealed class RunStats
+        {
+            public int Processed;
+            public int Added;
+            public int Updated;
+            public int Reconciled;
+        }
+
+        private async Task ScanWindowAsync(GGHubDbContext context, HttpClient httpClient,
+            string start, string end, int maxPages, RunStats stats, CancellationToken ct)
+        {
+            for (var page = 1; page <= maxPages; page++)
             {
                 ct.ThrowIfCancellationRequested();
 
@@ -113,13 +138,13 @@ namespace GGHub.Infrastructure.Services
 
                 foreach (var dto in results)
                 {
-                    processed++;
-                    if (ShouldSkip(dto)) continue;
+                    stats.Processed++;
+                    if (string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrWhiteSpace(dto.Slug)) continue;
 
                     var outcome = await UpsertAsync(context, dto, ct);
-                    if (outcome == UpsertOutcome.Added) added++;
-                    else if (outcome == UpsertOutcome.Updated) updated++;
-                    else if (outcome == UpsertOutcome.Reconciled) reconciled++;
+                    if (outcome == UpsertOutcome.Added) stats.Added++;
+                    else if (outcome == UpsertOutcome.Updated) stats.Updated++;
+                    else if (outcome == UpsertOutcome.Reconciled) stats.Reconciled++;
                 }
 
                 if (string.IsNullOrEmpty(response?.Next)) break;
@@ -127,10 +152,6 @@ namespace GGHub.Infrastructure.Services
                 if (_settings.DelayBetweenRequestsMs > 0)
                     await Task.Delay(_settings.DelayBetweenRequestsMs, ct);
             }
-
-            _logger.LogInformation(
-                "[RawgUpcoming] Kosu bitti: {Processed} islendi, {Added} yeni, {Updated} guncellendi, {Reconciled} Steam satiri uzlastirildi.",
-                processed, added, updated, reconciled);
         }
 
         private bool ShouldSkip(RawgGameDto dto)
@@ -169,6 +190,11 @@ namespace GGHub.Infrastructure.Services
                 if (GameRelease.ApplyUpcomingSignal(existing, GameRelease.RawgSignal(dto.Tba, dto.Released), DateTime.UtcNow)) dirty = true;
                 if (dto.BackgroundImage != null && existing.BackgroundImage != dto.BackgroundImage) { existing.BackgroundImage = dto.BackgroundImage; dirty = true; }
                 if (dto.Added > 0 && existing.RawgAdded != dto.Added) { existing.RawgAdded = dto.Added; dirty = true; }
+
+                // Puan: RAWG yeterli oy toplanana kadar 0 dondurur, sonra gercek puan gelir.
+                // Eskiden bu alan ilk yazimdan sonra HIC guncellenmiyordu.
+                if (dto.Rating != null && existing.Rating != dto.Rating) { existing.Rating = dto.Rating; dirty = true; }
+                if (existing.RawgRatingsCount != dto.RatingsCount) { existing.RawgRatingsCount = dto.RatingsCount; dirty = true; }
                 if (string.IsNullOrEmpty(existing.GenresJson) && dto.Genres != null && dto.Genres.Any())
                 {
                     existing.GenresJson = JsonSerializer.Serialize(dto.Genres.Select(g => new { g.Name, g.Slug }).ToList());
@@ -187,6 +213,11 @@ namespace GGHub.Infrastructure.Services
                 await context.SaveChangesAsync(ct);
                 return UpsertOutcome.Updated;
             }
+
+            // Kalite kapilari yalniz YENI satir acarken uygulanir. Eskiden filtre once
+            // calisiyordu: added sayisi esigin altinda kalan ya da gorseli kaybolan mevcut
+            // bir oyun tarih/puan guncellemesini hic almiyordu.
+            if (ShouldSkip(dto)) return UpsertOutcome.Skipped;
 
             // Steam'den ingest edilmis ayni oyun var mi? (isim+yil eslesmesi)
             var steamRow = await FindSteamOnlyMatchAsync(context, dto, ct);

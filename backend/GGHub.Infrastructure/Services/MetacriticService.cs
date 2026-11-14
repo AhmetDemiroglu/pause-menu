@@ -21,6 +21,7 @@ namespace GGHub.Infrastructure.Services
         private static readonly object _rateLimitLock = new();
         private static DateTime _lastRequestTime = DateTime.MinValue;
         private const int RequestDelayMs = 3000;
+        private const int MaxSameGameDateGapDays = 4 * 365;
 
         public MetacriticService(IHttpClientFactory httpClientFactory, ILogger<MetacriticService> logger)
         {
@@ -218,7 +219,18 @@ namespace GGHub.Infrastructure.Services
                     return nameMatches[0];
                 }
 
-                return ClosestByDate(nameMatches, targetDate, out _) ?? nameMatches[0];
+                var closest = ClosestByDate(nameMatches, targetDate, out var daysDiff);
+
+                // Remake/yeniden yapim: isim birebir ayni ama Metacritic'te yalniz orijinal var.
+                // 2026 Ocarina of Time'a 1998 orijinalinin 96'si boyle yazildi. Kaynaklar arasi
+                // tarih kaymasi (erken erisim vs 1.0) birkac yili gecmez; 4 yil ustu ayri oyundur.
+                if (closest != null && daysDiff > MaxSameGameDateGapDays)
+                {
+                    _logger.LogInformation("[Metacritic] '{GameName}' ismi tuttu ama tarih {Days} gun uzak (remake?), reddedildi.", gameName, daysDiff);
+                    return null;
+                }
+
+                return closest ?? nameMatches[0];
             }
 
             // 2) Isim tutmuyor -> REDDET.

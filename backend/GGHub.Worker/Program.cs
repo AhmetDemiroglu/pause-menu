@@ -171,6 +171,20 @@ if (args.Contains("--hype-report"))
     return 0;
 }
 
+// "--recheck-metacritic <baslangic yyyy-MM-dd> [--apply]": remake'lere yanlislikla yazilmis
+// orijinal puanlarini bulur (varsayilan kuru kosu). Bkz. MetacriticRecheck.
+if (args.Contains("--recheck-metacritic"))
+{
+    var idx = Array.IndexOf(args, "--recheck-metacritic");
+    if (idx + 1 >= args.Length || !DateTime.TryParse(args[idx + 1], out _))
+    {
+        Console.WriteLine("Kullanim: --recheck-metacritic <baslangic yyyy-MM-dd> [--apply]");
+        return 1;
+    }
+
+    return await MetacriticRecheck.RunAsync(host.Services, args[idx + 1], args.Contains("--apply"));
+}
+
 // "--purge-usage <baslangic> <bitis>": Gemini harcama sayacindan belirtilen GUN ARALIGINI siler.
 //
 // Neden gerekli: sayac her API cagrisini ucretli sayar, ama hesap UCRETSIZ katmandayken Google

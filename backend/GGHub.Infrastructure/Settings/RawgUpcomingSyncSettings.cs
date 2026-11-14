@@ -27,5 +27,16 @@ namespace GGHub.Infrastructure.Settings
         /// RawgImportJob'in MinAdded=20 esigi burada fazla siki olur, gevsek tutuluyor.
         /// </summary>
         public int MinAdded { get; set; } = 5;
+
+        /// <summary>
+        /// Son kac ayda cikmis oyunlar da taransin. Puanlar (rating, ratings_count) oyun
+        /// CIKTIKTAN SONRA toplanir; yalniz ileri bakan pencere cikan oyunu bir daha hic
+        /// gormuyordu ve puani 0'da kaliyordu (Phantom Blade Zero: RAWG 3.67, katalog 0).
+        /// 0 = geri tarama kapali.
+        /// </summary>
+        public int MonthsBack { get; set; } = 6;
+
+        /// <summary>Geri taramada kosu basina en fazla kac sayfa (ordering=-added).</summary>
+        public int MaxPagesBackPerRun { get; set; } = 10;
     }
 }
