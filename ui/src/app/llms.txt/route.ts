@@ -56,7 +56,7 @@ Replace "en-US" with "tr" in any path for the Turkish version.
 - Languages: English (en-US) and Turkish (tr).
 - Pricing: free; account optional for browsing, required for rating, reviewing, lists, following and messaging.
 - Sign-in: email, Google, Apple.
-- Founder and developer: Ahmet Demiroğlu (İzmir, Türkiye).
+- Studio: SeptimusLab (https://www.septimuslab.com), founded by Ahmet Demiroğlu (İzmir, Türkiye).
 - Source code: ${SOCIAL_PROFILES.github}
 - Contact: ${SITE_EMAIL}
 - Social: ${SOCIAL_PROFILES.x}

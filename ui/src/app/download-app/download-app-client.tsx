@@ -86,7 +86,7 @@ export default function DownloadAppClient() {
     const n = Math.max(Math.ceil(remainingMs / 1000), 0);
 
     return (
-        <main className="relative flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-[#110C1A] px-4 py-6 text-white">
+        <main className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-[#110C1A] px-4 py-6 text-white">
             {/* Brand glows */}
             <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-orange-500/20 blur-3xl" />
             <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-violet-600/25 blur-3xl" />
@@ -179,6 +179,17 @@ export default function DownloadAppClient() {
                     Open the web version · Web sürümünü aç
                 </a>
             </div>
+
+            {/* Stüdyo imzası */}
+            <a
+                href="https://www.septimuslab.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative z-10 mt-6 opacity-80 transition-opacity hover:opacity-100"
+            >
+                {/* eslint-disable-next-line @next/next/no-img-element -- küçük statik SVG imza, optimizasyon gerekmez */}
+                <img src="/septimuslab/septimuslab-imza-koyu-zemin.svg" alt="by SeptimusLab" width={164} height={21} className="h-5 w-auto" />
+            </a>
         </main>
     );
 }
