@@ -177,7 +177,7 @@ export const enUSMessages = {
     },
     footer: {
         tagline: "Press pause. Find your people.",
-        version: "Version 2.0.0",
+        version: "Version 2.1.0",
         company: "Company",
         about: "About",
         privacy: "Privacy policy",

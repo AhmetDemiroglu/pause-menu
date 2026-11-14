@@ -177,7 +177,7 @@ export const trMessages = {
     },
     footer: {
         tagline: "Mola ver. Ekibini bul.",
-        version: "Sürüm 2.0.0",
+        version: "Sürüm 2.1.0",
         company: "Şirket",
         about: "Hakkımızda",
         privacy: "Gizlilik politikası",

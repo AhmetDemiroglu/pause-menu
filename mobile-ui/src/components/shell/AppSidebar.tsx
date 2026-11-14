@@ -21,6 +21,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTheme } from '@/src/hooks/use-theme';
+import { SeptimusSignature } from '@/src/components/common/SeptimusSignature';
 import { useLocale } from '@/src/hooks/use-locale';
 import { useAuth } from '@/src/hooks/use-auth';
 import { getMyProfile } from '@/src/api/profile';
@@ -172,7 +173,7 @@ interface AppSidebarProps {
 
 export function AppSidebar({ children }: AppSidebarProps) {
   const insets = useSafeAreaInsets();
-  const { colors, themeMode, setThemeMode } = useTheme();
+  const { colors, isDark, themeMode, setThemeMode } = useTheme();
   const { locale, switchLocale, messages } = useLocale();
   const { user, logout, isAuthenticated } = useAuth();
   const confirm = useConfirm();
@@ -352,12 +353,8 @@ export function AppSidebar({ children }: AppSidebarProps) {
           drawerStyle,
         ]}
       >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          {/* ── Header ── */}
+        {/* ── Sabit üst: profil ── */}
+        <View style={styles.fixedTop}>
           {isAuthenticated ? (
             <Pressable
               onPress={() => {
@@ -418,9 +415,17 @@ export function AppSidebar({ children }: AppSidebarProps) {
               </View>
             </View>
           )}
+        </View>
 
-          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+        <View style={[styles.edgeDivider, styles.edgeDividerTop, { backgroundColor: colors.border }]} />
 
+        {/* ── Kayan orta: menü ── */}
+        <ScrollView
+          style={styles.scroll}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+          contentContainerStyle={styles.scrollContent}
+        >
           {/* ── Kesif nav (herkese acik) ── */}
           <View style={styles.navGroup}>
             <NavRow icon="calendar-outline" label={nav.agenda} onPress={() => navigate('/agenda')} colors={colors} />
@@ -504,8 +509,15 @@ export function AppSidebar({ children }: AppSidebarProps) {
             </>
           )}
 
-          <Text style={[styles.version, { color: colors.textMuted }]}>{messages.footer.version}</Text>
         </ScrollView>
+
+        <View style={[styles.edgeDivider, styles.edgeDividerBottom, { backgroundColor: colors.border }]} />
+
+        {/* ── Sabit alt: imza + sürüm ── */}
+        <View style={styles.fixedBottom}>
+          <SeptimusSignature theme={isDark ? 'dark' : 'light'} size={18} />
+          <Text style={[styles.version, { color: colors.textMuted }]}>{messages.footer.version}</Text>
+        </View>
       </Animated.View>
 
       {/* ═══ Layer 1: Ana içerik (kayan + scale + sidebar'a düşen gölge) ═══ */}
@@ -551,9 +563,32 @@ const styles = StyleSheet.create({
     zIndex: 1,
     overflow: 'hidden',
   },
+  /* Sabit üst, kayan orta, sabit alt */
+  fixedTop: {
+    paddingHorizontal: Spacing.xl,
+  },
+  scroll: {
+    flex: 1,
+  },
   scrollContent: {
     paddingHorizontal: Spacing.xl,
+    paddingTop: Spacing.sm,
     paddingBottom: Spacing.lg,
+  },
+  edgeDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: Spacing.xl,
+  },
+  edgeDividerTop: {
+    marginTop: Spacing.md,
+  },
+  edgeDividerBottom: {
+    marginBottom: Spacing.md,
+  },
+  fixedBottom: {
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.xl,
   },
   /* Header */
   header: {
@@ -694,7 +729,6 @@ const styles = StyleSheet.create({
   version: {
     fontSize: FontSize.xs,
     textAlign: 'center',
-    marginTop: Spacing.xl,
   },
   /* Main content */
   mainContent: {

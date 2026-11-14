@@ -2,7 +2,7 @@
   "expo": {
     "name": "Pause Menu",
     "slug": "gghub",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "pausemenu",
@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.gghub.mobile",
-      "buildNumber": "20",
+      "buildNumber": "21",
       "usesAppleSignIn": true,
       "entitlements": {
         "aps-environment": "production"
@@ -35,7 +35,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png"
       },
       "package": "com.gghub.mobile",
-      "versionCode": 20,
+      "versionCode": 21,
       "googleServicesFile": "./android/app/google-services.json",
       "permissions": [
         "android.permission.INTERNET",
