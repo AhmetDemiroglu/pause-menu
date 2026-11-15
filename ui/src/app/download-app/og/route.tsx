@@ -36,6 +36,7 @@ export async function GET(request: Request) {
     const c = COPY[lang];
     const shot = `${origin}/pausemenu-app-${lang}.jpg`;
     const wordmark = `${origin}/og/wordmark-on-dark.png`;
+    const sig = `${origin}/septimuslab/septimuslab-imza-koyu-zemin@3x.png`;
 
     return new ImageResponse(
         (
@@ -131,7 +132,11 @@ export async function GET(request: Request) {
                                 <div style={{ display: "flex", marginLeft: "12px", color: "white", fontSize: "24px", fontWeight: 700 }}>Google Play</div>
                             </div>
                         </div>
-                        <div style={{ display: "flex", marginTop: "20px", color: "rgba(255,255,255,0.55)", fontSize: "22px" }}>pausemenu.app</div>
+                        <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
+                            <div style={{ display: "flex", color: "rgba(255,255,255,0.55)", fontSize: "22px" }}>pausemenu.app</div>
+                            {/* Stüdyo imzası (statik kartlara da aynı yerde basıldı) */}
+                            <img src={sig} width={197} height={25} alt="" style={{ marginLeft: "32px" }} />
+                        </div>
                     </div>
                 </div>
 
