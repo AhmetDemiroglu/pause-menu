@@ -193,7 +193,9 @@ namespace GGHub.Infrastructure.Services
 
                 // Puan: RAWG yeterli oy toplanana kadar 0 dondurur, sonra gercek puan gelir.
                 // Eskiden bu alan ilk yazimdan sonra HIC guncellenmiyordu.
-                if (dto.Rating != null && existing.Rating != dto.Rating) { existing.Rating = dto.Rating; dirty = true; }
+                // Cikmamis oyunda RAWG kullanici puani gosterilmez (GTA VI cikmadan 103 oyla 3.86 almisti).
+                var rating = GameRelease.IsUnreleased(existing, DateTime.UtcNow) ? null : dto.Rating;
+                if ((rating != null || existing.Rating != null) && existing.Rating != rating) { existing.Rating = rating; dirty = true; }
                 if (existing.RawgRatingsCount != dto.RatingsCount) { existing.RawgRatingsCount = dto.RatingsCount; dirty = true; }
                 if (string.IsNullOrEmpty(existing.GenresJson) && dto.Genres != null && dto.Genres.Any())
                 {
@@ -228,7 +230,7 @@ namespace GGHub.Infrastructure.Services
                 GameRelease.ApplyUpcomingSignal(steamRow, GameRelease.RawgSignal(dto.Tba, dto.Released), DateTime.UtcNow);
                 steamRow.RawgAdded = dto.Added;
                 steamRow.RawgRatingsCount = dto.RatingsCount;
-                if (steamRow.Rating == null) steamRow.Rating = dto.Rating;
+                if (steamRow.Rating == null && !GameRelease.IsUnreleased(steamRow, DateTime.UtcNow)) steamRow.Rating = dto.Rating;
                 await context.SaveChangesAsync(ct);
                 _logger.LogInformation("[RawgUpcoming] Uzlastirildi: {Name} (rawgId={RawgId}, steamAppId={SteamAppId})",
                     steamRow.Name, dto.Id, steamRow.SteamAppId);
@@ -258,6 +260,7 @@ namespace GGHub.Infrastructure.Services
             };
             GameTagWriter.Attach(newGame, GameTagWriter.SourceRawg, GameTagWriter.FromRawg(dto.Tags));
             GameRelease.ApplyUpcomingSignal(newGame, GameRelease.RawgSignal(dto.Tba, dto.Released), DateTime.UtcNow);
+            if (GameRelease.IsUnreleased(newGame, DateTime.UtcNow)) newGame.Rating = null;
 
             try
             {

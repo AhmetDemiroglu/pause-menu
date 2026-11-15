@@ -104,6 +104,45 @@ namespace GGHub.Infrastructure.Services
                     "[FutureMetacriticCleanup] Reset Metacritic on {Count} future-dated games.",
                     updated);
             }
+
+            // RAWG ve IGDB kullanici puanlari cikistan once de birikebiliyor (GTA VI, 103 oyla 3.86).
+            // Cikmamis oyunda puan gosterilmez; cikinca RawgUpcomingSyncJob (geri pencere) ve
+            // IgdbEnrichJob (7 gunluk tazeleme) gercek puani yazar.
+            // Tarih karsilastirmasi GameRelease ile ayni gun siniri: Turkiye (UTC+3).
+            var trToday = DateTime.UtcNow.AddHours(3).ToString("yyyy-MM-dd");
+            var signalFrom = DateTime.UtcNow - GGHub.Core.Specifications.GameRelease.UpcomingSignalLifetime;
+            var ratingsCleared = await context.Games
+                .Where(g => (g.Rating != null || g.IgdbRating != null)
+                            && ((g.Released != null && g.Released.Length == 10 && string.Compare(g.Released, trToday) > 0)
+                                || (g.Released == null && g.UpcomingSeenAt != null && g.UpcomingSeenAt > signalFrom)))
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(g => g.Rating, (double?)null)
+                    .SetProperty(g => g.IgdbRating, (double?)null), ct);
+
+            if (ratingsCleared > 0)
+            {
+                _logger.LogInformation(
+                    "[FutureMetacriticCleanup] Cleared RAWG/IGDB user ratings on {Count} unreleased games.",
+                    ratingsCleared);
+            }
+
+            // Yalniz IGDB'den gelen satirlarda (RawgId < -1e9) eski ingest IGDB puanini RAWG puani
+            // (/20) ve IGDB elestirmen ortalamasini Metacritic diye yaziyordu. RAWG puani bu
+            // satirlarda HICBIR zaman gercek olamaz. Metacritic yalniz dogrulanmamissa (MetacriticUrl
+            // bos) silinir: MetacriticSyncJob onu gercek kaynaktan yeniden sorgular.
+            var igdbFloor = -IgdbCatalogService.IgdbRawgIdOffset;
+            var igdbRawgCleared = await context.Games
+                .Where(g => g.RawgId < igdbFloor && g.Rating != null)
+                .ExecuteUpdateAsync(s => s.SetProperty(g => g.Rating, (double?)null), ct);
+            var igdbMetaCleared = await context.Games
+                .Where(g => g.RawgId < igdbFloor && g.Metacritic != null && g.MetacriticUrl == null)
+                .ExecuteUpdateAsync(s => s.SetProperty(g => g.Metacritic, (int?)null), ct);
+            if (igdbRawgCleared > 0 || igdbMetaCleared > 0)
+            {
+                _logger.LogInformation(
+                    "[FutureMetacriticCleanup] IGDB-only rows: cleared {Rawg} fake RAWG ratings, {Meta} unverified Metacritic scores.",
+                    igdbRawgCleared, igdbMetaCleared);
+            }
         }
     }
 }

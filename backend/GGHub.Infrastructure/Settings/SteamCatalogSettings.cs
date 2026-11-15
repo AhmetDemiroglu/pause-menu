@@ -31,6 +31,9 @@ namespace GGHub.Infrastructure.Settings
         /// </summary>
         public int MaxAppDetailsPerRun { get; set; } = 250;
 
+        /// <summary>Kosu basina tarihi Steam'den tazelenecek Steam-only cikmamis oyun sayisi.</summary>
+        public int MaxDateRefreshPerRun { get; set; } = 60;
+
         public int RunIntervalMinutes { get; set; } = 360;
 
         /// <summary>On-demand aramada tek istekte ingest edilecek azami oyun.</summary>

@@ -44,7 +44,9 @@ namespace GGHub.Infrastructure.Services
             _steamSettings = steamSettings.Value;
             _igdbCatalog = igdbCatalog;
         }
-        public async Task<Game?> GetGameBySlugOrIdAsync(string idOrSlug)
+        public Task<Game?> GetGameBySlugOrIdAsync(string idOrSlug) => GetGameBySlugOrIdAsync(idOrSlug, followRedirect: true);
+
+        private async Task<Game?> GetGameBySlugOrIdAsync(string idOrSlug, bool followRedirect)
         {
             bool isId = int.TryParse(idOrSlug, out int rawgId);
             var gameInDb = isId
@@ -64,19 +66,20 @@ namespace GGHub.Infrastructure.Services
                         ? await _context.Games.AsNoTracking().FirstOrDefaultAsync(g => g.IgdbId == positiveId - IgdbCatalogService.IgdbRawgIdOffset)
                         : await _context.Games.AsNoTracking().FirstOrDefaultAsync(g => g.SteamAppId == positiveId);
                 }
-                return gameInDb;
-            }
-            if (gameInDb != null && gameInDb.RawgId < 0)
-            {
-                return gameInDb;
             }
 
             // Anlik IGDB zenginlestirmesi: kullanicinin actigi oyunun IGDB puani hic
             // sorulmamissa simdi sorulur (toplu job'i beklemeden). Zaten kontrol edilmisse
-            // hicbir sey yapmaz; hata halinde sessizce gecer.
+            // hicbir sey yapmaz; hata halinde sessizce gecer. Steam kaynakli (negatif id)
+            // satirlar da dahil: eskiden onlar bu adima hic gelmiyordu.
             if (gameInDb != null && gameInDb.IgdbCheckedAt == null)
             {
                 await _igdbCatalog.EnrichGameAsync(gameInDb);
+            }
+
+            if ((isId && rawgId < 0) || (gameInDb != null && gameInDb.RawgId < 0))
+            {
+                return gameInDb;
             }
 
             // DB-first: detay verisi bir kez dolmussa yastan bagimsiz HEMEN don. Eski kural
@@ -128,6 +131,27 @@ namespace GGHub.Infrastructure.Services
 
             if (dto == null) return null;
 
+            // RAWG eski/yanlis slug'da 200 ile {"detail":"redirect","slug":"..."} doner (id yok).
+            // Eskiden bu bos kayit RawgId=0 ile eklenmeye calisiliyor ve 500 veriyordu
+            // (GTA VI: /games/grand-theft-auto-vi -> RAWG'in slug'i "grand-theft-aito-vi").
+            if (dto.Id <= 0)
+            {
+                if (!followRedirect || isId || string.IsNullOrEmpty(dto.Slug) || dto.Slug == idOrSlug) return null;
+                return await GetGameBySlugOrIdAsync(dto.Slug, followRedirect: false);
+            }
+
+            // Slug ile DB'de bulunamayan oyun RawgId ile zaten kayitli olabilir (slug degismis).
+            // Yeni satir acmak IX_Games_RawgId ihlali verirdi; mevcut satir kullanilir.
+            if (gameInDb == null)
+            {
+                gameInDb = await _context.Games.AsNoTracking().FirstOrDefaultAsync(g => g.RawgId == dto.Id);
+                if (gameInDb != null
+                    && (gameInDb.DetailSyncedAt != null || !string.IsNullOrEmpty(gameInDb.DevelopersJson)))
+                {
+                    return gameInDb;
+                }
+            }
+
             {
 
                 var descriptionRaw = dto.Description ?? string.Empty;
@@ -157,6 +181,9 @@ namespace GGHub.Infrastructure.Services
                     }
                     gameInDb.Released = dto.Released;
                     GameRelease.ApplyUpcomingSignal(gameInDb, GameRelease.RawgSignal(dto.Tba, dto.Released), DateTime.UtcNow);
+                    // Cikmamis oyuna RAWG kullanicilari puan verebiliyor (GTA VI: 103 oyla 3.86).
+                    // Cikis oncesi puan gosterilmez; cikinca RawgUpcomingSyncJob yazar.
+                    if (GameRelease.IsUnreleased(gameInDb, DateTime.UtcNow)) gameInDb.Rating = null;
                     gameInDb.BackgroundImage = dto.BackgroundImage;
                     gameInDb.CoverImage = dto.CoverImage;
                     gameInDb.LastSyncedAt = DateTime.UtcNow;
@@ -196,6 +223,7 @@ namespace GGHub.Infrastructure.Services
                         EsrbRating = dto.EsrbRating?.Name
                     };
                     GameRelease.ApplyUpcomingSignal(newGame, GameRelease.RawgSignal(dto.Tba, dto.Released), DateTime.UtcNow);
+                    if (GameRelease.IsUnreleased(newGame, DateTime.UtcNow)) newGame.Rating = null;
                     GameTagWriter.Attach(newGame, GameTagWriter.SourceRawg, GameTagWriter.FromRawg(dto.Tags));
                     await _context.Games.AddAsync(newGame);
                     gameInDb = newGame;
@@ -478,6 +506,7 @@ namespace GGHub.Infrastructure.Services
                         gameInDb.Metacritic = null;
                 }
 
+                if (GameRelease.IsUnreleased(gameInDb, DateTime.UtcNow)) gameInDb.Rating = null;
                 gameInDb.LastSyncedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
                 return gameInDb;
@@ -526,6 +555,8 @@ namespace GGHub.Infrastructure.Services
                 newGame.Metacritic = SanitizeMetacritic(rawgDto.Metacritic, rawgDto.Released);
                 GameTagWriter.Attach(newGame, GameTagWriter.SourceRawg, GameTagWriter.FromRawg(rawgDto.Tags));
             }
+
+            if (GameRelease.IsUnreleased(newGame, DateTime.UtcNow)) newGame.Rating = null;
 
             try
             {

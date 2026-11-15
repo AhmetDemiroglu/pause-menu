@@ -42,5 +42,12 @@ namespace GGHub.Application.Interfaces
         /// populerlik sinyalimiz; kesfet sayfasinin trend skorunu besler.
         /// </summary>
         Task<IReadOnlyList<int>> GetTopSellerAppIdsAsync(int count, CancellationToken ct = default);
+
+        /// <summary>
+        /// Yalniz Steam'de olan (RAWG/IGDB satiri olmayan) cikmamis veya son 14 gunde cikmis
+        /// oyunlarin tarihini Steam'den tazeler. Steam listelerinden dusen oyunlarin ertelemesi
+        /// baska hicbir yoldan gorulmuyordu. Donus: tarihi degisen satir sayisi.
+        /// </summary>
+        Task<int> RefreshUpcomingReleaseDatesAsync(int max, CancellationToken ct = default);
     }
 }

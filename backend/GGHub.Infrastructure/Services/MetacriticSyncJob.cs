@@ -27,6 +27,11 @@ namespace GGHub.Infrastructure.Services
         // donen oyun eskiden 180 gun bekliyordu; puani gelen oyunun puani da hic tazelenmiyordu
         // (14 Kas 2026 olcumu: Witcher 3 Remastered katalog 94 / Metacritic 92, Vampire Crawlers 50 / 82).
         private static readonly TimeSpan RecentWindow = TimeSpan.FromDays(120);
+        // 120 gun - 2 yil arasi cikmis puansiz oyunlar ayda bir yeniden denenir. Metacritic bazi
+        // oyunlari (bolgesel cikisi once olan MMO'lar, gec incelenen indie'ler) aylar sonra puanlar:
+        // AION 2 ilk denemede "puan yok" aldi ve 180 gunluk bekleme yuzunden 62'si hic gelmedi.
+        private static readonly TimeSpan MidWindow = TimeSpan.FromDays(730);
+        private static readonly TimeSpan MidRetryInterval = TimeSpan.FromDays(30);
         private static readonly TimeSpan RecentRetryInterval = TimeSpan.FromDays(3);
         private static readonly TimeSpan RecentRefreshInterval = TimeSpan.FromDays(7);
         private const int RefreshPerBatch = 10;
@@ -116,6 +121,7 @@ namespace GGHub.Infrastructure.Services
             var now = DateTime.UtcNow;
             var recentFrom = (now - RecentWindow).ToString("yyyy-MM-dd");
             var todayIso = now.ToString("yyyy-MM-dd");
+            var midFrom = (now - MidWindow).ToString("yyyy-MM-dd");
             var noScoreMarker = BuildStatusMarker(MetacriticService.StatusNoScore);
             var noResultsMarker = BuildStatusMarker(MetacriticService.StatusNoResults);
 
@@ -125,8 +131,14 @@ namespace GGHub.Infrastructure.Services
 
                 gameIdsToSync = await context.Games
                     .Where(g => g.Metacritic == null && !string.IsNullOrEmpty(g.Name))
+                    // Cikmamis oyunun Metacritic puani olamaz; sorgulamak hem istegi bosa harcar hem
+                    // de "puan yok" isaretiyle oyunu uzun beklemeye sokar.
+                    .Where(g => g.Released == null || string.Compare(g.Released, todayIso) <= 0)
                     .Where(g =>
                         g.MetacriticUrl == null ||
+                        ((g.MetacriticUrl == noScoreMarker || g.MetacriticUrl == noResultsMarker)
+                            && g.Released != null && string.Compare(g.Released, midFrom) >= 0 && string.Compare(g.Released, todayIso) <= 0
+                            && g.LastSyncedAt <= now - MidRetryInterval) ||
                         (g.MetacriticUrl == noScoreMarker && g.LastSyncedAt <= now - NoScoreRetryInterval) ||
                         (g.MetacriticUrl == noResultsMarker && g.LastSyncedAt <= now - NoResultsRetryInterval) ||
                         ((g.MetacriticUrl == noScoreMarker || g.MetacriticUrl == noResultsMarker)

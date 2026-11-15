@@ -301,12 +301,45 @@ namespace GGHub.Infrastructure.Services
                 || string.CompareOrdinal(steamReleased, today) > 0;
         }
 
+        public async Task<int> RefreshUpcomingReleaseDatesAsync(int max, CancellationToken ct = default)
+        {
+            if (max <= 0) return 0;
+            var now = DateTime.UtcNow;
+            var recentFrom = now.AddDays(-14).ToString("yyyy-MM-dd");
+            var signalFrom = now - GameRelease.UpcomingSignalLifetime;
+            var igdbFloor = -IgdbCatalogService.IgdbRawgIdOffset;
+
+            // En yakin cikislar once: erteleme en cok onlarda fark ediyor. Tarihsizler sonda.
+            var rows = await _context.Games
+                .Where(g => g.SteamAppId != null && g.RawgId < 0 && g.RawgId > igdbFloor)
+                .Where(g => (g.Released != null && string.Compare(g.Released, recentFrom) >= 0)
+                    || (g.Released == null && g.UpcomingSeenAt != null && g.UpcomingSeenAt > signalFrom))
+                .OrderBy(g => g.Released == null ? 1 : 0)
+                .ThenBy(g => g.Released)
+                .Take(max)
+                .ToListAsync(ct);
+
+            var changed = 0;
+            foreach (var row in rows)
+            {
+                ct.ThrowIfCancellationRequested();
+                var before = row.Released;
+                await RefreshReleaseDateFromSteamAsync(row, row.SteamAppId!.Value, null, ct, force: true);
+                if (row.Released != before) changed++;
+                if (_settings.DelayBetweenRequestsMs > 0)
+                    await Task.Delay(_settings.DelayBetweenRequestsMs, ct);
+            }
+            return changed;
+        }
+
         /// <summary>SteamAppId'si zaten bagli satirlarda tarihi/populerligi tazeler.</summary>
-        private async Task RefreshReleaseDateFromSteamAsync(Game existing, int steamAppId, int? popularityHint, CancellationToken ct)
+        private async Task RefreshReleaseDateFromSteamAsync(Game existing, int steamAppId, int? popularityHint, CancellationToken ct, bool force = false)
         {
             // Cikmis ve tarihi makul gorunen kayitlar icin ekstra istek atmaya gerek yok.
+            // force: son gunlerde "cikti" gorunen oyun aslinda ertelenmis olabilir.
             var today = DateTime.UtcNow.ToString("yyyy-MM-dd");
-            var needsCheck = string.IsNullOrEmpty(existing.Released)
+            var needsCheck = force
+                || string.IsNullOrEmpty(existing.Released)
                 || string.CompareOrdinal(existing.Released, today) > 0;
             if (!needsCheck && popularityHint is not > 0) return;
 

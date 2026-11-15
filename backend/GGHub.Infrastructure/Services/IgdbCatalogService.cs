@@ -454,7 +454,7 @@ namespace GGHub.Infrastructure.Services
             {
                 var safeName = game.Name.Replace("\"", string.Empty);
                 var matches = await QueryGamesAsync(
-                    $"fields id, name, total_rating, total_rating_count, first_release_date, platforms.name, platforms.abbreviation, platforms.slug; where name = \"{safeName}\"; limit 5;", ct);
+                    $"fields id, name, total_rating, total_rating_count, first_release_date, platforms.name, platforms.abbreviation, platforms.slug; where name ~ \"{safeName}\"; limit 5;", ct);
 
                 var match = PickBestMatch(matches, game.Name, game.Released);
 
@@ -466,7 +466,7 @@ namespace GGHub.Infrastructure.Services
                 if (match != null && !await _context.Games.AnyAsync(g => g.IgdbId == match.Id && g.Id != tracked.Id, ct))
                 {
                     tracked.IgdbId = match.Id;
-                    if (match.TotalRating > 0)
+                    if (match.TotalRating > 0 && !GameRelease.IsUnreleased(tracked, DateTime.UtcNow))
                     {
                         tracked.IgdbRating = Math.Round(match.TotalRating.Value, 1);
                         tracked.IgdbRatingCount = match.TotalRatingCount;
@@ -721,14 +721,27 @@ namespace GGHub.Infrastructure.Services
 
             // Kuyruk: IGDB eslesmesi olmayan, populerlige gore en degerli oyunlar once.
             // IgdbId dolduktan sonra satir kuyruktan cikar, boylece is bittikce kuyruk kurur.
-            var recheckBefore = DateTime.UtcNow.AddDays(-30);
+            // Steam/IGDB kaynakli satirlar da kuyrukta (eskiden "RawgId > 0" vardi: Steam'den gelen
+            // WARDOGS, AION 2 gibi oyunlar IGDB puanini HIC almiyordu).
+            // Tazeleme: eslesmis oyun 30 gunde bir; son 120 gunde cikmis oyun 7 gunde bir (puan
+            // cikistan sonraki haftalarda olusuyor); eslesmeyen ama son 2 yilda cikan/cikacak oyun
+            // 30 gunde bir yeniden aranir (IGDB kaydi sonradan acilabiliyor).
+            var now = DateTime.UtcNow;
+            var recheckBefore = now.AddDays(-30);
+            var recentRecheckBefore = now.AddDays(-7);
+            var recentFrom = now.AddDays(-120).ToString("yyyy-MM-dd");
+            var unmatchedFrom = now.AddYears(-2).ToString("yyyy-MM-dd");
             var batch = await _context.Games
-                .Where(g => g.RawgId > 0
-                    && (g.IgdbCheckedAt == null || (g.IgdbId != null && g.IgdbCheckedAt < recheckBefore)))
+                .Where(g => g.IgdbCheckedAt == null
+                    || (g.IgdbId != null && g.IgdbCheckedAt < recheckBefore)
+                    || (g.IgdbId != null && g.IgdbCheckedAt < recentRecheckBefore
+                        && g.Released != null && string.Compare(g.Released, recentFrom) >= 0)
+                    || (g.IgdbId == null && g.IgdbCheckedAt < recheckBefore
+                        && (g.Released == null || string.Compare(g.Released, unmatchedFrom) >= 0)))
                 .OrderBy(g => g.IgdbCheckedAt == null ? 0 : 1)
                 .ThenByDescending(g => g.RawgAdded ?? 0)
                 .Take(batchSize)
-                .Select(g => new { g.Id, g.Name, g.Released })
+                .Select(g => new { g.Id, g.Name, g.Released, g.IgdbId })
                 .ToListAsync(ct);
 
             if (batch.Count == 0) return 0;
@@ -743,9 +756,14 @@ namespace GGHub.Infrastructure.Services
                 {
                     // Apicalypse'te tirnak kacisi: ad icindeki " karakteri sorguyu bozar.
                     var safeName = item.Name.Replace("\"", string.Empty);
+                    // Eslesmis satir kimlikle tazelenir (adla aramak baska kayda kayabilir).
+                    // "~" = buyuk/kucuk harf duyarsiz tam esitlik. "=" ile Steam'in BUYUK HARF
+                    // adlari ("WARDOGS") IGDB'nin "Wardogs"una hic eslesmiyordu.
+                    var where = item.IgdbId != null
+                        ? $"where id = {item.IgdbId.Value}; limit 1;"
+                        : $"where name ~ \"{safeName}\"; limit 5;";
                     var query = "fields id, name, total_rating, total_rating_count, first_release_date, " +
-                                "platforms.name, platforms.abbreviation, platforms.slug; " +
-                                $"where name = \"{safeName}\"; limit 5;";
+                                "platforms.name, platforms.abbreviation, platforms.slug; " + where;
 
                     using var request = new HttpRequestMessage(HttpMethod.Post, $"{_settings.BaseUrl}games");
                     request.Headers.Add("Client-ID", _settings.ClientId);
@@ -776,7 +794,8 @@ namespace GGHub.Infrastructure.Services
                         if (!taken)
                         {
                             game.IgdbId = match.Id;
-                            if (match.TotalRating > 0)
+                            // Cikmamis oyunun puani gosterilmez (GameRelease.IsUnreleased).
+                            if (match.TotalRating > 0 && !GameRelease.IsUnreleased(game, DateTime.UtcNow))
                             {
                                 game.IgdbRating = Math.Round(match.TotalRating.Value, 1);
                                 game.IgdbRatingCount = match.TotalRatingCount;
@@ -946,8 +965,9 @@ namespace GGHub.Infrastructure.Services
                 }
 
                 // IGDB puani her zaman tazelenir: puanlar zamanla degisir ve bu alan
-                // yalnizca IGDB'ye ait (baska kaynagin verisini ezmez).
-                if (dto.TotalRating > 0 && Math.Abs((existing.IgdbRating ?? 0) - dto.TotalRating.Value) > 0.01)
+                // yalnizca IGDB'ye ait (baska kaynagin verisini ezmez). Cikmamis oyunda yazilmaz.
+                if (dto.TotalRating > 0 && Math.Abs((existing.IgdbRating ?? 0) - dto.TotalRating.Value) > 0.01
+                    && !GameRelease.IsUnreleased(existing, DateTime.UtcNow))
                 {
                     existing.IgdbRating = Math.Round(dto.TotalRating.Value, 1);
                     existing.IgdbRatingCount = dto.TotalRatingCount;
@@ -1013,15 +1033,14 @@ namespace GGHub.Infrastructure.Services
                 CoverImage = dto.Cover?.ImageId != null ? CoverUrl(dto.Cover.ImageId, "t_cover_big") : null,
                 Description = dto.Summary,
                 WebsiteUrl = officialSite,
-                // Cikmamis (veya tarihi bilinmeyen) oyunda puan gecersizdir; cikmissa IGDB'nin
-                // elestirmen ortalamasi kullanilir.
-                Metacritic = released != null
-                    && string.CompareOrdinal(released, DateTime.UtcNow.ToString("yyyy-MM-dd")) <= 0
-                    && dto.AggregatedRating > 0
-                    ? (int)Math.Round(dto.AggregatedRating.Value)
-                    : null,
-                Rating = dto.TotalRating > 0 ? Math.Round(dto.TotalRating.Value / 20.0, 2) : null,
-                IgdbRating = dto.TotalRating > 0 ? Math.Round(dto.TotalRating.Value, 1) : null,
+                // Kaynaklar karistirilmaz: arayuz "Metacritic" ve "RAWG" diye etiketliyor.
+                // Eskiden IGDB elestirmen ortalamasi Metacritic'e, IGDB puani/20 RAWG puanina
+                // yaziliyordu; RAWG'da hic olmayan oyunda "RAWG puani" gorunuyordu. Metacritic'i
+                // MetacriticSyncJob gercek kaynaktan doldurur (MetacriticUrl bos = kuyrukta).
+                Metacritic = null,
+                Rating = null,
+                IgdbRating = dto.TotalRating > 0 && !GameRelease.IsUnreleased(released, null, DateTime.UtcNow)
+                    ? Math.Round(dto.TotalRating.Value, 1) : null,
                 IgdbRatingCount = dto.TotalRatingCount,
                 // Populerlik sinyali: hypes (bekleyen kullanici) yoksa oy sayisindan turetilir;
                 // ikisi de yoksa gundem vitrini bu oyunu one cikaramaz (dogru davranis).

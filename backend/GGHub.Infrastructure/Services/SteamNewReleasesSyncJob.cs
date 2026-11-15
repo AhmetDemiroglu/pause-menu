@@ -45,6 +45,7 @@ namespace GGHub.Infrastructure.Services
                 try
                 {
                     await RunOnceAsync(stoppingToken);
+                    await RefreshUpcomingDatesAsync(stoppingToken);
                 }
                 catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
                 {
@@ -57,6 +58,18 @@ namespace GGHub.Infrastructure.Services
 
                 await Task.Delay(TimeSpan.FromMinutes(_settings.RunIntervalMinutes), stoppingToken);
             }
+        }
+
+        /// <summary>
+        /// Listelerden dusmus Steam-only oyunlarin tarihleri (erteleme, erken cikis). Kosu basina
+        /// sinirli (1.5 sn aralik): 6 saatte bir 60 oyun = gunde 240 appdetails istegi.
+        /// </summary>
+        private async Task RefreshUpcomingDatesAsync(CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var steamCatalog = scope.ServiceProvider.GetRequiredService<ISteamCatalogService>();
+            var changed = await steamCatalog.RefreshUpcomingReleaseDatesAsync(_settings.MaxDateRefreshPerRun, ct);
+            _logger.LogInformation("[SteamSync] Tarih tazeleme: {Changed} oyunun cikis tarihi degisti.", changed);
         }
 
         private async Task RunOnceAsync(CancellationToken ct)
