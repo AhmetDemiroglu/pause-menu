@@ -45,6 +45,7 @@ const COPY = {
                 lead: "You may not use the platform in violation of the law, public order, or these terms. The following are strictly prohibited:",
                 deny: true,
                 list: [
+                    "Child sexual abuse and exploitation (CSAE) or child sexual abuse material (CSAM) of any kind, see our Child Safety Standards",
                     "Posts containing insults, threats, harassment, or hate speech",
                     "Illegal content, or content that infringes copyright or others' privacy",
                     "Spam, automated messages, or misleading redirection",
@@ -94,6 +95,7 @@ const COPY = {
                 lead: "Platformu hukuka, kamu düzenine ve bu şartlara aykırı kullanamazsın. Aşağıdakiler kesinlikle yasaktır:",
                 deny: true,
                 list: [
+                    "Her türlü çocuk cinsel istismarı ve sömürüsü (CSAE) ya da çocuk cinsel istismarı materyali (CSAM), bkz. Çocuk Güvenliği Standartları",
                     "Hakaret, tehdit, taciz ve nefret söylemi içeren paylaşımlar",
                     "Yasadışı, telif hakkını veya başkalarının gizliliğini ihlal eden içerik",
                     "Spam, otomatik mesaj veya yanıltıcı yönlendirme",

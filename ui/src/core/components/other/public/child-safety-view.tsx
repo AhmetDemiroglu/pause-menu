@@ -38,7 +38,7 @@ const COPY = {
                 title: "3. How to report",
                 lead: "If you see content or behavior that puts a child at risk:",
                 list: [
-                    "Use the report option on a profile, comment, review, or list, in the app or on the web",
+                    "In-app reporting: use the built-in Report option on any profile, post, comment, review, or list, in the Pause Menu app or on pausemenu.app",
                     "Or email info@pausemenu.app with the subject “Child safety”",
                 ],
                 after: "We treat child safety reports as a priority and act on them quickly.",
@@ -74,7 +74,7 @@ const COPY = {
                 title: "3. Nasıl bildirilir",
                 lead: "Bir çocuğu riske atan içerik veya davranış görürsen:",
                 list: [
-                    "Uygulamada veya web'de bir profil, yorum, değerlendirme ya da listedeki bildirme seçeneğini kullan",
+                    "Uygulama içi bildirim: Pause Menu uygulamasında veya pausemenu.app'te herhangi bir profil, gönderi, yorum, değerlendirme ya da listedeki Bildir seçeneğini kullan",
                     "Ya da info@pausemenu.app adresine “Çocuk güvenliği” konusuyla e-posta gönder",
                 ],
                 after: "Çocuk güvenliği bildirimlerini öncelikli sayar ve hızla işleme alırız.",
