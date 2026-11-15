@@ -28,6 +28,12 @@ namespace GGHub.Infrastructure.Services
         /// <summary>IGDB satirlarinin sentetik RawgId tabani (bkz. Game.IgdbId).</summary>
         public const int IgdbRawgIdOffset = 1_000_000_000;
 
+        /// <summary>
+        /// Ad eslesmesi bu tarihte "=" (harf duyarli) yerine "~" oldu. Oncesinde eslesmeyen
+        /// satirlar (WARDOGS / Wardogs gibi) bu tarihten eski IgdbCheckedAt ile kuyruga geri girer.
+        /// </summary>
+        private static readonly DateTime CaseInsensitiveMatchSince = new(2026, 11, 15, 12, 0, 0, DateTimeKind.Utc);
+
         private const string TokenCacheKey = "igdb-access-token";
 
         /// <summary>Gelecek tarihli cikislar bu araliktan eski dogrulandiysa yeniden sorulur.</summary>
@@ -737,7 +743,9 @@ namespace GGHub.Infrastructure.Services
                     || (g.IgdbId != null && g.IgdbCheckedAt < recentRecheckBefore
                         && g.Released != null && string.Compare(g.Released, recentFrom) >= 0)
                     || (g.IgdbId == null && g.IgdbCheckedAt < recheckBefore
-                        && (g.Released == null || string.Compare(g.Released, unmatchedFrom) >= 0)))
+                        && (g.Released == null || string.Compare(g.Released, unmatchedFrom) >= 0))
+                    // "~" duzeltmesinden once "eslesme yok" isaretlenenler bir kez yeniden aranir.
+                    || (g.IgdbId == null && g.IgdbCheckedAt < CaseInsensitiveMatchSince))
                 .OrderBy(g => g.IgdbCheckedAt == null ? 0 : 1)
                 .ThenByDescending(g => g.RawgAdded ?? 0)
                 .Take(batchSize)
