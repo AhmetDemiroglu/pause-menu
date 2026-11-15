@@ -15,8 +15,8 @@ const META = [
 const COPY = {
     "en-US": {
         title: "Child Safety Standards",
-        intro: "Pause Menu has zero tolerance for child sexual abuse and exploitation (CSAE). This page explains our standards and how to report concerns.",
-        updated: "Last updated: 20 June 2026",
+        intro: "Pause Menu, developed by SeptimusLab, has zero tolerance for child sexual abuse and exploitation (CSAE). These standards apply to the Pause Menu apps on Google Play and the App Store and to pausemenu.app. This page explains our standards and how to report concerns.",
+        updated: "Last updated: 15 November 2026",
         contactTitle: "Child safety contact",
         contactLead: "To report a child safety concern, contact us at:",
         sections: [
@@ -51,8 +51,8 @@ const COPY = {
     },
     tr: {
         title: "Çocuk Güvenliği Standartları",
-        intro: "Pause Menu, çocukların cinsel istismarı ve sömürüsüne (CSAE) karşı sıfır tolerans uygular. Bu sayfa standartlarımızı ve nasıl bildirim yapılacağını anlatır.",
-        updated: "Son güncelleme: 20 Haziran 2026",
+        intro: "SeptimusLab tarafından geliştirilen Pause Menu, çocukların cinsel istismarı ve sömürüsüne (CSAE) karşı sıfır tolerans uygular. Bu standartlar Google Play ve App Store'daki Pause Menu uygulamaları ile pausemenu.app için geçerlidir. Bu sayfa standartlarımızı ve nasıl bildirim yapılacağını anlatır.",
+        updated: "Son güncelleme: 15 Kasım 2026",
         contactTitle: "Çocuk güvenliği iletişim",
         contactLead: "Çocuk güvenliğiyle ilgili bir endişeyi bildirmek için bize ulaş:",
         sections: [
