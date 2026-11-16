@@ -52,8 +52,10 @@ export async function POST(request: NextRequest) {
 
     const userAgent = request.headers.get("user-agent") ?? "";
     const forwardedFor = request.headers.get("x-forwarded-for") ?? "";
-    const ip = forwardedFor.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
-    const country = request.headers.get("x-vercel-ip-country") ?? "";
+    // Site Railway + Cloudflare arkasinda (Kasim 2026): gercek istemci IP ve ulke Cloudflare basliklarinda.
+    // Vercel basliklari yedek olarak kalir. Yalniz x-vercel-ip-country okunurken ulke kirilimi 0 gorunuyordu.
+    const ip = request.headers.get("cf-connecting-ip") || forwardedFor.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
+    const country = request.headers.get("cf-ipcountry") ?? request.headers.get("x-vercel-ip-country") ?? "";
 
     try {
         // await SART: Vercel yanittan sonra fonksiyonu dondurabilir, void fetch

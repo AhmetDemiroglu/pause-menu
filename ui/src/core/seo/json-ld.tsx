@@ -127,6 +127,13 @@ export const videoGameJsonLd = (game: Game, locale: AppLocale, reviews: Review[]
     const url = localizedUrl(`/games/${game.slug}`, locale);
     const description = truncate(gameDescription(game, locale), 1000);
     const image = getGameImageUrl(game.backgroundImage, 1280);
+    const hasAggregate = Boolean(game.gghubRating && game.gghubRatingCount);
+    // AI bot yorumlari yapisal veriye girmez: puan ozeti (GetGameRatingSummaryAsync) onlari zaten saymiyor,
+    // Google "Person" yazarli yapay yorumu sahte yorum sayar. Yalniz AI yorumu olan oyunda (queens-domain)
+    // review dizisi aggregateRating'siz kaliyordu: Search Console "aggregateRating icermeyen birden fazla yorum".
+    // review yalniz aggregateRating ile birlikte cikar: oyun 300 sn, yorumlar 120 sn onbellekli, ilk insan
+    // yorumu sayidan once gorunebilir.
+    const humanReviews = hasAggregate ? reviews.filter((review) => !review.user?.isAiAgent).slice(0, 5) : [];
 
     return {
         "@context": "https://schema.org",
@@ -144,20 +151,20 @@ export const videoGameJsonLd = (game: Game, locale: AppLocale, reviews: Review[]
         ...(game.publishers?.length ? { publisher: game.publishers.map((publisher) => ({ "@type": "Organization", name: publisher.name })) } : {}),
         ...(game.esrbRating ? { contentRating: game.esrbRating } : {}),
         ...(game.websiteUrl ? { sameAs: game.websiteUrl } : {}),
-        ...(game.gghubRating && game.gghubRatingCount
+        ...(hasAggregate
             ? {
                   aggregateRating: {
                       "@type": "AggregateRating",
-                      ratingValue: Number(game.gghubRating.toFixed(1)),
+                      ratingValue: Number(game.gghubRating!.toFixed(1)),
                       bestRating: GGHUB_BEST_RATING,
                       worstRating: 1,
                       ratingCount: game.gghubRatingCount,
                   },
               }
             : {}),
-        ...(reviews.length
+        ...(humanReviews.length
             ? {
-                  review: reviews.slice(0, 5).map((review) => ({
+                  review: humanReviews.map((review) => ({
                       "@type": "Review",
                       author: person(review.user, locale),
                       datePublished: review.createdAt,

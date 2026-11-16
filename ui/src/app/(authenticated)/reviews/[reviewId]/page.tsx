@@ -63,7 +63,8 @@ export default async function Page({ params }: Props) {
             {review ? (
                 <JsonLd
                     data={[
-                        reviewJsonLd(review, locale),
+                        // AI bot yorumu "Person" yazarli Review olarak isaretlenmez (sahte yorum sayilir); yalniz breadcrumb.
+                        ...(review.user?.isAiAgent ? [] : [reviewJsonLd(review, locale)]),
                         breadcrumbJsonLd(locale, [
                             { name: translate(messages, "nav.home"), path: "/" },
                             ...(review.game ? [{ name: review.game.name, path: `/games/${review.game.slug || review.game.rawgId}` }] : []),
