@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Button } from "@/core/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/core/components/ui/form";
 import { Input } from "@/core/components/ui/input";
+import { PasswordInput } from "@/core/components/ui/password-input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/core/components/ui/card";
 import { X, Lock, KeyRound } from "lucide-react";
 import Link from "next/link";
@@ -104,7 +105,7 @@ export function ResetPasswordView() {
                                         <FormControl>
                                             <div className="relative">
                                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                                <Input type="password" className="pl-10" {...field} />
+                                                <PasswordInput className="pl-10" autoComplete="new-password" {...field} />
                                             </div>
                                         </FormControl>
                                         <FormMessage />
@@ -120,7 +121,7 @@ export function ResetPasswordView() {
                                         <FormControl>
                                             <div className="relative">
                                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                                <Input type="password" className="pl-10" {...field} />
+                                                <PasswordInput className="pl-10" autoComplete="new-password" {...field} />
                                             </div>
                                         </FormControl>
                                         <FormMessage />

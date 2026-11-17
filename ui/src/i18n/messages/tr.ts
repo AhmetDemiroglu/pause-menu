@@ -154,6 +154,8 @@ export const trMessages = {
         loginEmailPlaceholder: "ornek@pausemenu.app veya kullanici_adi",
         passwordLabel: "Şifre",
         forgotPassword: "Şifremi unuttum",
+        showPassword: "Şifreyi göster",
+        hidePassword: "Şifreyi gizle",
         noAccount: "Hesabın yok mu?",
         createAccount: "Kayıt ol",
         loginPending: "Giriş yapılıyor...",

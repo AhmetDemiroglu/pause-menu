@@ -154,6 +154,8 @@ export const enUSMessages = {
         loginEmailPlaceholder: "example@pausemenu.app or username",
         passwordLabel: "Password",
         forgotPassword: "Forgot my password",
+        showPassword: "Show password",
+        hidePassword: "Hide password",
         noAccount: "Don't have an account?",
         createAccount: "Sign up",
         loginPending: "Signing in...",

@@ -10,6 +10,7 @@ import { register as registerApi } from "@/api/auth/auth.api";
 import { Button } from "@/core/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/core/components/ui/form";
 import { Input } from "@/core/components/ui/input";
+import { PasswordInput } from "@/core/components/ui/password-input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
 import { X, User, Mail, Lock } from "lucide-react";
 import Link from "next/link";
@@ -147,7 +148,7 @@ function RegisterPageContent() {
                                         <FormControl>
                                             <div className="relative">
                                                 <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                                <Input type="password" className="h-10 pl-9" {...field} />
+                                                <PasswordInput className="h-10 pl-9" autoComplete="new-password" {...field} />
                                             </div>
                                         </FormControl>
                                         <FormMessage />

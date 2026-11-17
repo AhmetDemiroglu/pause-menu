@@ -20,6 +20,7 @@ import { Button } from "@/core/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/core/components/ui/form";
 import { Input } from "@/core/components/ui/input";
+import { PasswordInput } from "@/core/components/ui/password-input";
 import { SocialAuthButtons } from "./social-auth-buttons";
 import { BrandLogo } from "@core/components/base/brand-logo";
 
@@ -147,7 +148,7 @@ function LoginPageContent() {
                                         <FormControl>
                                             <div className="relative">
                                                 <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                                <Input type="password" className="h-10 pl-9" {...field} />
+                                                <PasswordInput className="h-10 pl-9" autoComplete="current-password" {...field} />
                                             </div>
                                         </FormControl>
                                         <FormMessage />
