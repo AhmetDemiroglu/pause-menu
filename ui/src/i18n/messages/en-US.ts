@@ -555,6 +555,7 @@ export const enUSMessages = {
             user: "User",
             reviewcomment: "Review Comment",
             post: "Post",
+            feedback: "In-app feedback",
         },
         userReviewsLoading: "Loading the user's reviews...",
         userReviewsError: "An error occurred while loading reviews.",
@@ -1040,6 +1041,7 @@ export const enUSMessages = {
             user: "User",
             reviewcomment: "Review Comment",
             post: "Post",
+            feedback: "In-app feedback",
         },
     },
     profile: {

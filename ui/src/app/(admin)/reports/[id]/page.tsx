@@ -250,6 +250,7 @@ export default function ReportDetailPage() {
                 </div>
 
                 <div className="lg:col-span-1 flex flex-col gap-4">
+                    {report.accusedUserId ? (
                     <Card>
                         <CardHeader className="py-0 px-4 bg-muted/20">
                             <CardTitle className="flex items-center gap-2 text-lg">
@@ -266,7 +267,7 @@ export default function ReportDetailPage() {
                                 <div className="flex items-center gap-3 overflow-hidden">
                                     <Avatar className="h-10 w-10 border">
                                         <AvatarImage src={getImageUrl(report.accusedProfileImage)} />
-                                        <AvatarFallback>{report.accusedUsername.charAt(0).toUpperCase()}</AvatarFallback>
+                                        <AvatarFallback>{(report.accusedUsername || "?").charAt(0).toUpperCase()}</AvatarFallback>
                                     </Avatar>
                                     <div className="flex flex-col min-w-0">
                                         <span className="text-sm font-semibold truncate text-foreground">{report.accusedUsername}</span>
@@ -277,6 +278,7 @@ export default function ReportDetailPage() {
                             </Link>
                         </CardContent>
                     </Card>
+                    ) : null}
 
                     <Card>
                         <CardHeader className="py-0 px-4 bg-muted/20">
@@ -286,6 +288,8 @@ export default function ReportDetailPage() {
                             <CardDescription>{t("admin.reportDetail.reporterDescription")}</CardDescription>
                         </CardHeader>
                         <CardContent className="py-0 px-4 m-0">
+                            {/* Misafir geri bildiriminde raporlayan yok (reporterId 0): profil linki verilmez. */}
+                            {report.reporterId ? (
                             <Link
                                 href={`/users/${report.reporterId}`}
                                 className="flex items-center justify-between p-3 border rounded-md hover:bg-accent transition-colors group cursor-pointer"
@@ -294,7 +298,7 @@ export default function ReportDetailPage() {
                                 <div className="flex items-center gap-3 overflow-hidden">
                                     <Avatar className="h-10 w-10 border">
                                         <AvatarImage src={getImageUrl(report.reporterProfileImage)} />
-                                        <AvatarFallback>{report.reporterUsername.charAt(0).toUpperCase()}</AvatarFallback>
+                                        <AvatarFallback>{(report.reporterUsername || "?").charAt(0).toUpperCase()}</AvatarFallback>
                                     </Avatar>
                                     <div className="flex flex-col min-w-0">
                                         <span className="text-sm font-semibold truncate text-foreground">{report.reporterUsername}</span>
@@ -303,6 +307,14 @@ export default function ReportDetailPage() {
                                 </div>
                                 <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                             </Link>
+                            ) : (
+                                <div className="flex items-center gap-3 p-3 border rounded-md">
+                                    <Avatar className="h-10 w-10 border">
+                                        <AvatarFallback>{(report.reporterUsername || "?").charAt(0).toUpperCase()}</AvatarFallback>
+                                    </Avatar>
+                                    <span className="text-sm font-semibold text-foreground">{report.reporterUsername}</span>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

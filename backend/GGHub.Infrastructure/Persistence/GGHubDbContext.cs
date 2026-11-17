@@ -91,6 +91,15 @@ namespace GGHub.Infrastructure.Persistence
         public DbSet<ErrorEvent> ErrorEvents { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Raporlayan istege bagli (misafir geri bildirimi). Hesap silinince raporlari
+            // yine silinsin: istege bagli iliskinin varsayilani SetNull/NoAction olurdu.
+            modelBuilder.Entity<ContentReport>()
+                .HasOne(r => r.ReporterUser)
+                .WithMany()
+                .HasForeignKey(r => r.ReporterUserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<User>()

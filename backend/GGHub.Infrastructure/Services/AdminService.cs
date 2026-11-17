@@ -45,6 +45,7 @@ namespace GGHub.Infrastructure.Services
 
         public async Task<PaginatedResult<AdminReportDto>> GetContentReportsAsync(ReportFilterParams filterParams)
         {
+            var guestName = AppText.Get("report.guestReporter");
             var query = _context.ContentReports
                 .AsNoTracking()
                 .Include(r => r.ReporterUser)
@@ -102,8 +103,8 @@ namespace GGHub.Infrastructure.Services
                     Reason = r.Reason,
                     Status = r.Status,
                     ReportedAt = r.CreatedAt,
-                    ReporterId = r.ReporterUserId,
-                    ReporterUsername = r.ReporterUser.Username
+                    ReporterId = r.ReporterUserId ?? 0,
+                    ReporterUsername = r.ReporterUser != null ? r.ReporterUser.Username : guestName
                 })
                 .ToListAsync();
 
@@ -646,13 +647,19 @@ namespace GGHub.Infrastructure.Services
                 ReportedAt = report.CreatedAt,
                 AdminResponse = report.AdminResponse,
                 ResolvedAt = report.ResolvedAt,
-                ReporterId = report.ReporterUserId,
-                ReporterUsername = report.ReporterUser.Username,
-                ReporterProfileImage = report.ReporterUser.ProfileImageUrl
+                ReporterId = report.ReporterUserId ?? 0,
+                ReporterUsername = report.ReporterUser?.Username ?? AppText.Get("report.guestReporter"),
+                ReporterProfileImage = report.ReporterUser?.ProfileImageUrl
             };
 
             switch (report.EntityType)
             {
+                case "Feedback":
+                    // Uygulama ici "Sorun bildir": hedef icerik yok, metnin kendisi rapordur.
+                    dto.ReportedContent = report.Reason;
+                    dto.ReportedEntityTitle = AppText.Get("report.feedbackTitle");
+                    break;
+
                 case "Post":
                     var post = await _context.Posts
                         .Include(p => p.User)

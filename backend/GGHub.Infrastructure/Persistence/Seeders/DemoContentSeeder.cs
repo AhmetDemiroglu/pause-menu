@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using GGHub.Core.Entities;
 using GGHub.Core.Enums;
@@ -360,7 +360,7 @@ namespace GGHub.Infrastructure.Persistence.Seeders
 
             // 6. Raporlar: sahtenin actiklari + silinen icerigi/kullaniciyi hedef alanlar.
             await Step("reports", _context.ContentReports.Where(r =>
-                userIds.Contains(r.ReporterUserId) ||
+                (r.ReporterUserId.HasValue && userIds.Contains(r.ReporterUserId.Value)) ||
                 (r.EntityType == "User" && userIds.Contains(r.EntityId)) ||
                 (r.EntityType == "Post" && postIdList.Contains(r.EntityId)) ||
                 (r.EntityType == "Review" && reviewIds.Contains(r.EntityId)) ||

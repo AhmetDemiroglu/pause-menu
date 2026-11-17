@@ -7,8 +7,9 @@ namespace GGHub.Core.Entities
         public int Id { get; set; }
         public string EntityType { get; set; }
         public int EntityId { get; set; } 
-        public int ReporterUserId { get; set; } 
-        public User ReporterUser { get; set; }
+        /// <summary>Bos = misafir geri bildirimi (uygulama ici "Sorun bildir", giris yok).</summary>
+        public int? ReporterUserId { get; set; }
+        public User? ReporterUser { get; set; }
         public string Reason { get; set; } 
         public ReportStatus Status { get; set; } = ReportStatus.Open;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

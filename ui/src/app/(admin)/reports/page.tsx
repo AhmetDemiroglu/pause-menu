@@ -54,6 +54,8 @@ const getEntityTypeLabel = (t: ReturnType<typeof useI18n>, type: string) => {
             return t("admin.entityTypes.user");
         case "Post":
             return t("admin.entityTypes.post");
+        case "Feedback":
+            return t("admin.entityTypes.feedback");
         default:
             return type;
     }
@@ -250,6 +252,9 @@ export default function ReportsPage() {
                             </SelectItem>
                             <SelectItem value="User" className="cursor-pointer">
                                 {getEntityTypeLabel(t, "User")}
+                            </SelectItem>
+                            <SelectItem value="Feedback" className="cursor-pointer">
+                                {getEntityTypeLabel(t, "Feedback")}
                             </SelectItem>
                         </SelectContent>
                     </Select>

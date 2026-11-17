@@ -511,7 +511,7 @@ namespace GGHub.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ReporterUserId")
+                    b.Property<int?>("ReporterUserId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("ResolvedAt")
@@ -2268,8 +2268,7 @@ namespace GGHub.Infrastructure.Migrations
                     b.HasOne("GGHub.Core.Entities.User", "ReporterUser")
                         .WithMany()
                         .HasForeignKey("ReporterUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("ReporterUser");
                 });

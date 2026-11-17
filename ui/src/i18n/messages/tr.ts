@@ -556,6 +556,7 @@ export const trMessages = {
             user: "Kullanıcı",
             reviewcomment: "İnceleme Yorumu",
             post: "Gönderi",
+            feedback: "Geri bildirim",
         },
         userReviewsLoading: "Kullanıcının incelemeleri yükleniyor...",
         userReviewsError: "İncelemeler yüklenirken bir hata oluştu.",
@@ -1041,6 +1042,7 @@ export const trMessages = {
             user: "Kullanıcı",
             reviewcomment: "İnceleme Yorumu",
             post: "Gönderi",
+            feedback: "Geri bildirim",
         },
     },
     profile: {

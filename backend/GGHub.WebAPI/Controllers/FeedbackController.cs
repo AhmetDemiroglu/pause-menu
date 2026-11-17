@@ -1,5 +1,6 @@
 using GGHub.Application.Dtos;
 using GGHub.Application.Interfaces;
+using GGHub.Core.Entities;
 using GGHub.Core.Enums;
 using GGHub.Infrastructure.Localization;
 using GGHub.Infrastructure.Persistence;
@@ -14,7 +15,8 @@ namespace GGHub.WebAPI.Controllers
 {
     /// <summary>
     /// Uygulama ici geri bildirim ve guvenlik bildirimi (cocuk guvenligi dahil).
-    /// Misafir de gonderir. Kalici iz: her admine SystemAlert bildirimi (DB'de durur).
+    /// Misafir de gonderir. Kayit Rapor Yonetimi'ne "Feedback" turuyle duser (ContentReport,
+    /// misafirde raporlayan bos); her admine o rapora baglanan SystemAlert bildirimi gider.
     /// E-posta ek kanaldir, basarisiz olursa istek yine basarili sayilir.
     /// </summary>
     [Route("api/[controller]")]
@@ -73,6 +75,18 @@ namespace GGHub.WebAPI.Controllers
             }
             if (!string.IsNullOrWhiteSpace(dto.ContactEmail)) sender += $" <{dto.ContactEmail.Trim()}>";
 
+            // Kalici kayit: Rapor Yonetimi (web /reports, mobil admin) burada gosterir.
+            var contact = string.IsNullOrWhiteSpace(dto.ContactEmail) ? "" : $"\n\nContact: {dto.ContactEmail.Trim()}";
+            var report = new ContentReport
+            {
+                EntityType = "Feedback",
+                EntityId = 0,
+                ReporterUserId = userId,
+                Reason = $"[{category}] {message}{contact}",
+            };
+            _db.ContentReports.Add(report);
+            await _db.SaveChangesAsync();
+
             var admins = await _db.Users.AsNoTracking()
                 .Where(u => u.Role == "Admin" && !u.IsDeleted && !u.IsBanned && !u.IsAiAgent)
                 .Select(u => u.Id)
@@ -94,7 +108,7 @@ namespace GGHub.WebAPI.Controllers
                         type: NotificationType.SystemAlert,
                         messageKey: "admin.feedbackNotification",
                         messageArgs: args,
-                        link: null,
+                        link: $"/reports/{report.Id}",
                         actorUserId: null);
                 }
                 catch (Exception ex)

@@ -36,6 +36,8 @@ export const translateEntityType = (type: string | undefined | null): string => 
             return "Liste";
         case "User":
             return "Kullanıcı";
+        case "Feedback":
+            return "Geri bildirim";
         default:
             return type;
     }
