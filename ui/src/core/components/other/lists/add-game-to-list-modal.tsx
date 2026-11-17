@@ -9,6 +9,7 @@ import { Input } from "@core/components/ui/input";
 import { Loader, Check, Search } from "lucide-react";
 import type { Game } from "@/models/gaming/game.model";
 import placeHolder from "@core/assets/placeholder.png";
+import { useI18n } from "@/core/contexts/locale-context";
 
 interface AddGameToListModalProps {
     isOpen: boolean;
@@ -19,6 +20,7 @@ interface AddGameToListModalProps {
 }
 
 export function AddGameToListModal({ isOpen, onClose, onAddGame, isPending, existingGameIds }: AddGameToListModalProps) {
+    const t = useI18n();
     const [searchTerm, setSearchTerm] = useState("");
     const [page, setPage] = useState(1);
     const [submittedSearchTerm, setSubmittedSearchTerm] = useState("");
@@ -61,7 +63,7 @@ export function AddGameToListModal({ isOpen, onClose, onAddGame, isPending, exis
                 <div className="py-4">
                     <div className="flex gap-2">
                         <Input
-                            placeholder="Oyun adı ara..."
+                            placeholder={t("misc.searchGameName")}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             onKeyDown={(e) => {

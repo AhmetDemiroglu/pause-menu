@@ -1,4 +1,7 @@
+"use client";
+
 import { Smile, Meh, Frown, Trophy, CircleDashed } from "lucide-react";
+import { useI18n } from "@/core/contexts/locale-context";
 import React from "react";
 
 interface GameRatingBarProps {
@@ -7,38 +10,39 @@ interface GameRatingBarProps {
     actionLabel?: string;
 }
 
-export const GameRatingBar = ({ rating, onRateClick, actionLabel = "Puan vermek için tıkla" }: GameRatingBarProps) => {
+export const GameRatingBar = ({ rating, onRateClick, actionLabel }: GameRatingBarProps) => {
+    const t = useI18n();
     const getRatingInfo = (score: number) => {
         if (score === 0) return {
-            label: "Henüz Puan Yok",
+            label: t("gameRating.none"),
             text: "text-zinc-400",
             icon: CircleDashed,
             gradient: "from-zinc-700 via-zinc-600 to-zinc-500 shadow-none"
         };
 
         if (score >= 9.0) return {
-            label: "Olağanüstü",
+            label: t("gameRating.outstanding"),
             text: "text-emerald-400",
             icon: Trophy,
             gradient: "from-emerald-500 via-green-500 to-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.4)]"
         };
 
         if (score >= 7.0) return {
-            label: "Öneriliyor",
+            label: t("gameRating.recommended"),
             text: "text-pink-400",
             icon: Smile,
             gradient: "from-pink-600 via-pink-500 to-orange-400 shadow-[0_0_20px_rgba(255,46,136,0.4)]"
         };
 
         if (score >= 5.0) return {
-            label: "Ortalama",
+            label: t("gameRating.average"),
             text: "text-yellow-400",
             icon: Meh,
             gradient: "from-orange-500 via-yellow-500 to-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.4)]"
         };
 
         return {
-            label: "Zayıf",
+            label: t("gameRating.weak"),
             text: "text-red-400",
             icon: Frown,
             gradient: "from-red-600 via-red-500 to-orange-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]"
@@ -60,7 +64,7 @@ export const GameRatingBar = ({ rating, onRateClick, actionLabel = "Puan vermek 
                     </h3>
                 </div>
                 <div className="flex flex-col items-end leading-none">
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Pause Menu Puanı</span>
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{t("gameRating.scoreLabel")}</span>
                     <span className={`text-xl font-bold ${info.text}`}>{rating.toFixed(1)}</span>
                 </div>
             </div>
@@ -97,10 +101,10 @@ export const GameRatingBar = ({ rating, onRateClick, actionLabel = "Puan vermek 
                     className="text-xs font-medium text-zinc-500 group-hover:text-white transition-colors cursor-pointer flex items-center gap-1"
                 >
                     <span className="underline decoration-zinc-700 underline-offset-4 group-hover:decoration-white">
-                        {actionLabel}
+                        {actionLabel ?? t("gameRating.clickToRate")}
                     </span>
                 </div>
-                <span className="text-[10px] text-zinc-600">10 üzerinden</span>
+                <span className="text-[10px] text-zinc-600">{t("gameRating.outOfTen")}</span>
             </div>
         </div>
     );

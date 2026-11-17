@@ -4,10 +4,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/core/compone
 import { Review } from "@/models/review/review.model";
 import { Star, Calendar, Quote, ThumbsUp, ThumbsDown, Trash2, Pencil, Flag, Check, X, Loader2 } from "lucide-react";
 import dayjs from "dayjs";
+import "dayjs/locale/tr";
+import "dayjs/locale/en";
 import Link from "next/link";
 import placeholderGame from "@/core/assets/placeholder.png";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/core/hooks/use-auth";
+import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { Button } from "@/core/components/ui/button";
 import { cn } from "@/core/lib/utils";
 import { Textarea } from "@/core/components/ui/textarea";
@@ -25,6 +28,8 @@ interface ReviewDetailDialogProps {
 
 export function ReviewDetailDialog({ isOpen, onClose, review }: ReviewDetailDialogProps) {
     const { user } = useAuth();
+    const t = useI18n();
+    const locale = useCurrentLocale();
     const queryClient = useQueryClient();
     const currentUserId = user ? Number(user.id) : undefined;
     const [voteScore, setVoteScore] = useState(0);
@@ -50,7 +55,7 @@ export function ReviewDetailDialog({ isOpen, onClose, review }: ReviewDetailDial
             queryClient.invalidateQueries({ queryKey: ["profile-reviews"] });
         },
         onError: () => {
-            toast.error("Oy verilirken hata oluştu");
+            toast.error(t("reviewCard.voteError"));
         }
     });
 
@@ -60,12 +65,12 @@ export function ReviewDetailDialog({ isOpen, onClose, review }: ReviewDetailDial
             return updateReview(review.id, { content: editContent, rating: review.rating });
         },
         onSuccess: () => {
-            toast.success("İnceleme güncellendi");
+            toast.success(t("reviewCard.updated"));
             setIsEditing(false);
             queryClient.invalidateQueries({ queryKey: ["profile-reviews"] });
             onClose();
         },
-        onError: () => toast.error("Güncelleme başarısız")
+        onError: () => toast.error(t("reviewCard.updateFailed"))
     });
 
     const deleteMutation = useMutation({
@@ -74,11 +79,11 @@ export function ReviewDetailDialog({ isOpen, onClose, review }: ReviewDetailDial
             return deleteReview(review.id);
         },
         onSuccess: () => {
-            toast.success("İnceleme silindi");
+            toast.success(t("reviewCard.deleted"));
             onClose();
             queryClient.invalidateQueries({ queryKey: ["profile-reviews"] });
         },
-        onError: () => toast.error("Silme işlemi başarısız")
+        onError: () => toast.error(t("reviewCard.deleteFailed"))
     });
 
     if (!review || !review.game) return null;
@@ -88,7 +93,7 @@ export function ReviewDetailDialog({ isOpen, onClose, review }: ReviewDetailDial
 
     const handleVote = (value: number) => {
         if (!user) {
-            toast.error("Oy vermek için giriş yapmalısınız");
+            toast.error(t("reviewCard.loginToVote"));
             return;
         }
         if (currentUserVote === value) return;
@@ -104,14 +109,14 @@ export function ReviewDetailDialog({ isOpen, onClose, review }: ReviewDetailDial
     };
 
     const handleDelete = () => {
-        if (confirm("Bu incelemeyi silmek istediğinize emin misiniz?")) {
+        if (confirm(t("reviewCard.confirmDelete"))) {
             deleteMutation.mutate();
         }
     };
 
     const handleSaveUpdate = () => {
         if (editContent.trim() === "") {
-            toast.warning("İçerik boş olamaz");
+            toast.warning(t("reviewCard.contentEmpty"));
             return;
         }
         updateMutation.mutate();
@@ -153,7 +158,7 @@ export function ReviewDetailDialog({ isOpen, onClose, review }: ReviewDetailDial
                                 </div>
                                 <span className="text-xs text-muted-foreground flex items-center gap-1.5">
                                     <Calendar className="h-3.5 w-3.5" />
-                                    {dayjs(review.createdAt).format("D MMMM YYYY HH:mm")}
+                                    {dayjs(review.createdAt).locale(locale === "tr" ? "tr" : "en").format("D MMMM YYYY HH:mm")}
                                 </span>
                             </div>
                         </div>
@@ -171,11 +176,11 @@ export function ReviewDetailDialog({ isOpen, onClose, review }: ReviewDetailDial
                             />
                             <div className="flex justify-end gap-2">
                                 <Button size="sm" variant="outline" onClick={() => setIsEditing(false)} disabled={updateMutation.isPending}>
-                                    <X className="h-4 w-4 mr-1" /> İptal
+                                    <X className="h-4 w-4 mr-1" /> {t("listForm.cancel")}
                                 </Button>
                                 <Button size="sm" onClick={handleSaveUpdate} disabled={updateMutation.isPending}>
                                     {updateMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Check className="h-4 w-4 mr-1" />}
-                                    Kaydet
+                                    {t("reviewCard.save")}
                                 </Button>
                             </div>
                         </div>
@@ -194,7 +199,7 @@ export function ReviewDetailDialog({ isOpen, onClose, review }: ReviewDetailDial
                     {/* Sol: Oylama */}
                     {!isOwner && (
                         <div className="flex items-center gap-4">
-                            <span className="text-xs text-muted-foreground font-medium italic hidden sm:inline">Bu incelemeyi yararlı buldunuz mu?</span>
+                            <span className="text-xs text-muted-foreground font-medium italic hidden sm:inline">{t("reviewCard.helpful")}</span>
                             <div className="flex items-center gap-1 bg-background rounded-full border shadow-sm px-1 py-0.5">
                                 <Button
                                     variant="ghost"

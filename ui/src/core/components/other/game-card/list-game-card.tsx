@@ -8,6 +8,7 @@ import logoSrc from "@core/assets/brand-mark.png";
 import rawgLogoSrc from "@core/assets/rawg_logo.png";
 import metacriticLogoSrc from "@core/assets/metacritic_logo.png";
 import { IgdbLogo } from "@/core/components/other/igdb-logo";
+import { useI18n } from "@/core/contexts/locale-context";
 
 interface ListGameCardProps {
     game: Game;
@@ -16,6 +17,7 @@ interface ListGameCardProps {
 }
 
 export const ListGameCard = memo(function ListGameCard({ game, showRemoveButton, onRemove }: ListGameCardProps) {
+    const t = useI18n();
     const gameUrl = `/games/${game.slug || game.rawgId}`;
 
     return (
@@ -70,7 +72,7 @@ export const ListGameCard = memo(function ListGameCard({ game, showRemoveButton,
                         ) : null}
 
                         {/* Pause Menu (Mor) */}
-                        <div className="px-2 py-1 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold text-[10px] border border-purple-500/20 flex items-center gap-1.5 tabular-nums" title="Pause Menu Puanı">
+                        <div className="px-2 py-1 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold text-[10px] border border-purple-500/20 flex items-center gap-1.5 tabular-nums" title={t("gameRating.scoreLabel")}>
                             <Image src={logoSrc} alt="Pause Menu" width={12} height={12} className="w-3 h-3 object-contain opacity-80" />
                             {game.gghubRating && game.gghubRating > 0 ? game.gghubRating.toFixed(1) : "-"}
                         </div>
@@ -86,7 +88,7 @@ export const ListGameCard = memo(function ListGameCard({ game, showRemoveButton,
                             onRemove?.(game.rawgId);
                         }}
                         className="cursor-pointer shrink-0 self-start p-2 rounded-md hover:bg-destructive/10 text-destructive transition-colors disabled:opacity-50 z-10" // z-10 eklendi
-                        aria-label="Listeden çıkar"
+                        aria-label={t("misc.removeFromList")}
                     >
                         <Trash2 className="h-4 w-4" />
                     </button>

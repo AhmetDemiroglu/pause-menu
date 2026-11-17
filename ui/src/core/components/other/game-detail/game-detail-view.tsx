@@ -56,7 +56,7 @@ export const GameDetailView = ({ idOrSlug, initialGame = null, initialReviews = 
 
     const handleOpenReviewModal = () => {
         if (!isAuthenticated) {
-            toast.error("Giriş Yapmalısınız");
+            toast.error(t("misc.signInRequired"));
             return;
         }
         if (reviewLocked) {

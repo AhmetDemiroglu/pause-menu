@@ -4,13 +4,15 @@ import { Lock } from "lucide-react";
 import { Button } from "@core/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/core/contexts/locale-context";
 
 interface UnauthorizedAccessProps {
     title?: string;
     description?: string;
 }
 
-export function UnauthorizedAccess({ title = "Bu sayfaya erişim yetkiniz yok", description = "Bu sayfayı görüntülemek için giriş yapmalısınız." }: UnauthorizedAccessProps) {
+export function UnauthorizedAccess({ title, description }: UnauthorizedAccessProps) {
+    const t = useI18n();
     const router = useRouter();
 
     const handleLogin = () => {
@@ -27,15 +29,15 @@ export function UnauthorizedAccess({ title = "Bu sayfaya erişim yetkiniz yok", 
                     </div>
                 </div>
                 <div className="space-y-2">
-                    <h2 className="text-2xl font-bold">{title}</h2>
-                    <p className="text-muted-foreground">{description}</p>
+                    <h2 className="text-2xl font-bold">{title ?? t("misc.noAccessTitle")}</h2>
+                    <p className="text-muted-foreground">{description ?? t("misc.noAccessDescription")}</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Button onClick={handleLogin} className="cursor-pointer">
-                        Giriş Yap
+                        {t("misc.login")}
                     </Button>
                     <Button variant="outline" asChild className="cursor-pointer">
-                        <Link href="/register">Kayıt Ol</Link>
+                        <Link href="/register">{t("misc.register")}</Link>
                     </Button>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getFavoritesList } from "@/api/list/list.api";
 import { Loader2, Crown } from "lucide-react";
 import Link from "next/link";
+import { useI18n } from "@/core/contexts/locale-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/core/components/ui/tooltip";
 
@@ -12,6 +13,7 @@ interface TopFiveGamesProps {
 }
 
 export default function TopFiveGames({ username }: TopFiveGamesProps) {
+    const t = useI18n();
     const { data: favoritesList, isLoading } = useQuery({
         queryKey: ["profile-favorites", username],
         queryFn: () => getFavoritesList(username),
@@ -41,7 +43,7 @@ export default function TopFiveGames({ username }: TopFiveGamesProps) {
                     <div className="p-1.5 bg-yellow-500/10 rounded-md">
                         <Crown className="h-4 w-4 text-yellow-600 dark:text-yellow-500" />
                     </div>
-                    Favori Oyunlar
+                    {t("profileFavorites.title")}
                 </CardTitle>
             </CardHeader>
 
@@ -57,7 +59,7 @@ export default function TopFiveGames({ username }: TopFiveGamesProps) {
                                         {game.coverImage ? (
                                             <img
                                                 src={game.coverImage}
-                                                alt={`Favori ${index + 1}`}
+                                                alt={t("profileFavorites.itemAlt", { n: index + 1 })}
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (

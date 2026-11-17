@@ -5,6 +5,7 @@ import { Star, Sparkles } from "lucide-react";
 import { cn } from "@core/lib/utils";
 import { Button } from "@core/components/ui/button";
 import { toast } from "sonner";
+import { useI18n } from "@/core/contexts/locale-context";
 
 interface ListRatingProps {
     myRating: number | null | undefined;
@@ -15,6 +16,7 @@ interface ListRatingProps {
 }
 
 export function ListRating({ myRating, onSubmitRating, isPending, listOwnerId, currentUserId }: ListRatingProps) {
+    const t = useI18n();
     const canRate = listOwnerId !== currentUserId;
     const [hoverRating, setHoverRating] = useState<number | null>(null);
     const [isEditingRating, setIsEditingRating] = useState(false);
@@ -34,7 +36,7 @@ export function ListRating({ myRating, onSubmitRating, isPending, listOwnerId, c
             <div className="space-y-1">
                 <div className="flex items-center gap-1.5 mb-1">
                     <Sparkles className="h-4 w-4 text-yellow-500" />
-                    <p className="text-sm font-medium">Sizin Puanınız</p>
+                    <p className="text-sm font-medium">{t("listRating.yourRating")}</p>
                 </div>
                 <div className="flex items-center gap-1 py-2 px-2 bg-gradient-to-br from-yellow-500/10 to-amber-500/5 border border-yellow-500/20 rounded-lg">
                     {[...Array(totalStars)].map((_, index) => {
@@ -57,7 +59,7 @@ export function ListRating({ myRating, onSubmitRating, isPending, listOwnerId, c
                     onClick={() => setIsEditingRating(true)}
                     disabled={isPending}
                 >
-                    Değiştir
+                    {t("listRating.change")}
                 </Button>
             </div>
         );
@@ -67,7 +69,7 @@ export function ListRating({ myRating, onSubmitRating, isPending, listOwnerId, c
         <div className="space-y-1">
             <div className="flex items-center gap-1.5 mb-1">
                 <Star className="h-4 w-4 text-primary" />
-                <p className="text-sm font-medium">{isEditingRating ? "Yeni Puanınız:" : "Bu listeyi puanlayın:"}</p>
+                <p className="text-sm font-medium">{isEditingRating ? t("listRating.newRating") : t("listRating.rateThis")}</p>
             </div>
             <div className="relative">
                 <div
@@ -93,7 +95,7 @@ export function ListRating({ myRating, onSubmitRating, isPending, listOwnerId, c
                                 onMouseEnter={() => !isPending && setHoverRating(starValue)}
                                 onClick={() => {
                                     if (!currentUserId) {
-                                        toast.error("Puan vermek için giriş yapmalısınız.");
+                                        toast.error(t("listRating.loginToRate"));
                                         return;
                                     }
                                     if (!isPending) {
@@ -101,7 +103,7 @@ export function ListRating({ myRating, onSubmitRating, isPending, listOwnerId, c
                                     }
                                 }}
                                 disabled={isPending}
-                                aria-label={`${starValue} yıldız ver`}
+                                aria-label={t("listRating.starsAria", { count: starValue })}
                             >
                                 <Star
                                     className={cn(
@@ -130,7 +132,7 @@ export function ListRating({ myRating, onSubmitRating, isPending, listOwnerId, c
                     disabled={isPending}
                     className="text-xs cursor-pointer underline decoration-red-500 underline-offset-4 text-muted-foreground pl-0 h-auto"
                 >
-                    İptal
+                    {t("listRating.cancel")}
                 </Button>
             )}
         </div>

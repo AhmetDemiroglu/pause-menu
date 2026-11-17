@@ -3,6 +3,7 @@
 import { Button } from "@/core/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent } from "@core/components/ui/dropdown-menu";
 import { cn } from "@core/lib/utils";
+import { useI18n } from "@/core/contexts/locale-context";
 
 interface DateFilterProps {
   value: string;
@@ -20,8 +21,9 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
 const addMonths = (d: Date, m: number) => { const x = new Date(d); x.setMonth(x.getMonth() + m); return x; };
 
 export function DateFilter({ value, onValueChange, className }: DateFilterProps) {
+  const t = useI18n();
   const getLabel = () => {
-    if (!value) return "Çıkış Yılı";
+    if (!value) return t("dateFilter.releaseYear");
 
     const [startStr = "", endStr = ""] = value.split(",");
     const startYear = parseInt(startStr.slice(0, 4));
@@ -29,11 +31,11 @@ export function DateFilter({ value, onValueChange, className }: DateFilterProps)
 
     const today = new Date();
     const futureValue = `${fmt(today)},${fmt(addMonths(today, 24))}`;
-    if (value === futureValue) return "Gelecek Oyunlar";
+    if (value === futureValue) return t("dateFilter.upcoming");
 
     if (!Number.isNaN(startYear) && !Number.isNaN(endYear)) {
       if (endYear - startYear === 9 && startStr.endsWith("-01-01") && endStr.endsWith("-12-31")) {
-        return `${startYear}'lar`;
+        return t("dateFilter.decade", { year: startYear });
       }
     }
 
@@ -47,7 +49,7 @@ export function DateFilter({ value, onValueChange, className }: DateFilterProps)
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuRadioGroup value={value} onValueChange={onValueChange}>
-          <DropdownMenuRadioItem value="">Tüm Zamanlar</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="">{t("dateFilter.allTime")}</DropdownMenuRadioItem>
             {(() => {
               const today = new Date();
               const start = fmt(today);
@@ -69,7 +71,7 @@ export function DateFilter({ value, onValueChange, className }: DateFilterProps)
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent>
                     <DropdownMenuRadioGroup value={value} onValueChange={onValueChange}>
-                        <DropdownMenuRadioItem value={`${decadeStart}-01-01,${decadeEnd}-12-31`}>Tümü ({decadeStart}'lar)</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value={`${decadeStart}-01-01,${decadeEnd}-12-31`}>{t("dateFilter.allOfDecade", { decade: t("dateFilter.decade", { year: decadeStart }) })}</DropdownMenuRadioItem>
                         <DropdownMenuSeparator/>
                         {Array.from({length: 10}, (_, i) => decadeEnd - i).map(year => (
                             <DropdownMenuRadioItem key={year} value={`${year}-01-01,${year}-12-31`}>

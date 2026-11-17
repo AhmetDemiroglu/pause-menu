@@ -3,8 +3,10 @@
 import * as React from "react";
 import { useTheme } from "next-themes";
 import { Button } from "@/core/components/ui/button";
+import { useI18n } from "@/core/contexts/locale-context";
 
 export function ThemeToggleButton() {
+    const t = useI18n();
     const { setTheme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = React.useState(false);
     const [isAnimatedDark, setIsAnimatedDark] = React.useState(false);
@@ -52,7 +54,7 @@ export function ThemeToggleButton() {
                 const newT = resolvedTheme === "light" ? "dark" : "light";
                 setTheme(newT);
             }}
-            title="Temayı değiştir"
+            title={t("misc.changeTheme")}
         >
             <div className="relative flex h-full w-full items-center justify-center">
                 {/* Sun & Cloud (Light Mode) */}

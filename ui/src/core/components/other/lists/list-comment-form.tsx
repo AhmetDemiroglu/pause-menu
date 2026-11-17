@@ -8,17 +8,15 @@ import { MentionTextarea } from "@core/components/base/mention-textarea";
 import { Loader, Send } from "lucide-react";
 import type { UserListCommentForCreation } from "@/models/list/list.model";
 import { Avatar, AvatarFallback, AvatarImage } from "@/core/components/ui/avatar";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useI18n } from "@/core/contexts/locale-context";
 import { useAuth } from "@core/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import { getMyProfile } from "@/api/profile/profile.api";
 import { getImageUrl } from "@/core/lib/get-image-url";
 
-const commentFormSchema = z.object({
-    content: z.string().min(1, { message: "Yorum boş olamaz." }).max(1000, { message: "Yorum en fazla 1000 karakter olabilir." }),
-});
-
-type CommentFormSchemaType = z.infer<typeof commentFormSchema>;
+type CommentFormSchemaType = { content: string };
 
 interface ListCommentFormProps {
     /** Başarılı olursa form KENDİNİ temizler. Eskiden bölüm, ref ile sadece ana formu
@@ -30,7 +28,11 @@ interface ListCommentFormProps {
     placeholder?: string;
 }
 
-export function ListCommentForm({ onSubmit, isPending, parentCommentId, onCancelReply, placeholder = "Yorumunuzu yazın..." }: ListCommentFormProps) {
+export function ListCommentForm({ onSubmit, isPending, parentCommentId, onCancelReply, placeholder }: ListCommentFormProps) {
+    const t = useI18n();
+    const commentFormSchema = useMemo(() => z.object({
+        content: z.string().min(1, { message: t("listComments.empty") }).max(1000, { message: t("listComments.tooLong") }),
+    }), [t]);
     const { user } = useAuth();
     const { data: myProfile } = useQuery({
         queryKey: ["my-profile"],
@@ -75,7 +77,7 @@ export function ListCommentForm({ onSubmit, isPending, parentCommentId, onCancel
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <MentionTextarea placeholder={placeholder} className="resize-none min-h-[60px]" rows={2} {...field} />
+                                    <MentionTextarea placeholder={placeholder ?? t("listComments.placeholder")} className="resize-none min-h-[60px]" rows={2} {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -85,12 +87,12 @@ export function ListCommentForm({ onSubmit, isPending, parentCommentId, onCancel
                     <div className="flex justify-end gap-2">
                         {parentCommentId && onCancelReply && (
                             <Button type="button" variant="ghost" size="sm" onClick={onCancelReply} disabled={isPending}>
-                                İptal
+                                {t("listComments.cancel")}
                             </Button>
                         )}
                         <Button type="submit" size="sm" disabled={isPending} className="cursor-pointer mt-1">
                             {isPending ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
-                            {parentCommentId ? "Yanıtla" : "Gönder"}
+                            {parentCommentId ? t("listComments.reply") : t("listComments.send")}
                         </Button>
                     </div>
                 </div>

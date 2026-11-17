@@ -8,6 +8,8 @@ import { cn } from "@core/lib/utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/tr";
+import "dayjs/locale/en";
+import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { ThumbsUp, ThumbsDown, MessageSquare, Trash2, Pencil, X, Check, Flag } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Textarea } from "@core/components/ui/textarea";
@@ -18,7 +20,6 @@ import { ReportDialog } from "@core/components/base/report-dialog";
 import { displayName } from "@/core/lib/display-name";
 
 dayjs.extend(relativeTime);
-dayjs.locale("tr");
 
 /** Bu derinlikten sonra yanit verilemez; girinti okunmaz hale geliyor. */
 const MAX_REPLY_DEPTH = 2;
@@ -56,6 +57,8 @@ export function ListCommentItem({
     depth = 0,
 }: ListCommentItemProps) {
     const { user } = useAuth();
+    const t = useI18n();
+    const locale = useCurrentLocale();
     const currentUserId = user ? Number(user.id) : undefined;
     const isOwner = currentUserId === comment.owner.id;
 
@@ -90,7 +93,7 @@ export function ListCommentItem({
 
     const voteScore = comment.upvotes - comment.downvotes;
     const currentUserVote = comment.currentUserVote;
-    const timeAgo = dayjs(comment.createdAt).fromNow();
+    const timeAgo = dayjs(comment.createdAt).locale(locale === "tr" ? "tr" : "en").fromNow();
 
     const handleSaveEdit = async () => {
         try {
@@ -167,7 +170,7 @@ export function ListCommentItem({
                             )}
                             onClick={() => {
                                 if (!user) {
-                                    toast.error("Oy vermek için giriş yapmalısınız.");
+                                    toast.error(t("listComments.loginToVote"));
                                     return;
                                 }
                                 if (!isVoting && !isOwner) {
@@ -175,7 +178,7 @@ export function ListCommentItem({
                                 }
                             }}
                             disabled={isVoting || isOwner || !user}
-                            aria-label="Yukarı oy ver"
+                            aria-label={t("listComments.upvote")}
                         >
                             <ThumbsUp className="h-4 w-4" />
                         </Button>
@@ -199,7 +202,7 @@ export function ListCommentItem({
                             )}
                             onClick={() => {
                                 if (!user) {
-                                    toast.error("Oy vermek için giriş yapmalısınız.");
+                                    toast.error(t("listComments.loginToVote"));
                                     return;
                                 }
                                 if (!isVoting && !isOwner) {
@@ -207,7 +210,7 @@ export function ListCommentItem({
                                 }
                             }}
                             disabled={isVoting || isOwner || !user}
-                            aria-label="Aşağı oy ver"
+                            aria-label={t("listComments.downvote")}
                         >
                             <ThumbsDown className="h-4 w-4" />
                         </Button>
@@ -216,7 +219,7 @@ export function ListCommentItem({
                     {/* Yanıtla Butonu */}
                     {user && depth < MAX_REPLY_DEPTH && (
                         <Button variant="ghost" size="sm" className="h-auto px-2 py-1 text-xs hover:bg-primary/10 hover:text-primary cursor-pointer" onClick={() => setIsReplying(!isReplying)}>
-                            <MessageSquare className="mr-1 h-3 w-3" /> {isReplying ? "İptal" : "Yanıtla"}
+                            <MessageSquare className="mr-1 h-3 w-3" /> {isReplying ? t("listComments.cancel") : t("listComments.reply")}
                         </Button>
                     )}
 
@@ -276,7 +279,7 @@ export function ListCommentItem({
                             isPending={isSubmittingReply}
                             parentCommentId={comment.id}
                             onCancelReply={() => setIsReplying(false)}
-                            placeholder={`${displayName(comment.owner)} kullanıcısına yanıt yazın...`}
+                            placeholder={t("listComments.replyPlaceholder", { name: displayName(comment.owner) })}
                         />
                     </div>
                 )}
@@ -290,7 +293,7 @@ export function ListCommentItem({
                         onClick={() => setRepliesOverride(!showReplies)}
                         aria-expanded={showReplies}
                     >
-                        {showReplies ? "Yanıtları Gizle" : `${replyCount} Yanıtı Göster`}
+                        {showReplies ? t("listComments.hideReplies") : t("listComments.showReplies", { count: replyCount })}
                     </Button>
                 )}
 

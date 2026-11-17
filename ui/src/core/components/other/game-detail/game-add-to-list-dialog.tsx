@@ -8,6 +8,7 @@ import { ListFormModal } from "@/core/components/other/lists/list-form-modal";
 import { createList } from "@/api/list/list.api";
 import type { UserList, UserListForCreation } from "@/models/list/list.model";
 import Link from "next/link";
+import { useI18n } from "@/core/contexts/locale-context";
 
 interface GameAddToListDialogProps {
     isOpen: boolean;
@@ -16,6 +17,7 @@ interface GameAddToListDialogProps {
 }
 
 export const GameAddToListDialog = ({ isOpen, onClose, gameId }: GameAddToListDialogProps) => {
+    const t = useI18n();
     const queryClient = useQueryClient();
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const { data: myLists, isLoading } = useQuery({
@@ -57,7 +59,7 @@ export const GameAddToListDialog = ({ isOpen, onClose, gameId }: GameAddToListDi
                 });
             });
             queryClient.invalidateQueries({ queryKey: ["my-lists"] });
-            toast.success("Oyun listeye eklendi");
+            toast.success(t("misc.gameAddedToList"));
         },
     });
 
@@ -66,11 +68,11 @@ export const GameAddToListDialog = ({ isOpen, onClose, gameId }: GameAddToListDi
         onSuccess: (createdList) => {
             trackAction("list_create");
             queryClient.invalidateQueries({ queryKey: ["my-lists"] });
-            toast.success(`'${createdList.name}' oluşturuldu.`);
+            toast.success(t("misc.listCreatedToast", { name: createdList.name }));
             setIsCreateModalOpen(false);
         },
         onError: (error: any) => {
-            toast.error("Liste oluşturulamadı", { description: error.response?.data?.message });
+            toast.error(t("misc.listCreateFailed"), { description: error.response?.data?.message });
         }
     });
 

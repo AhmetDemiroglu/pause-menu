@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { useI18n } from "@/core/contexts/locale-context";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -15,46 +16,7 @@ import { Textarea } from "@core/components/ui/textarea";
 import { Globe, Lock, Users } from "lucide-react";
 import { Loader } from "lucide-react";
 
-const formSchema = z.object({
-    name: z.string().min(3, { message: "Liste adı en az 3 karakter olmalıdır." }).max(100, { message: "Liste adı en fazla 100 karakter olabilir." }),
-    description: z.string().max(500, { message: "Açıklama en fazla 500 karakter olabilir." }).optional(),
-    visibility: z.nativeEnum(ListVisibilitySetting).transform((val) => Number(val)),
-    category: z.nativeEnum(ListCategory).transform((val) => Number(val)),
-});
-
-type FormSchemaType = z.infer<typeof formSchema>;
-
-const categoryOptions = Object.keys(ListCategory)
-    .filter((v) => !isNaN(Number(v)))
-    .map((key: any) => {
-        const numKey = Number(key) as ListCategory;
-        const label = ListCategory[numKey];
-        return {
-            value: key,
-            label: label === "Other" ? "Diğer" : label,
-        };
-    });
-
-const visibilityOptions = [
-    {
-        value: String(ListVisibilitySetting.Public),
-        label: "Herkese Açık",
-        description: "Tüm kullanıcılar bu listeyi görebilir ve takip edebilir.",
-        icon: Globe,
-    },
-    {
-        value: String(ListVisibilitySetting.Followers),
-        label: "Sadece Takipçiler",
-        description: "Sadece sizi takip edenler bu listeyi görebilir.",
-        icon: Users,
-    },
-    {
-        value: String(ListVisibilitySetting.Private),
-        label: "Özel",
-        description: "Bu listeyi sadece siz görebilirsiniz.",
-        icon: Lock,
-    },
-];
+type FormSchemaType = { name: string; description?: string; visibility: number; category: number };
 
 interface ListFormModalProps {
     isOpen: boolean;
@@ -65,10 +27,31 @@ interface ListFormModalProps {
 }
 
 export function ListFormModal({ isOpen, onClose, onSubmit, isPending, defaultValues }: ListFormModalProps) {
+    const t = useI18n();
     const isEditing = !!defaultValues;
-    const title = isEditing ? "Listeyi Düzenle" : "Yeni Liste Oluştur";
-    const description = isEditing ? "Listenizin ayrıntılarını güncelleyin." : "Koleksiyonunuz için yeni bir liste oluşturun.";
-    const actionLabel = isEditing ? "Değişiklikleri Kaydet" : "Oluştur";
+    const title = isEditing ? t("listForm.editTitle") : t("listForm.createTitle");
+    const description = isEditing ? t("listForm.editDescription") : t("listForm.createDescription");
+    const actionLabel = isEditing ? t("listForm.saveChanges") : t("listForm.create");
+
+    const formSchema = useMemo(() => z.object({
+        name: z.string().min(3, { message: t("listForm.nameMin") }).max(100, { message: t("listForm.nameMax") }),
+        description: z.string().max(500, { message: t("listForm.descriptionMax") }).optional(),
+        visibility: z.nativeEnum(ListVisibilitySetting).transform((val) => Number(val)),
+        category: z.nativeEnum(ListCategory).transform((val) => Number(val)),
+    }), [t]);
+
+    const categoryOptions = useMemo(() => Object.keys(ListCategory)
+        .filter((v) => !isNaN(Number(v)))
+        .map((key: string) => {
+            const label = ListCategory[Number(key) as ListCategory];
+            return { value: key, label: label === "Other" ? t("lists.other") : label };
+        }), [t]);
+
+    const visibilityOptions = useMemo(() => [
+        { value: String(ListVisibilitySetting.Public), label: t("listForm.visibilityPublic"), description: t("listForm.visibilityPublicDesc"), icon: Globe },
+        { value: String(ListVisibilitySetting.Followers), label: t("listForm.visibilityFollowers"), description: t("listForm.visibilityFollowersDesc"), icon: Users },
+        { value: String(ListVisibilitySetting.Private), label: t("listForm.visibilityPrivate"), description: t("listForm.visibilityPrivateDesc"), icon: Lock },
+    ], [t]);
 
     const form = useForm<FormSchemaType>({
         resolver: zodResolver(formSchema),
@@ -112,9 +95,9 @@ export function ListFormModal({ isOpen, onClose, onSubmit, isPending, defaultVal
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Liste Adı</FormLabel>
+                                        <FormLabel>{t("listForm.nameLabel")}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Örn: Favori RPG'lerim" {...field} />
+                                            <Input placeholder={t("listForm.namePlaceholder")} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -126,9 +109,9 @@ export function ListFormModal({ isOpen, onClose, onSubmit, isPending, defaultVal
                                 name="description"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Açıklama (Opsiyonel)</FormLabel>
+                                        <FormLabel>{t("listForm.descriptionLabel")}</FormLabel>
                                         <FormControl>
-                                            <Textarea placeholder="Bu liste hakkında kısa bir açıklama..." className="resize-none" {...field} value={field.value || ""} />
+                                            <Textarea placeholder={t("listForm.descriptionPlaceholder")} className="resize-none" {...field} value={field.value || ""} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -140,11 +123,11 @@ export function ListFormModal({ isOpen, onClose, onSubmit, isPending, defaultVal
                                 name="category"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Kategori</FormLabel>
+                                        <FormLabel>{t("listForm.categoryLabel")}</FormLabel>
                                         <Select onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)}>
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Bir kategori seçin..." />
+                                                    <SelectValue placeholder={t("listForm.categoryPlaceholder")} />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -165,7 +148,7 @@ export function ListFormModal({ isOpen, onClose, onSubmit, isPending, defaultVal
                                 name="visibility"
                                 render={({ field }) => (
                                     <FormItem className="space-y-1">
-                                        <FormLabel>Görünürlük</FormLabel>
+                                        <FormLabel>{t("listForm.visibilityLabel")}</FormLabel>
                                         <FormControl>
                                             <RadioGroup onValueChange={(value) => field.onChange(Number(value))} value={String(field.value)} className="gap-3 sm:gap-4 grid grid-cols-1 sm:grid-cols-3">
                                                 {visibilityOptions.map((opt) => {
@@ -195,7 +178,7 @@ export function ListFormModal({ isOpen, onClose, onSubmit, isPending, defaultVal
                             />
                             <div className="flex justify-end gap-2">
                                 <Button type="button" variant="outline" onClick={onClose} disabled={isPending} className="cursor-pointer">
-                                    İptal
+                                    {t("listForm.cancel")}
                                 </Button>
                                 <Button type="submit" disabled={isPending} className="cursor-pointer">
                                     {isPending && <Loader className="mr-2 h-4 w-4 animate-spin" />}

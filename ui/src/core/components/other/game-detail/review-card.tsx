@@ -3,7 +3,7 @@ import { ThumbsUp, ThumbsDown, Trash2, Pencil, Flag, Check, X, MessageSquare } f
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/core/hooks/use-auth";
-import { useI18n } from "@/core/contexts/locale-context";
+import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { ReportDialog } from "@core/components/base/report-dialog";
 import { MentionText } from "@core/components/base/mention-text";
 import { UserLink } from "@core/components/base/user-link";
@@ -22,6 +22,7 @@ interface ReviewCardProps {
 export const ReviewCard = ({ review, onVote, onDelete, onUpdate }: ReviewCardProps) => {
     const { user } = useAuth();
     const t = useI18n();
+    const locale = useCurrentLocale();
     const currentUserId = user ? Number(user.id) : undefined;
     const isOwner = currentUserId === review.user.id;
 
@@ -34,12 +35,12 @@ export const ReviewCard = ({ review, onVote, onDelete, onUpdate }: ReviewCardPro
             onUpdate(review.id, editContent);
             setIsEditing(false);
         } else {
-            toast.warning("İçerik boş olamaz");
+            toast.warning(t("reviewCard.contentEmpty"));
         }
     };
 
     const handleDelete = () => {
-        if (confirm("Bu incelemeyi silmek istediğinize emin misiniz?")) {
+        if (confirm(t("reviewCard.confirmDelete"))) {
             onDelete?.(review.id);
         }
     };
@@ -49,7 +50,7 @@ export const ReviewCard = ({ review, onVote, onDelete, onUpdate }: ReviewCardPro
     const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("tr-TR", {
+        return new Date(dateString).toLocaleDateString(locale === "tr" ? "tr-TR" : "en-US", {
             year: "numeric", month: "long", day: "numeric"
         });
     };
@@ -141,7 +142,7 @@ export const ReviewCard = ({ review, onVote, onDelete, onUpdate }: ReviewCardPro
                                 onClick={() => setIsExpanded(!isExpanded)}
                                 className="text-xs font-medium text-primary mt-1 hover:underline cursor-pointer"
                             >
-                                {isExpanded ? "Daha Az Göster" : "Daha Fazla Göster"}
+                                {isExpanded ? t("reviewCard.showLess") : t("reviewCard.showMore")}
                             </button>
                         )}
                     </div>
@@ -153,7 +154,7 @@ export const ReviewCard = ({ review, onVote, onDelete, onUpdate }: ReviewCardPro
                 {/* Sol Taraf */}
                 {!isOwner && (
                     <div className="flex items-center gap-4">
-                        <span className="text-xs text-muted-foreground font-medium italic tracking-wider">Bu incelemeyi yararlı buldunuz mu?</span>
+                        <span className="text-xs text-muted-foreground font-medium italic tracking-wider">{t("reviewCard.helpful")}</span>
 
                         <div className="flex items-center gap-0.5">
                             {/* Thumbs Up */}

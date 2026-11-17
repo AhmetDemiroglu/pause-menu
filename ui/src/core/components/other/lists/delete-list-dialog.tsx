@@ -12,6 +12,7 @@ import {
 } from "@core/components/ui/alert-dialog";
 import { Button } from "@core/components/ui/button";
 import { Loader, Trash2 } from "lucide-react";
+import { useI18n } from "@/core/contexts/locale-context";
 
 interface DeleteListDialogProps {
     isOpen: boolean;
@@ -22,29 +23,31 @@ interface DeleteListDialogProps {
 }
 
 export function DeleteListDialog({ isOpen, onClose, onConfirm, isPending, listName }: DeleteListDialogProps) {
+    const t = useI18n();
+    const [namedBefore, namedAfter] = t("misc.deleteListNamed", { name: "\u0000" }).split("\u0000");
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Listeyi Silmek İstediğine Emin Misin?</AlertDialogTitle>
+                    <AlertDialogTitle>{t("misc.deleteListTitle")}</AlertDialogTitle>
                     <AlertDialogDescription>
                         {listName ? (
                             <>
-                                <span className="font-semibold">{listName}</span> adlı listeyi kalıcı olarak sileceksin.
+                                {namedBefore}<span className="font-semibold">{listName}</span>{namedAfter}
                             </>
                         ) : (
-                            "Bu listeyi kalıcı olarak sileceksin."
+                            t("misc.deleteListUnnamed")
                         )}
-                        Bu işlem geri alınamaz.
+                        {" "}{t("misc.irreversible")}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={onClose} disabled={isPending} className="cursor-pointer">
-                        İptal
+                        {t("misc.cancel")}
                     </AlertDialogCancel>
                     <AlertDialogAction onClick={onConfirm} disabled={isPending} className="cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90">
                         {isPending ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                        Sil
+                        {t("misc.delete")}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

@@ -8,10 +8,11 @@ import { UserLink } from "@core/components/base/user-link";
 import { ListRating } from "./list-rating";
 import React from "react";
 import { getImageUrl } from "@/core/lib/get-image-url";
+import { useI18n } from "@/core/contexts/locale-context";
 
-const getCategoryLabel = (category: ListCategory): string => {
+const getCategoryLabel = (category: ListCategory, otherLabel: string): string => {
     const label = ListCategory[category];
-    return label === "Other" ? "Diğer" : label || "Diğer";
+    return label === "Other" ? otherLabel : label || otherLabel;
 };
 
 interface ListDetailHeaderProps {
@@ -24,6 +25,7 @@ interface ListDetailHeaderProps {
 }
 
 export function ListDetailHeader({ list, actions, myRating, onSubmitRating, isRatingPending, currentUserId }: ListDetailHeaderProps) {
+    const t = useI18n();
     const avatarSrc = getImageUrl(list.owner.profileImageUrl);
 
     return (
@@ -45,7 +47,7 @@ export function ListDetailHeader({ list, actions, myRating, onSubmitRating, isRa
                                         {list.owner.firstName} {list.owner.lastName}
                                     </span>
                                 )}
-                                <span className="text-xs font-medium text-muted-foreground group-hover:text-primary group-hover:underline">{list.owner.username} tarafından</span>
+                                <span className="text-xs font-medium text-muted-foreground group-hover:text-primary group-hover:underline">{t("lists.byOwner", { username: list.owner.username })}</span>
                             </div>
                         </div>
                     </UserLink>
@@ -54,16 +56,16 @@ export function ListDetailHeader({ list, actions, myRating, onSubmitRating, isRa
                         <div className="flex items-center gap-1 text-yellow-500">
                             <Star className="h-4 w-4 fill-yellow-500" />
                             <span className="font-semibold text-foreground">{list.averageRating.toFixed(1)}</span>
-                            <span>({list.ratingCount} oy)</span>
+                            <span>{t("listRating.votes", { count: list.ratingCount })}</span>
                         </div>
                         <div className="flex items-center gap-1">
                             <Users className="h-4 w-4" />
                             <span className="font-semibold text-foreground">{list.followerCount}</span>
-                            <span>takipçi</span>
+                            <span>{t("listHeader.followers")}</span>
                         </div>
                         <div className="flex items-center gap-1">
                             <Tag className="h-4 w-4" />
-                            <span className="font-semibold text-foreground">{getCategoryLabel(list.category)}</span>
+                            <span className="font-semibold text-foreground">{getCategoryLabel(list.category, t("lists.other"))}</span>
                         </div>
                     </div>
                     {list.description && <p className="text-muted-foreground mt-4">{list.description}</p>}
