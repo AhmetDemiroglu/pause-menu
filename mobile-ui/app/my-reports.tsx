@@ -14,12 +14,24 @@ import { getMyReports } from '@/src/api/report';
 import { ScreenHeader } from '@/src/components/shell';
 import type { MyReportSummary } from '@/src/models/report';
 import { SwipeBackEdge } from '@/src/components/common/SwipeBackEdge';
+import { Button } from '@/src/components/common/Button';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function MyReportsScreen() {
   const { colors } = useTheme();
   const { messages } = useLocale();
   const tabBarHeight = useTabBarHeight();
   const m = messages.report;
+  const router = useRouter();
+  const newReportButton = (
+    <Button
+      title={m.newReport}
+      onPress={() => router.push('/feedback')}
+      variant="outline"
+      icon={<Ionicons name="shield-checkmark-outline" size={18} color={colors.primary} />}
+    />
+  );
 
   const [selectedReport, setSelectedReport] = useState<MyReportSummary | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -49,7 +61,7 @@ export default function MyReportsScreen() {
         {isLoading ? (
           <LoadingScreen />
         ) : !reports || reports.length === 0 ? (
-          <EmptyState icon="flag-outline" title={m.noReports} />
+          <EmptyState icon="flag-outline" title={m.noReports} action={newReportButton} />
         ) : (
           <FlatList
             data={reports}
@@ -59,6 +71,7 @@ export default function MyReportsScreen() {
             refreshing={isFetching}
             onRefresh={refetch}
             showsVerticalScrollIndicator={false}
+            ListHeaderComponent={<View style={styles.header}>{newReportButton}</View>}
           />
         )}
         <ReportResultModal
@@ -75,6 +88,9 @@ export default function MyReportsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    marginBottom: Spacing.md,
   },
   list: {
     padding: Spacing.lg,

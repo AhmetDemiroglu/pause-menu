@@ -322,6 +322,17 @@ builder.Services.AddRateLimiter(options =>
     // Token yenileme ayri kova: 64 baytlik rastgele token kaba kuvvetle bulunamaz, limit
     // yalnizca kotuye kullanim freni. Paylasimli NAT (ofis, okul) arkasindaki onlarca
     // oturum ayni IP'den yenilenir; 120/dk onlara bol pay birakir.
+    // Uygulama ici geri bildirim: misafir de gonderir, IP basina 10 dakikada 5.
+    options.AddPolicy("FeedbackPolicy", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ClientIpPartition(httpContext),
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(10),
+                QueueLimit = 0
+            }));
+
     options.AddPolicy("RefreshPolicy", httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
             partitionKey: ClientIpPartition(httpContext),

@@ -455,6 +455,8 @@ export function AppSidebar({ children }: AppSidebarProps) {
             {isAuthenticated && (
               <NavRow icon="settings-outline" label={nav.profileSettings} onPress={() => navigate('/profile/settings')} colors={colors} muted />
             )}
+            {/* Herkese acik (misafir dahil): Play Cocuk Guvenligi "uygulama ici geri bildirim" sarti. */}
+            <NavRow icon="shield-checkmark-outline" label={nav.feedback} onPress={() => navigate('/feedback')} colors={colors} />
             <NavRow icon="information-circle-outline" label={nav.about} onPress={() => navigate('/about')} colors={colors} muted />
             <NavRow icon="lock-closed-outline" label={nav.privacy} onPress={() => navigate('/privacy')} colors={colors} muted />
             <NavRow icon="document-text-outline" label={nav.terms} onPress={() => navigate('/terms')} colors={colors} muted />

@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace GGHub.Infrastructure.Localization;
 
@@ -42,6 +42,9 @@ public static class AppText
         // Yeni sunucu hatasi (yalniz adminlere). Aktoru yok, {username} tasimaz.
         ["admin.newErrorNotification"] = "Yeni sunucu hatası: {endpoint} ({error})",
         ["admin.reopenedErrorNotification"] = "Çözüldü denen hata yeniden görüldü: {endpoint} ({error})",
+        ["admin.feedbackNotification"] = "Yeni geri bildirim ({category}) - {sender}: {message}",
+        ["feedback.sent"] = "Bildirimin alındı. Teşekkürler, en kısa sürede inceleyeceğiz.",
+        ["feedback.invalidCategory"] = "Geçersiz bildirim türü.",
         ["common.serverError"] = "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.",
         ["lists.notFoundOrUnauthorized"] = "Liste bulunamadı veya bu listeyi görme yetkiniz yok.",
         ["lists.notFound"] = "Liste bulunamadı.",
@@ -222,6 +225,9 @@ public static class AppText
         ["birthday.notification"] = "Happy birthday! Tap to see your celebration. 🎂",
         ["admin.newErrorNotification"] = "New server error: {endpoint} ({error})",
         ["admin.reopenedErrorNotification"] = "An error marked resolved came back: {endpoint} ({error})",
+        ["admin.feedbackNotification"] = "New feedback ({category}) - {sender}: {message}",
+        ["feedback.sent"] = "Thanks, we received your report and will review it soon.",
+        ["feedback.invalidCategory"] = "Invalid report type.",
         ["common.serverError"] = "Something went wrong. Please try again.",
         ["lists.notFoundOrUnauthorized"] = "The list was not found or you do not have permission to view it.",
         ["lists.notFound"] = "List not found.",

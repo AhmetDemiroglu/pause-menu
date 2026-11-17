@@ -126,6 +126,7 @@ function RootLayoutNav() {
         <Stack.Screen name="wishlist" />
         <Stack.Screen name="favorites" />
         <Stack.Screen name="my-reports" />
+        <Stack.Screen name="feedback" />
         <Stack.Screen name="profile/settings" />
         <Stack.Screen name="profile/edit" />
         <Stack.Screen name="notification-settings" />

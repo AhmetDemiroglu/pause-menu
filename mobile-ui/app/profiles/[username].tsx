@@ -517,7 +517,7 @@ export default function PublicProfileScreen() {
           variant="danger"
           onPress={() => reportMutation.mutate()}
           loading={reportMutation.isPending}
-          disabled={reportReason.trim().length < 10}
+          disabled={reportReason.trim().length < 3}
           fullWidth
           style={styles.reportBtn}
         />

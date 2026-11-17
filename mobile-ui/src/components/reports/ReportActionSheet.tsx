@@ -61,7 +61,7 @@ export function ReportActionSheet({ visible, onClose, entityType, entityId }: Re
   });
 
   const handleSubmit = () => {
-    if (reason.trim().length < 10) {
+    if (reason.trim().length < 3) {
       setError(m.reasonMinLength);
       return;
     }
@@ -84,7 +84,7 @@ export function ReportActionSheet({ visible, onClose, entityType, entityId }: Re
           value={reason}
           onChangeText={(text) => {
             setReason(text);
-            if (error && text.trim().length >= 10) setError('');
+            if (error && text.trim().length >= 3) setError('');
           }}
           multiline
           numberOfLines={5}
@@ -96,7 +96,7 @@ export function ReportActionSheet({ visible, onClose, entityType, entityId }: Re
           onPress={handleSubmit}
           variant="danger"
           loading={submitMutation.isPending}
-          disabled={reason.trim().length < 10}
+          disabled={reason.trim().length < 3}
         />
       </View>
     </BottomSheet>

@@ -189,6 +189,15 @@ export default function ProfileSettingsScreen() {
 
         <TouchableOpacity
           style={[styles.menuItem, { borderBottomColor: colors.border }]}
+          onPress={() => router.push('/feedback')}
+        >
+          <Ionicons name="shield-checkmark-outline" size={22} color={colors.text} />
+          <Text style={[styles.menuText, { color: colors.text }]}>{messages.nav.feedback}</Text>
+          <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.menuItem, { borderBottomColor: colors.border }]}
           onPress={() => router.push('/about')}
         >
           <Ionicons name="information-circle-outline" size={22} color={colors.text} />

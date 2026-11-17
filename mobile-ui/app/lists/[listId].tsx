@@ -25,6 +25,7 @@ import { ListRating } from '@/src/components/lists/ListRating';
 import { CommentSection } from '@/src/components/lists/CommentSection';
 import { ListCommentComposer } from '@/src/components/lists/ListCommentComposer';
 import { ListFormModal } from '@/src/components/lists/ListFormModal';
+import { ReportActionSheet } from '@/src/components/reports/ReportActionSheet';
 import { AddGameToListModal } from '@/src/components/lists/AddGameToListModal';
 import { useToast } from '@/src/components/common/Toast';
 import { useTheme } from '@/src/hooks/use-theme';
@@ -57,7 +58,7 @@ export default function ListDetailScreen() {
   const { listId } = useLocalSearchParams<{ listId: string }>();
   const { colors } = useTheme();
   const { messages } = useLocale();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const router = useRouter();
   const { showToast } = useToast();
   const requireAuth = useRequireAuth();
@@ -67,6 +68,7 @@ export default function ListDetailScreen() {
   const commentsOffsetRef = useRef(0);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddGameModal, setShowAddGameModal] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   const numericId = Number(listId);
 
@@ -305,7 +307,11 @@ export default function ListDetailScreen() {
                   title={messages.listDetail.report}
                   variant="ghost"
                   size="sm"
-                  onPress={() => {}}
+                  onPress={() => {
+                    // Misafir girise zorlanmaz: genel bildirim ekrani uygulama icinde acilir.
+                    if (isAuthenticated) setShowReport(true);
+                    else router.push('/feedback');
+                  }}
                   icon={<Ionicons name="flag-outline" size={16} color={colors.primary} />}
                 />
               </>
@@ -372,6 +378,15 @@ export default function ListDetailScreen() {
 
         <ListCommentComposer listId={numericId} onPosted={scrollToComments} />
       </Animated.View>
+
+      {!isOwner && isAuthenticated ? (
+        <ReportActionSheet
+          visible={showReport}
+          onClose={() => setShowReport(false)}
+          entityType="list"
+          entityId={numericId}
+        />
+      ) : null}
 
       {isOwner && list ? (
         <>
