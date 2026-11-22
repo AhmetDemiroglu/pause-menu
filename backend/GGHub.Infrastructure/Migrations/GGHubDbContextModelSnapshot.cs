@@ -1171,12 +1171,16 @@ namespace GGHub.Infrastructure.Migrations
                     b.Property<int?>("GameId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ImageCredit")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
                     b.Property<int>("ImageKind")
                         .HasColumnType("integer");
 
                     b.Property<string>("ImageUrl")
-                        .HasMaxLength(600)
-                        .HasColumnType("character varying(600)");
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
 
                     b.Property<int>("Importance")
                         .HasColumnType("integer");
@@ -1323,6 +1327,10 @@ namespace GGHub.Infrastructure.Migrations
 
                     b.Property<DateTime>("FirstSeenAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
 
                     b.Property<DateTime>("PublishedAt")
                         .HasColumnType("timestamp with time zone");

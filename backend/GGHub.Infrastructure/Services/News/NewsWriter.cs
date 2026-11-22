@@ -128,7 +128,9 @@ namespace GGHub.Infrastructure.Services.News
             2. Write in your own words. Do not copy sentences. Quote at most 8 words from a source, in quotation marks.
             3. Set "skip": true when the item is NOT gaming news: deals, discounts, sales, giveaways; reviews,
                previews, impressions, opinion, rankings, lists, guides, tips, quizzes, puzzles; sponsored content;
-               topics outside video games, gaming hardware, game industry and esports.
+               topics outside video games, gaming hardware, game industry and esports. Movies, TV series, comics,
+               books, toys and board games are NOT gaming news unless the item is mainly about a video game
+               (a game adaptation or tie-in announcement is fine; a Star Wars film or a comic strip is not).
             4. Length depends on the input. If the sources contain several sentences of facts: body 110-170 words in
                2 or 3 short paragraphs. If the input is thin (marked THIN): body 2-4 sentences. Never pad.
             5. Title: at most 90 characters, factual, no clickbait, no all caps, no emoji. Summary: 1-2 sentences, at

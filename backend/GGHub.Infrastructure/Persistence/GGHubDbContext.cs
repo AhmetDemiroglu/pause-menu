@@ -871,7 +871,8 @@ namespace GGHub.Infrastructure.Persistence
                 entity.Property(e => e.SummaryEn).HasMaxLength(800).IsRequired();
                 entity.Property(e => e.BodyTr).HasMaxLength(6000).IsRequired();
                 entity.Property(e => e.BodyEn).HasMaxLength(6000).IsRequired();
-                entity.Property(e => e.ImageUrl).HasMaxLength(600);
+                entity.Property(e => e.ImageUrl).HasMaxLength(800);
+                entity.Property(e => e.ImageCredit).HasMaxLength(80);
 
                 entity.HasIndex(e => e.Slug).IsUnique().HasDatabaseName("IX_NewsArticles_Slug");
 
@@ -919,6 +920,7 @@ namespace GGHub.Infrastructure.Persistence
                 entity.Property(e => e.FeedKey).HasMaxLength(40).IsRequired();
                 entity.Property(e => e.Title).HasMaxLength(400).IsRequired();
                 entity.Property(e => e.Text).HasMaxLength(4000).IsRequired();
+                entity.Property(e => e.ImageUrl).HasMaxLength(800);
                 entity.HasIndex(e => e.FirstSeenAt).HasDatabaseName("IX_NewsPendingItems_FirstSeenAt");
             });
 

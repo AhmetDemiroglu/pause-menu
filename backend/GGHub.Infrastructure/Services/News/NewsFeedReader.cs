@@ -19,6 +19,9 @@ namespace GGHub.Infrastructure.Services.News
 
         public HashSet<string> Tokens { get; set; } = new();
 
+        /// <summary>Kaynagin RSS'te verdigi gorsel (https). Yoksa null.</summary>
+        public string? ImageUrl { get; set; }
+
         /// <summary>Bekleme kuyrugundan geldiyse ilk goruldugu an (tavana takilip ertesi gune kalan yazi).</summary>
         public DateTime? QueuedAt { get; set; }
     }
@@ -100,6 +103,7 @@ namespace GGHub.Infrastructure.Services.News
             XNamespace content = "http://purl.org/rss/1.0/modules/content/";
             XNamespace atom = "http://www.w3.org/2005/Atom";
             XNamespace dc = "http://purl.org/dc/elements/1.1/";
+            XNamespace media = "http://search.yahoo.com/mrss/";
 
             // RSS 2.0
             foreach (var it in doc.Descendants("item"))
@@ -119,7 +123,8 @@ namespace GGHub.Infrastructure.Services.News
                 var date = ParseDate(it.Element("pubDate")?.Value ?? it.Element(dc + "date")?.Value);
                 var cats = it.Elements("category").Select(c => Clean(c.Value)).Where(c => c.Length > 0).ToList();
 
-                items.Add(new NewsFeedItem { Feed = feed, Title = title, Url = CleanUrl(link), Text = text, PublishedAt = date, Categories = cats });
+                var image = PickImage(it, media, it.Elements("enclosure"), (full ?? "") + " " + (desc ?? ""));
+                items.Add(new NewsFeedItem { Feed = feed, Title = title, Url = CleanUrl(link), Text = text, PublishedAt = date, Categories = cats, ImageUrl = image });
             }
 
             // Atom
@@ -136,11 +141,79 @@ namespace GGHub.Infrastructure.Services.News
                 var date = ParseDate(en.Element(atom + "published")?.Value ?? en.Element(atom + "updated")?.Value);
                 var cats = en.Elements(atom + "category").Select(c => Clean((string?)c.Attribute("term"))).Where(c => c.Length > 0).ToList();
 
-                items.Add(new NewsFeedItem { Feed = feed, Title = title, Url = CleanUrl(link), Text = text, PublishedAt = date, Categories = cats });
+                var enclosures = en.Elements(atom + "link").Where(l => (string?)l.Attribute("rel") == "enclosure");
+                var image = PickImage(en, media, enclosures, (full ?? "") + " " + (summary ?? ""));
+                items.Add(new NewsFeedItem { Feed = feed, Title = title, Url = CleanUrl(link), Text = text, PublishedAt = date, Categories = cats, ImageUrl = image });
             }
 
             return items;
         }
+
+        /// <summary>
+        /// Yayincinin RSS'te verdigi gorsel: media:content / media:thumbnail (en genisi), gorsel enclosure,
+        /// yoksa icerikteki ilk buyuk img. Yalniz https (karisik icerik olmasin). Kucuk WordPress
+        /// kopyalari (-150x150) ve ?w=300 gibi kucuk boyut parametreleri buyuk boyuta cevrilir.
+        /// </summary>
+        public static string? PickImage(XElement item, XNamespace media, IEnumerable<XElement> enclosures, string? html)
+        {
+            var candidates = new List<(string Url, int Width)>();
+
+            foreach (var el in item.Descendants(media + "content").Concat(item.Descendants(media + "thumbnail")))
+            {
+                var url = (string?)el.Attribute("url");
+                if (string.IsNullOrWhiteSpace(url)) continue;
+                var medium = (string?)el.Attribute("medium");
+                var type = (string?)el.Attribute("type");
+                var isImage = medium == "image" || (type?.StartsWith("image/", StringComparison.OrdinalIgnoreCase) ?? false)
+                    || (medium is null && type is null && LooksLikeImage(url));
+                if (!isImage) continue;
+                int.TryParse((string?)el.Attribute("width"), out var w);
+                candidates.Add((url, w));
+            }
+
+            foreach (var en in enclosures)
+            {
+                var url = (string?)en.Attribute("url") ?? (string?)en.Attribute("href");
+                var type = (string?)en.Attribute("type");
+                if (!string.IsNullOrWhiteSpace(url) && ((type?.StartsWith("image/", StringComparison.OrdinalIgnoreCase) ?? false) || LooksLikeImage(url)))
+                    candidates.Add((url, 0));
+            }
+
+            string? chosen = candidates
+                .Select(c => (Url: WebUtility.HtmlDecode(c.Url).Trim(), c.Width))
+                .Where(c => c.Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(c => c.Width)
+                .Select(c => c.Url)
+                .FirstOrDefault();
+
+            if (chosen is null && !string.IsNullOrEmpty(html))
+            {
+                foreach (Match m in Regex.Matches(html, @"<img\b[^>]*>", RegexOptions.IgnoreCase))
+                {
+                    var tag = m.Value;
+                    var src = Regex.Match(tag, @"\bsrc=[""']([^""']+)[""']", RegexOptions.IgnoreCase).Groups[1].Value;
+                    src = WebUtility.HtmlDecode(src).Trim();
+                    if (!src.StartsWith("https://", StringComparison.OrdinalIgnoreCase)) continue;
+                    int.TryParse(Regex.Match(tag, @"\bwidth=[""']?(\d+)", RegexOptions.IgnoreCase).Groups[1].Value, out var w);
+                    int.TryParse(Regex.Match(tag, @"\bheight=[""']?(\d+)", RegexOptions.IgnoreCase).Groups[1].Value, out var h);
+                    // Kucuk kare gorsel cogu zaman yazar fotografi ya da simge: atla.
+                    if (w > 0 && h > 0 && w == h && w <= 400 && !Regex.IsMatch(src, @"-\d+x\d+\.\w+$")) continue;
+                    if (Regex.IsMatch(src, @"(gravatar|avatar|emoji|pixel|spacer|feeds\.feedburner)", RegexOptions.IgnoreCase)) continue;
+                    chosen = src;
+                    break;
+                }
+            }
+
+            if (chosen is null) return null;
+
+            // WordPress kucuk kopyasi -> asil dosya; ?w=300 -> ?w=1200.
+            chosen = Regex.Replace(chosen, @"-(\d{2,3})x(\d{2,3})(\.(jpe?g|png|webp))$", "$3", RegexOptions.IgnoreCase);
+            chosen = Regex.Replace(chosen, @"([?&]w=)(\d{2,3})(?=&|$)", "${1}1200");
+            return chosen.Length > 800 ? null : chosen;
+        }
+
+        private static bool LooksLikeImage(string url) =>
+            Regex.IsMatch(url, @"\.(jpe?g|png|webp|gif|avif)(\?|$)", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Kaynak yazinin ana metni (paragraflar). robots.txt yasakliyorsa ya da cekilemezse bos.

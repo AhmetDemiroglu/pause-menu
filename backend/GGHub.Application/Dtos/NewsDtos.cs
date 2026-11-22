@@ -20,8 +20,11 @@ namespace GGHub.Application.Dtos
         public int Importance { get; set; }
         public string? ImageUrl { get; set; }
 
-        /// <summary>none | catalog | generated</summary>
+        /// <summary>none | catalog | generated | source</summary>
         public string ImageKind { get; set; } = null!;
+
+        /// <summary>Gorsel kaynaktan geldiyse kaynagin adi.</summary>
+        public string? ImageCredit { get; set; }
 
         public DateTime PublishedAt { get; set; }
 

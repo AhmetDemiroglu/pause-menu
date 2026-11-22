@@ -42,6 +42,7 @@ namespace GGHub.Infrastructure.Services.News
         public int ModelFailures { get; set; }
         public int CatalogImages { get; set; }
         public int GeneratedImages { get; set; }
+        public int SourceImages { get; set; }
         public int NoImage { get; set; }
         public int Deleted { get; set; }
         public int CapRemaining { get; set; }
@@ -58,7 +59,7 @@ namespace GGHub.Infrastructure.Services.News
             sb.AppendLine($"Yazi: {ItemsTotal} toplam, {ItemsInWindow} zaman araliginda, {ItemsExcluded} elendi (inceleme/indirim/rehber), {ItemsKnown} zaten islenmis, {ItemsNew} yeni");
             sb.AppendLine($"Kume: {Clusters} yeni olay, {AttachedToExisting} yazi mevcut habere kaynak olarak eklendi");
             sb.AppendLine($"Yazilan: {Written}, model 'haber degil' dedi: {SkippedByModel}, model hatasi: {ModelFailures}, gunluk kalan hak: {CapRemaining}");
-            sb.AppendLine($"Gorsel: {CatalogImages} katalog, {GeneratedImages} uretildi, {NoImage} gorselsiz");
+            sb.AppendLine($"Gorsel: {SourceImages} kaynak, {CatalogImages} katalog, {GeneratedImages} uretildi, {NoImage} gorselsiz");
             sb.AppendLine($"Kuyruk: onceki turlardan {QueueCarried} yazi geldi, {QueueLeft} yazi sonraki turlara kaldi");
             if (Deleted > 0) sb.AppendLine($"Saklama: {Deleted} eski haber silindi");
             foreach (var s in Samples) sb.AppendLine(s);
@@ -248,7 +249,7 @@ namespace GGHub.Infrastructure.Services.News
                 if (feed is null) continue;
                 items.Add(new NewsFeedItem
                 {
-                    Feed = feed, Title = q.Title, Url = q.Url, Text = q.Text,
+                    Feed = feed, Title = q.Title, Url = q.Url, Text = q.Text, ImageUrl = q.ImageUrl,
                     PublishedAt = q.PublishedAt, QueuedAt = q.FirstSeenAt
                 });
             }
@@ -438,7 +439,7 @@ namespace GGHub.Infrastructure.Services.News
                     _db.NewsPendingItems.Add(new NewsPendingItem
                     {
                         Url = i.Url, FeedKey = i.Feed.Key, Title = Trunc(i.Title, 400)!,
-                        Text = Trunc(i.Text, 4000) ?? string.Empty, PublishedAt = i.PublishedAt,
+                        Text = Trunc(i.Text, 4000) ?? string.Empty, ImageUrl = i.ImageUrl, PublishedAt = i.PublishedAt,
                         FirstSeenAt = i.QueuedAt ?? now, Attempts = attempts
                     });
                 }
@@ -559,7 +560,10 @@ namespace GGHub.Infrastructure.Services.News
                         {draft.En.Body}
                     Gorsel istemi: {draft.ImagePrompt}
                     """);
-                if (catalog != null) report.CatalogImages++; else report.NoImage++;
+                var sampleSource = picked.FirstOrDefault(i => i.ImageUrl != null);
+                if (sampleSource != null) report.SourceImages++;
+                else if (catalog != null) report.CatalogImages++;
+                else report.NoImage++;
                 return new NewsArticle
                 {
                     TitleEn = draft.En.Title, TitleTr = draft.Tr.Title,
@@ -567,9 +571,20 @@ namespace GGHub.Infrastructure.Services.News
                 };
             }
 
+            // Gorsel sirasi (Ahmet karari, 22 Kas 2026): once kaynagin RSS'te verdigi gorsel (haberle birebir,
+            // kaynak adiyla gosterilir), yoksa katalogdaki oyun, o da yoksa uretilen temsili gorsel.
             string? imageUrl = null;
+            string? imageCredit = null;
             var kind = NewsImageKind.None;
-            if (catalog != null)
+            var withImage = picked.FirstOrDefault(i => i.ImageUrl != null) ?? cluster.Items.FirstOrDefault(i => i.ImageUrl != null);
+            if (withImage != null)
+            {
+                imageUrl = withImage.ImageUrl;
+                imageCredit = withImage.Feed.Name;
+                kind = NewsImageKind.Source;
+                report.SourceImages++;
+            }
+            else if (catalog != null)
             {
                 imageUrl = catalog.ImageUrl;
                 kind = NewsImageKind.Catalog;
@@ -612,6 +627,7 @@ namespace GGHub.Infrastructure.Services.News
                 Importance = importance,
                 ImageUrl = imageUrl,
                 ImageKind = kind,
+                ImageCredit = imageCredit,
                 GameId = catalog?.GameId,
                 PublishedAt = first.PublishedAt > DateTime.UtcNow ? DateTime.UtcNow : first.PublishedAt,
                 CreatedAt = DateTime.UtcNow,
@@ -684,6 +700,45 @@ namespace GGHub.Infrastructure.Services.News
 
             var skipCutoff = DateTime.UtcNow.AddDays(-7);
             await _db.NewsSkippedItems.Where(s => s.SkippedAt < skipCutoff).ExecuteDeleteAsync(ct);
+        }
+
+        /// <summary>
+        /// Var olan haberlere kaynak gorseli: akislari kosulsuz ceker, kaynak URL'i bilinen ve gorseli
+        /// olmayan ya da katalog gorseli tasiyan haberlere yazinin RSS gorselini koyar. Model cagrisi yok.
+        /// Kaynak gorseli karari sonrasi bir kez calistirilir (--news-refresh-images).
+        /// </summary>
+        public async Task<int> RefreshImagesAsync(CancellationToken ct)
+        {
+            using var gate = new SemaphoreSlim(6);
+            var fetches = await Task.WhenAll(NewsSources.All.Select(async feed =>
+            {
+                await gate.WaitAsync(ct);
+                try { return await _reader.FetchAsync(feed, null, null, ct); }
+                finally { gate.Release(); }
+            }));
+
+            var withImage = fetches.SelectMany(f => f.Items).Where(i => i.ImageUrl != null)
+                .GroupBy(i => i.Url).ToDictionary(g => g.Key, g => g.First());
+            var urls = withImage.Keys.ToList();
+
+            var rows = await _db.NewsArticleSources.AsNoTracking()
+                .Where(s => urls.Contains(s.Url))
+                .Where(s => s.NewsArticle.ImageKind == NewsImageKind.None || s.NewsArticle.ImageKind == NewsImageKind.Catalog)
+                .Select(s => new { s.NewsArticleId, s.Url })
+                .ToListAsync(ct);
+
+            var updated = 0;
+            foreach (var g in rows.GroupBy(r => r.NewsArticleId))
+            {
+                var item = withImage[g.First().Url];
+                updated += await _db.NewsArticles
+                    .Where(a => a.Id == g.Key && (a.ImageKind == NewsImageKind.None || a.ImageKind == NewsImageKind.Catalog))
+                    .ExecuteUpdateAsync(u => u
+                        .SetProperty(a => a.ImageUrl, item.ImageUrl)
+                        .SetProperty(a => a.ImageKind, NewsImageKind.Source)
+                        .SetProperty(a => a.ImageCredit, item.Feed.Name), ct);
+            }
+            return updated;
         }
 
         // ---------------------------------------------------------------- kilit

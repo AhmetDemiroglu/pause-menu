@@ -56,7 +56,7 @@ namespace GGHub.Infrastructure.Services.News
                 .Select(a => new
                 {
                     a.Id, a.Slug, a.TitleTr, a.TitleEn, a.SummaryTr, a.SummaryEn, a.Category, a.Importance,
-                    a.ImageUrl, a.ImageKind, a.PublishedAt,
+                    a.ImageUrl, a.ImageKind, a.ImageCredit, a.PublishedAt,
                     FirstSource = a.Sources.OrderBy(s => s.PublishedAt).Select(s => s.SourceName).FirstOrDefault(),
                     SourceCount = a.Sources.Count
                 })
@@ -76,6 +76,7 @@ namespace GGHub.Infrastructure.Services.News
                     Importance = r.Importance,
                     ImageUrl = r.ImageUrl,
                     ImageKind = ImageKindKey(r.ImageKind),
+                    ImageCredit = r.ImageCredit,
                     PublishedAt = DateTime.SpecifyKind(r.PublishedAt, DateTimeKind.Utc),
                     SourceName = r.FirstSource ?? string.Empty,
                     SourceCount = r.SourceCount
@@ -121,6 +122,7 @@ namespace GGHub.Infrastructure.Services.News
                 Importance = a.Importance,
                 ImageUrl = a.ImageUrl,
                 ImageKind = ImageKindKey(a.ImageKind),
+                ImageCredit = a.ImageCredit,
                 PublishedAt = DateTime.SpecifyKind(a.PublishedAt, DateTimeKind.Utc),
                 SourceName = sources.FirstOrDefault()?.SourceName ?? string.Empty,
                 SourceCount = sources.Count,
@@ -211,6 +213,7 @@ namespace GGHub.Infrastructure.Services.News
         {
             NewsImageKind.Catalog => "catalog",
             NewsImageKind.Generated => "generated",
+            NewsImageKind.Source => "source",
             _ => "none"
         };
     }

@@ -35,6 +35,9 @@ namespace GGHub.Core.Entities
         public string? ImageUrl { get; set; }
         public NewsImageKind ImageKind { get; set; }
 
+        /// <summary>Gorsel kaynaktan geldiyse kaynagin adi ("Gorsel: Eurogamer").</summary>
+        public string? ImageCredit { get; set; }
+
         /// <summary>Haber katalogdaki bir oyunla eslestiyse. Detayda oyun sayfasina kart cikar.</summary>
         public int? GameId { get; set; }
         public Game? Game { get; set; }
@@ -96,6 +99,7 @@ namespace GGHub.Core.Entities
         public string FeedKey { get; set; } = null!;
         public string Title { get; set; } = null!;
         public string Text { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
         public DateTime PublishedAt { get; set; }
         public DateTime FirstSeenAt { get; set; }
         public int Attempts { get; set; }

@@ -293,6 +293,16 @@ using (var startupScope = host.Services.CreateScope())
 //   --news-once [--holder actions] [--skip-if-recent <dk>]   bir tur at, cik (GitHub Actions bunu kullanir)
 //   --news-once --dry-run [--sample N]                       hicbir sey yazmadan say, N haberi ekrana yazdir
 //   --news-backfill <gun>                                    ilk dolum: gunluk tavan 250, gorsel uretmez
+if (args.Contains("--news-refresh-images"))
+{
+    using var refreshScope = host.Services.CreateScope();
+    var refresher = refreshScope.ServiceProvider.GetRequiredService<NewsIngestRunner>();
+    using var refreshCts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+    var count = await refresher.RefreshImagesAsync(refreshCts.Token);
+    Console.WriteLine($"Kaynak gorseli yazilan haber: {count}");
+    return 0;
+}
+
 if (args.Contains("--news-once") || args.Contains("--news-backfill"))
 {
     string? ArgValue(string name)

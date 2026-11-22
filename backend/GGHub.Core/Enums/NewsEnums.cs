@@ -19,6 +19,8 @@ namespace GGHub.Core.Enums
         /// <summary>Katalogdaki eslesen oyunun gorseli.</summary>
         Catalog = 1,
         /// <summary>Gemini ile uretilmis temsili gorsel.</summary>
-        Generated = 2
+        Generated = 2,
+        /// <summary>Kaynagin RSS'te verdigi gorsel (yayincinin adresinden, kaynak adiyla gosterilir).</summary>
+        Source = 3
     }
 }
