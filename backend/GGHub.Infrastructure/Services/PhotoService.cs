@@ -56,10 +56,35 @@ namespace GGHub.Infrastructure.Services
         }
 
         public Task<string> UploadProfilePhotoAsync(int userId, IFormFile file) =>
-            UploadAndAssignAsync(userId, file, "profiles", ProfileMaxEdge, (user, url) => user.ProfileImageUrl = url);
+            UploadAndAssignAsync(userId, file, "profiles", ProfileMaxEdge, user => user.ProfileImageUrl, (user, url) => user.ProfileImageUrl = url);
 
         public Task<string> UploadHeaderPhotoAsync(int userId, IFormFile file) =>
-            UploadAndAssignAsync(userId, file, "headers", HeaderMaxEdge, (user, url) => user.HeaderImageUrl = url);
+            UploadAndAssignAsync(userId, file, "headers", HeaderMaxEdge, user => user.HeaderImageUrl, (user, url) => user.HeaderImageUrl = url);
+
+        /// <summary>
+        /// Degistirilen ya da kaldirilan profil/kapak gorselini R2'den siler. Eskiden yalniz DB adresi
+        /// degisiyordu, eski dosya sonsuza kadar bucket'ta kaliyordu (depolama sinirsiz buyur). Adlar GUID
+        /// icerdigi icin baska bir kayit ayni dosyayi gostermez. Yalniz bizim bucket'imizdaki ve beklenen
+        /// klasordeki adresler silinir (Google profil fotografi gibi dis adreslere dokunulmaz). Hata yutulur:
+        /// silinemeyen dosya kullanici islemini bozmamali.
+        /// </summary>
+        private async Task DeleteOwnedObjectAsync(string? url, string keyPrefix)
+        {
+            var prefix = $"{_publicR2Url}/{keyPrefix}/";
+            if (string.IsNullOrEmpty(url) || !url.StartsWith(prefix, StringComparison.Ordinal)) return;
+
+            var key = url[(_publicR2Url.Length + 1)..];
+            if (key.Contains("..") || key.Contains('?')) return;
+
+            try
+            {
+                await _s3Client.DeleteObjectAsync(_bucketName, key);
+            }
+            catch
+            {
+                // En kotu durum: eski davranis (dosya bucket'ta kalir).
+            }
+        }
 
         public async Task DeleteHeaderPhotoAsync(int userId)
         {
@@ -67,8 +92,10 @@ namespace GGHub.Infrastructure.Services
             if (user == null)
                 throw new KeyNotFoundException(AppText.Get("photo.userNotFound"));
 
+            var oldUrl = user.HeaderImageUrl;
             user.HeaderImageUrl = null;
             await _context.SaveChangesAsync();
+            await DeleteOwnedObjectAsync(oldUrl, "headers");
         }
 
         /// <summary>
@@ -93,6 +120,7 @@ namespace GGHub.Infrastructure.Services
             IFormFile file,
             string keyPrefix,
             int maxEdge,
+            Func<Core.Entities.User, string?> current,
             Action<Core.Entities.User, string> assign)
         {
             var user = await _context.Users.FindAsync(userId);
@@ -101,8 +129,13 @@ namespace GGHub.Infrastructure.Services
 
             var uploaded = await UploadToStorageAsync(userId, file, keyPrefix, maxEdge);
 
+            var oldUrl = current(user);
             assign(user, uploaded.Url);
             await _context.SaveChangesAsync();
+
+            // Yeni adres DB'ye yazildiktan SONRA eskisi silinir: sira tersine olsaydi kayit hatasinda
+            // kullanici gorselsiz kalirdi.
+            if (oldUrl != uploaded.Url) await DeleteOwnedObjectAsync(oldUrl, keyPrefix);
 
             return uploaded.Url;
         }

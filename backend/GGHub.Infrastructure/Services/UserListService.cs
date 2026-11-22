@@ -58,6 +58,11 @@ namespace GGHub.Infrastructure.Services
 
             return userList;
         }
+        // Liste basina tavan: anonim liste detayi ve kullanici istatistikleri listedeki TUM oyunlari
+        // yukluyor; sinirsiz liste her goruntulemede buyuyen bir sorgu demekti. Gercek bir liste bunun
+        // cok altinda kalir.
+        private const int MaxGamesPerList = 1000;
+
         public async Task AddGameToListAsync(int listId, int rawgGameId, int userId)
         {
             var list = await _context.UserLists.FirstOrDefaultAsync(l => l.Id == listId);
@@ -88,6 +93,10 @@ namespace GGHub.Infrastructure.Services
                 {
                     throw new InvalidOperationException(AppText.Get("lists.favoritesLimit"));
                 }
+            }
+            else if (await _context.UserListGames.CountAsync(ulg => ulg.UserListId == listId) >= MaxGamesPerList)
+            {
+                throw new InvalidOperationException(AppText.Get("lists.gameLimit"));
             }
 
             var userListGame = new UserListGame
@@ -594,6 +603,11 @@ namespace GGHub.Infrastructure.Services
             }
             else
             {
+                if (await _context.UserListGames.CountAsync(ulg => ulg.UserListId == wishlist.Id) >= MaxGamesPerList)
+                {
+                    throw new InvalidOperationException(AppText.Get("lists.gameLimit"));
+                }
+
                 await _context.UserListGames.AddAsync(new UserListGame
                 {
                     UserListId = wishlist.Id,

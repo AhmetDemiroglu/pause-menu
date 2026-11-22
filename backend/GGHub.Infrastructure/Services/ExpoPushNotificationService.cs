@@ -27,9 +27,14 @@ namespace GGHub.Infrastructure.Services
             _logger = logger;
         }
 
+        // Kullanici basina cihaz tavani: her kayit bir push hedefi, sinirsiz kayit her bildirimde
+        // yuzlerce Expo cagrisi demekti. En yeni cihazlar kalir.
+        private const int MaxTokensPerUser = 10;
+
         public async Task RegisterTokenAsync(int userId, string token, string platform, string? locale = null)
         {
-            if (string.IsNullOrWhiteSpace(token)) return;
+            if (string.IsNullOrWhiteSpace(token) || token.Length > 256) return;
+            platform = platform.Length > 32 ? platform[..32] : platform;
 
             // Locale gecilmediyse istegin kendi Accept-Language'inden yakala. Mobil istemci
             // her isteğe uygulama ici dili zaten ekliyor (bkz. mobile-ui/src/api/client.ts),
@@ -56,6 +61,29 @@ namespace GGHub.Infrastructure.Services
             }
 
             await _context.SaveChangesAsync();
+
+            var stale = await _context.PushTokens
+                .Where(t => t.UserId == userId)
+                .OrderByDescending(t => t.UpdatedAt)
+                .Skip(MaxTokensPerUser)
+                .ToListAsync();
+            if (stale.Count > 0)
+            {
+                _context.PushTokens.RemoveRange(stale);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveTokenForUserAsync(int userId, string token)
+        {
+            if (string.IsNullOrWhiteSpace(token)) return;
+
+            var existing = await _context.PushTokens.FirstOrDefaultAsync(t => t.Token == token && t.UserId == userId);
+            if (existing != null)
+            {
+                _context.PushTokens.Remove(existing);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task RemoveTokenAsync(string token)

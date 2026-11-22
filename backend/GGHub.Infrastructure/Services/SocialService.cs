@@ -158,15 +158,33 @@ namespace GGHub.Infrastructure.Services
             _context.UserListFollows.Remove(follow);
             return await _context.SaveChangesAsync() > 0;
         }
+        private const int MaxFollowListSize = 1000;
+
         public async Task<IEnumerable<UserDto>> GetFollowersAsync(string username, int? currentUserId = null)
         {
             var user = await ProfileContentAccess.GetViewableUserAsync(_context, username, currentUserId);
             if (user == null) return Enumerable.Empty<UserDto>();
 
+            // Yalniz gereken kolonlar ve tavan: uc anonim, eskiden tum User satirlari (sifre ozeti dahil)
+            // sinirsiz yukleniyordu. En yeni 1000 takip; istemciler diziyi oldugu gibi kullanir.
             var followers = await _context.Follows
-                .Where(f => f.FolloweeId == user.Id)
-                .Include(f => f.Follower)
-                .Where(f => !f.Follower.IsDeleted)
+                .AsNoTracking()
+                .Where(f => f.FolloweeId == user.Id && !f.Follower.IsDeleted)
+                .OrderByDescending(f => f.CreatedAt)
+                .Take(MaxFollowListSize)
+                .Select(f => new
+                {
+                    Follower = new
+                    {
+                        f.Follower.Id,
+                        f.Follower.Username,
+                        f.Follower.ProfileImageUrl,
+                        f.Follower.FirstName,
+                        f.Follower.LastName,
+                        f.Follower.IsAiAgent,
+                        f.Follower.ProfileVisibility,
+                    }
+                })
                 .ToListAsync();
 
             var followerIds = followers.Select(f => f.Follower.Id).ToList();
@@ -203,10 +221,26 @@ namespace GGHub.Infrastructure.Services
             var user = await ProfileContentAccess.GetViewableUserAsync(_context, username, currentUserId);
             if (user == null) return Enumerable.Empty<UserDto>();
 
+            // Yalniz gereken kolonlar ve tavan: uc anonim, eskiden tum User satirlari (sifre ozeti dahil)
+            // sinirsiz yukleniyordu. En yeni 1000 takip; istemciler diziyi oldugu gibi kullanir.
             var following = await _context.Follows
-                .Where(f => f.FollowerId == user.Id)
-                .Include(f => f.Followee)
-                .Where(f => !f.Followee.IsDeleted)
+                .AsNoTracking()
+                .Where(f => f.FollowerId == user.Id && !f.Followee.IsDeleted)
+                .OrderByDescending(f => f.CreatedAt)
+                .Take(MaxFollowListSize)
+                .Select(f => new
+                {
+                    Followee = new
+                    {
+                        f.Followee.Id,
+                        f.Followee.Username,
+                        f.Followee.ProfileImageUrl,
+                        f.Followee.FirstName,
+                        f.Followee.LastName,
+                        f.Followee.IsAiAgent,
+                        f.Followee.ProfileVisibility,
+                    }
+                })
                 .ToListAsync();
 
             var followeeIds = following.Select(f => f.Followee.Id).ToList();

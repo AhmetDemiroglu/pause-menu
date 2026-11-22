@@ -409,6 +409,40 @@ builder.Services.AddRateLimiter(options =>
                 QueueLimit = 0
             }));
 
+    // Yazma istekleri icin genel tavan (GET/HEAD/OPTIONS serbest). Mesaj, yorum, begeni, takip, rapor,
+    // liste ve inceleme uclarinin cogunda hiz siniri yoktu; her yazma bildirim + push zinciri tetikliyor.
+    // Kimlikli: kullanici basina dakikada 60. Anonim: IP basina dakikada 30 (IP, origin kilidi acikken
+    // CF-Connecting-IP). Kendi politikasi olan uclarda ikisi birlikte isler. Telemetri collect uclari
+    // web sunucusundan tek IP ile gelir ve kendi politikalari var: haric. SignalR /hubs haric.
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        var method = httpContext.Request.Method;
+        var path = httpContext.Request.Path;
+        if (HttpMethods.IsGet(method) || HttpMethods.IsHead(method) || HttpMethods.IsOptions(method)
+            || path.StartsWithSegments("/hubs")
+            || path.StartsWithSegments("/api/auth/refresh")
+            || path.StartsWithSegments("/api/site-analytics/collect")
+            || path.StartsWithSegments("/api/download-analytics/collect"))
+        {
+            return RateLimitPartition.GetNoLimiter("read");
+        }
+
+        var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return userId != null
+            ? RateLimitPartition.GetFixedWindowLimiter("u:" + userId, _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 60,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            })
+            : RateLimitPartition.GetFixedWindowLimiter("ip:" + ClientIpPartition(httpContext), _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 30,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            });
+    });
+
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 

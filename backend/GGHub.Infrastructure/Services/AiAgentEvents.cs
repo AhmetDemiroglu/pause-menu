@@ -53,6 +53,8 @@ namespace GGHub.Infrastructure.Services
             _logger = logger;
         }
 
+        private const int MaxDmRepliesPerSenderPerDay = 30;
+
         public async Task OnDirectMessageAsync(int senderId, int recipientId, int messageId)
         {
             try
@@ -72,6 +74,16 @@ namespace GGHub.Infrastructure.Services
                     t.Type == AiAgentTaskType.ReplyToDirectMessage &&
                     (t.Status == AiAgentTaskStatus.Pending || t.Status == AiAgentTaskStatus.Running));
                 if (pending) return;
+
+                // Gonderen basina gunluk tavan (tum botlar toplam): birkac hesapla botlara DM yagdiran
+                // biri ucretsiz modelin dakika tavanini doldurup ucretli yedege dusurur. Eski tavan alici
+                // bot basinaydi ve gorev islenirken kontrol ediliyordu, gorev olusturulurken degil.
+                var since = DateTime.UtcNow.AddDays(-1);
+                var repliesToday = await _context.AiAgentTasks.CountAsync(t =>
+                    t.TargetUserId == senderId &&
+                    t.Type == AiAgentTaskType.ReplyToDirectMessage &&
+                    t.CreatedAt > since);
+                if (repliesToday >= MaxDmRepliesPerSenderPerDay) return;
 
                 // Kisa gecikme: kullanici DM'de cevap bekler (gonderi yanitlarindaki dakikalar burada uzun).
                 await AddTaskAsync(recipientId, AiAgentTaskType.ReplyToDirectMessage, TimeSpan.FromSeconds(Random.Shared.Next(5, 16)),

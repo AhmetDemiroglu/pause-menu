@@ -110,7 +110,9 @@ namespace GGHub.WebAPI.Controllers
                 return BadRequest();
             }
 
-            await _pushNotificationService.RemoveTokenAsync(dto.Token);
+            // Yalniz kendi cihaz kaydi: eskiden token bilen herkes baskasinin push kaydini silebiliyordu.
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            await _pushNotificationService.RemoveTokenForUserAsync(userId, dto.Token);
             return Ok();
         }
     }

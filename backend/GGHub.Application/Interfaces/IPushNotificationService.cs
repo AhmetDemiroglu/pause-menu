@@ -10,6 +10,8 @@ namespace GGHub.Application.Interfaces
         /// </param>
         Task RegisterTokenAsync(int userId, string token, string platform, string? locale = null);
         Task RemoveTokenAsync(string token);
+        /// <summary>Yalniz bu kullaniciya ait cihaz kaydini siler (cikis).</summary>
+        Task RemoveTokenForUserAsync(int userId, string token);
 
         /// <summary>
         /// Hazır title/body ile gönderir. Gövdesi kullanıcı içeriği olan (dolayısıyla

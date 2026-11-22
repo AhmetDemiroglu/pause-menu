@@ -171,10 +171,14 @@ namespace GGHub.Infrastructure.Services
                 // Kelime bazlı ILIKE (PostgreSQL, büyük/küçük harf duyarsız). Tek parça
                 // "%fc 27%" deseni "EA SPORTS FC™ 27" gibi araya marka işareti girmiş adları
                 // kaçırıyordu ve keşfet ile arama çubuğu FARKLI sonuç veriyordu.
-                foreach (var token in q.Search.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                // En fazla 8 kelime, kelime basina 40 karakter, % _ \\ kacisli: uc anonim; sinirsiz kelime
+                // sayisi ve ham joker karakterler her istekte tum tabloyu tarayan agir bir sorgu demekti.
+                foreach (var rawToken in q.Search.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(8))
                 {
-                    var pattern = $"%{token}%";
-                    query = query.Where(g => EF.Functions.ILike(g.Name, pattern));
+                    var token = rawToken.Length > 40 ? rawToken[..40] : rawToken;
+                    var escaped = token.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+                    var pattern = $"%{escaped}%";
+                    query = query.Where(g => EF.Functions.ILike(g.Name, pattern, "\\"));
                 }
             }
 
