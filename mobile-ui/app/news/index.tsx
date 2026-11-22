@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -8,6 +8,7 @@ import { ScreenWrapper } from '@/src/components/common/ScreenWrapper';
 import { ScreenHeader } from '@/src/components/shell';
 import { EmptyState } from '@/src/components/common/EmptyState';
 import { SearchField } from '@/src/components/common/SearchField';
+import { ChipRail } from '@/src/components/common/ChipRail';
 import { Skeleton } from '@/src/components/common/Skeleton';
 import { NewsCard, NewsImage } from '@/src/components/news/NewsCard';
 import { useTheme } from '@/src/hooks/use-theme';
@@ -99,12 +100,12 @@ export default function NewsScreen() {
         ListHeaderComponent={
           <View style={styles.header}>
             <SearchField value={searchInput} onChangeText={setSearchInput} placeholder={m.searchPlaceholder} clearLabel={m.searchClear} style={styles.inset} />
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+            <ChipRail contentContainerStyle={styles.chips}>
               {dateOptions.map((d) => chip(`d${d.key}`, d.label, days === d.key, () => setDays(d.key)))}
-            </ScrollView>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+            </ChipRail>
+            <ChipRail contentContainerStyle={styles.chips}>
               {filters.map((f) => chip(f.key, f.label, f.key === filter, () => setFilter(f.key)))}
-            </ScrollView>
+            </ChipRail>
 
             {showFeatured ? (
               <View>

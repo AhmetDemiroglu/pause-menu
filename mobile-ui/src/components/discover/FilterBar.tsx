@@ -5,9 +5,9 @@ import {
   Pressable,
   TextInput,
   StyleSheet,
-  ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { ChipRail } from '@/src/components/common/ChipRail';
 import { useTheme } from '@/src/hooks/use-theme';
 import { useLocale } from '@/src/hooks/use-locale';
 import { FontSize, Spacing, BorderRadius } from '@/src/constants/theme';
@@ -144,7 +144,7 @@ export function FilterBar({
         )}
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersRow} contentContainerStyle={styles.filtersContent}>
+      <ChipRail style={styles.filtersRow} contentContainerStyle={styles.filtersContent}>
         <Pressable
           style={[styles.filterChip, { backgroundColor: selectedGenre ? colors.primary : colors.surface, borderColor: colors.border }]}
           onPress={() => setActiveModal('genre')}
@@ -174,7 +174,7 @@ export function FilterBar({
           </Text>
           <Ionicons name="chevron-down" size={14} color={selectedOrdering ? '#ffffff' : colors.textMuted} />
         </Pressable>
-      </ScrollView>
+      </ChipRail>
 
       <PickerSheet
         visible={activeModal === 'genre'}
