@@ -15,6 +15,7 @@ import { AdminGameRefreshButton } from "./admin-game-refresh-button";
 import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { getDateLocaleCode } from "@/i18n/config";
 import placeHolder2 from "@core/assets/placeholder2.png";
+import { getImageUrl } from "@/core/lib/get-image-url";
 
 interface GameHeroProps {
     game: Game;
@@ -87,6 +88,9 @@ export const GameHero = ({ game, onOpenReviewModal, reviewLocked = false }: Game
         }
     };
 
+    // Yalniz gercek gorsel yardimcidan gecer: placeholder yolu yardimciya girerse API adresi onune eklenirdi.
+    const heroSrc = getImageUrl(game.backgroundImage);
+
     // Tarih arayuz dilinde: Ingilizce sayfada "14 Mart 2024" yaziyordu.
     const releaseDate = game.released ? new Date(game.released).toLocaleDateString(getDateLocaleCode(locale), { month: "long", day: "numeric", year: "numeric" }) : null;
 
@@ -95,11 +99,25 @@ export const GameHero = ({ game, onOpenReviewModal, reviewLocked = false }: Game
     // dusuyor ve baslik okunmuyordu. Koyu temada gorunum degismedi (dark: varyantlari).
     return (
         <div className="relative w-full min-h-[550px] overflow-hidden rounded-3xl shadow-2xl bg-[#0D0915] dark:bg-background border border-white/5">
-            <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 hover:scale-105"
-                // /placeholder-game.jpg diye bir dosya yoktu (404); yedek gorsel diger kartlarla ayni.
-                style={{ backgroundImage: `url(${game.backgroundImage || placeHolder2.src})` }}
-            >
+            <div className="absolute inset-0 transition-transform duration-1000 hover:scale-105">
+                {/*
+                 * Hero gorseli sayfanin LCP ogesi. Onceden CSS backgroundImage ile RAWG ORIJINALI
+                 * iniyordu (Last of Us: 1920x1080, 214 KB) ve dusuk oncelikliydi: Lighthouse mobil
+                 * LCP 9 sn, surenin %79'u bu gorselin inmesi. Simdi <img> + fetchPriority=high.
+                 * Boyut bilerek orijinal: telefonda kutu ~362x700 px ve object-cover, olcek YUKSEKLIGE
+                 * gore. resize/640 belirgin, resize/1280 3x ekranda hafif bulaniyordu (gorunum korunur).
+                 * Bu oyunda resize/1920 orijinalden buyuk cikti (250 KB / 214 KB). Orijinali birkac MB olan
+                 * oyunlarda hero hala agir; ayri is. Gorsel RAWG CDN'inden gelir.
+                 * /placeholder-game.jpg diye bir dosya yoktu (404); yedek gorsel diger kartlarla ayni.
+                 */}
+                <img
+                    src={heroSrc ?? placeHolder2.src}
+                    alt=""
+                    fetchPriority="high"
+                    loading="eager"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover object-center"
+                />
                 <div className="absolute inset-0 bg-linear-to-t from-[#0D0915] via-[#0D0915]/90 via-30% to-transparent dark:from-background dark:via-background/90" />
                 <div className="absolute inset-0 bg-linear-to-r from-[#0D0915] via-[#0D0915]/50 to-transparent dark:from-background dark:via-background/50" />
             </div>
@@ -176,10 +194,13 @@ export const GameHero = ({ game, onOpenReviewModal, reviewLocked = false }: Game
 
                         <FavoriteButton gameId={game.rawgId} className="h-[70px] w-[58px] rounded-xl flex items-center justify-center bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20" />
                         <button
+                            type="button"
                             onClick={handleShare}
+                            aria-label={t("common.share")}
+                            title={t("common.share")}
                             className="flex items-center justify-center w-14 bg-white/5 text-white border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer backdrop-blur-md"
                         >
-                            <Share2 size={20} />
+                            <Share2 size={20} aria-hidden />
                         </button>
 
                         {isAdmin && !game.metacritic && (

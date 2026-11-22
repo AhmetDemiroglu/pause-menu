@@ -155,7 +155,8 @@ function DiscoverPageContent({ initialFirstPage }: DiscoverViewProps) {
 
                     <div className="flex flex-wrap items-center gap-2">
                         <Select open={isGenreMenuOpen} onOpenChange={setGenreMenuOpen} value={selectedGenre || ""} onValueChange={setSelectedGenre}>
-                            <SelectTrigger className="w-full cursor-pointer sm:w-auto">
+                            {/* combobox rolu icindeki metni ad saymaz: aria-label olmadan ekran okuyucu "dugme" der (Lighthouse button-name). */}
+                            <SelectTrigger aria-label={t("discover.genrePlaceholder")} className="w-full cursor-pointer sm:w-auto">
                                 <SelectValue placeholder={t("discover.genrePlaceholder")} />
                             </SelectTrigger>
                             <SelectContent>
@@ -178,7 +179,7 @@ function DiscoverPageContent({ initialFirstPage }: DiscoverViewProps) {
                         </Select>
 
                         <Select open={isPlatformMenuOpen} onOpenChange={setPlatformMenuOpen} value={selectedPlatform || ""} onValueChange={setSelectedPlatform}>
-                            <SelectTrigger className="w-full cursor-pointer sm:w-auto">
+                            <SelectTrigger aria-label={t("discover.platformPlaceholder")} className="w-full cursor-pointer sm:w-auto">
                                 <SelectValue placeholder={t("discover.platformPlaceholder")} />
                             </SelectTrigger>
                             <SelectContent>
@@ -203,7 +204,7 @@ function DiscoverPageContent({ initialFirstPage }: DiscoverViewProps) {
                         <DateFilter value={dateRange} onValueChange={setDateRange} />
 
                         <Select value={ordering} onValueChange={setOrdering}>
-                            <SelectTrigger className="w-full cursor-pointer sm:w-auto">
+                            <SelectTrigger aria-label={t("discover.orderingLabel")} className="w-full cursor-pointer sm:w-auto">
                                 <span className="text-sm">
                                     {orderingOptions.find((o) => o.value === ordering)?.label || t("discover.orderingPlaceholder")}
                                 </span>
@@ -224,6 +225,9 @@ function DiscoverPageContent({ initialFirstPage }: DiscoverViewProps) {
                 </div>
             </div>
 
+            {/* Gorsel olarak gizli h2: kart basliklari h3, h1'den h3'e atlamasin (heading-order). */}
+            <h2 className="sr-only">{t("discover.gamesHeading")}</h2>
+
             {isLoading ? (
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {Array.from({ length: pageSize }).map((_, index) => (
@@ -235,7 +239,7 @@ function DiscoverPageContent({ initialFirstPage }: DiscoverViewProps) {
             ) : (
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {items.map((game, index) => (
-                        <GameCard key={game.rawgId} game={game} eager={index < 4} />
+                        <GameCard key={game.rawgId} game={game} eager={index < 4} priority={index === 0} />
                     ))}
                 </div>
             )}
@@ -251,7 +255,7 @@ function DiscoverPageContent({ initialFirstPage }: DiscoverViewProps) {
                     <div className="order-2 flex items-center gap-2 sm:order-3">
                         <p className="whitespace-nowrap text-sm text-muted-foreground">{t("discover.perPage")}</p>
                         <Select value={String(pageSize)} onValueChange={(value) => setPageSize(Number(value))}>
-                            <SelectTrigger className="w-20 cursor-pointer">
+                            <SelectTrigger aria-label={t("discover.perPage").replace(/:\s*$/, "")} className="w-20 cursor-pointer">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>

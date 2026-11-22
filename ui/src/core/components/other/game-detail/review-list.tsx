@@ -171,7 +171,7 @@ export const ReviewList = ({ gameId, gameName, gameSlug, initialReviews = null, 
                     </div>
 
                     <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-[180px] bg-card/50">
+                        <SelectTrigger aria-label={t("reviewList.sortPlaceholder")} className="w-[180px] bg-card/50">
                             <div className="flex items-center gap-2">
                                 <SortAsc className="h-4 w-4 text-muted-foreground" />
                                 <SelectValue placeholder={t("reviewList.sortPlaceholder")} />

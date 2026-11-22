@@ -166,6 +166,7 @@ export const ReviewCard = ({ review, onVote, onDelete, onUpdate }: ReviewCardPro
                                     currentUserVote === 1 && "text-emerald-500 bg-emerald-500/10"
                                 )}
                                 onClick={() => handleVote(1)}
+                                aria-label={t("reviewComments.upvoteAria")}
                             >
                                 <ThumbsUp className="h-4 w-4" />
                             </Button>
@@ -189,6 +190,7 @@ export const ReviewCard = ({ review, onVote, onDelete, onUpdate }: ReviewCardPro
                                     currentUserVote === -1 && "text-red-500 bg-red-500/10"
                                 )}
                                 onClick={() => handleVote(-1)}
+                                aria-label={t("reviewComments.downvoteAria")}
                             >
                                 <ThumbsDown className="h-4 w-4" />
                             </Button>

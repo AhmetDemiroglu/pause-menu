@@ -392,7 +392,8 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                 </CarouselContent>
 
                 {/* Segmentli ilerleme göstergeleri: aktif segment autoplay ile dolar, tıklanınca slayta gider */}
-                <div className="absolute bottom-5 left-6 z-20 flex items-center gap-1.5 md:left-12 lg:left-16">
+                {/* gap-2: dugmeler -mx-1 ile 4 px tasiyor; gap-1.5 iken komsu dugmeler 2 px ust uste biniyor, hedef 22 px kaliyordu (target-size). */}
+                <div className="absolute bottom-5 left-6 z-20 flex items-center gap-2 md:left-12 lg:left-16">
                     {Array.from({ length: slideCount }).map((_, index) => {
                         const isActive = selectedIndex === index;
                         return (

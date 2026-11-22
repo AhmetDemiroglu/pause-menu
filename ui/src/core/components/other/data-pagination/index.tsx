@@ -1,5 +1,6 @@
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious, PaginationLink, PaginationEllipsis } from "@core/components/ui/pagination";
 import { DOTS, usePagination } from "@core/hooks/use-pagination";
+import { useI18n } from "@/core/contexts/locale-context";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DataPaginationProps {
@@ -10,7 +11,13 @@ interface DataPaginationProps {
     siblingCount?: number;
 }
 
+/**
+ * Metinler ve etiketler arayuz dilinde. Onceden "Onceki/Sonraki" sabit Turkceydi (Ingilizce sayfada
+ * da) ve aria-label Ingilizceydi. Liste yapisi: <ul> altinda yalniz <li> (Lighthouse "list");
+ * sayfa numaralari masaustunde, "3 / 10" gostergesi telefonda gorunur.
+ */
 export function DataPagination({ page, pageSize, totalCount, onPageChange, siblingCount = 1 }: DataPaginationProps) {
+    const t = useI18n();
     const paginationRange = usePagination({
         currentPage: page,
         totalCount,
@@ -26,52 +33,66 @@ export function DataPagination({ page, pageSize, totalCount, onPageChange, sibli
     const onPrevious = () => onPageChange(page - 1);
 
     let lastPage = paginationRange[paginationRange.length - 1];
+    const isFirst = page === 1;
+    const isLast = page === lastPage;
 
     return (
-        <Pagination>
+        <Pagination aria-label={t("common.pagination")}>
             <PaginationContent className="flex-wrap gap-1">
-                {/* Önceki Butonu */}
                 <PaginationItem>
-                    <PaginationPrevious onClick={onPrevious} className={`cursor-pointer ${page === 1 ? "pointer-events-none opacity-50" : ""}`}>
+                    <PaginationPrevious
+                        onClick={onPrevious}
+                        disabled={isFirst}
+                        aria-label={t("common.previousPage")}
+                        className={isFirst ? undefined : "cursor-pointer"}
+                    >
                         {/* Mobilde sadece icon */}
-                        <span className="hidden sm:inline">Önceki</span>
-                        <ChevronLeft className="h-4 w-4 sm:hidden" />
+                        <span className="hidden sm:inline">{t("common.previous")}</span>
+                        <ChevronLeft aria-hidden className="h-4 w-4 sm:hidden" />
                     </PaginationPrevious>
                 </PaginationItem>
 
-                {/* Sayfa Numaraları - Mobilde gizle bazılarını */}
-                <div className="hidden sm:flex items-center gap-1">
-                    {paginationRange.map((pageNumber, index) => {
-                        if (pageNumber === DOTS) {
-                            return (
-                                <PaginationItem key={`dots-${index}`}>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                            );
-                        }
+                {/* Sayfa numaralari: mobilde gizli */}
+                {paginationRange.map((pageNumber, index) => {
+                    if (pageNumber === DOTS) {
                         return (
-                            <PaginationItem key={`page-${pageNumber}`} className="cursor-pointer">
-                                <PaginationLink isActive={pageNumber === page} onClick={() => onPageChange(pageNumber as number)}>
-                                    {pageNumber}
-                                </PaginationLink>
+                            <PaginationItem key={`dots-${index}`} className="hidden sm:block">
+                                <PaginationEllipsis label={t("common.morePages")} />
                             </PaginationItem>
                         );
-                    })}
-                </div>
+                    }
+                    const isActive = pageNumber === page;
+                    return (
+                        <PaginationItem key={`page-${pageNumber}`} className="hidden sm:block">
+                            <PaginationLink
+                                isActive={isActive}
+                                onClick={() => onPageChange(pageNumber as number)}
+                                aria-label={t("common.goToPage", { page: pageNumber })}
+                                className="cursor-pointer"
+                            >
+                                {pageNumber}
+                            </PaginationLink>
+                        </PaginationItem>
+                    );
+                })}
 
                 {/* Mobilde sadece mevcut sayfa */}
-                <div className="flex sm:hidden items-center px-3 py-1 text-sm">
+                <PaginationItem className="flex items-center px-3 py-1 text-sm sm:hidden">
                     <span className="font-medium">{page}</span>
                     <span className="text-muted-foreground mx-1">/</span>
                     <span className="text-muted-foreground">{lastPage}</span>
-                </div>
+                </PaginationItem>
 
-                {/* Sonraki Butonu */}
-                <PaginationItem className="cursor-pointer">
-                    <PaginationNext onClick={onNext} className={page === lastPage ? "pointer-events-none opacity-50" : ""}>
+                <PaginationItem>
+                    <PaginationNext
+                        onClick={onNext}
+                        disabled={isLast}
+                        aria-label={t("common.nextPage")}
+                        className={isLast ? undefined : "cursor-pointer"}
+                    >
                         {/* Mobilde sadece icon */}
-                        <span className="hidden sm:inline">Sonraki</span>
-                        <ChevronRight className="h-4 w-4 sm:hidden" />
+                        <span className="hidden sm:inline">{t("common.next")}</span>
+                        <ChevronRight aria-hidden className="h-4 w-4 sm:hidden" />
                     </PaginationNext>
                 </PaginationItem>
             </PaginationContent>

@@ -59,9 +59,10 @@ export const GameRatingBar = ({ rating, onRateClick, actionLabel }: GameRatingBa
             <div className="flex items-end justify-between mb-2 px-1">
                 <div className="flex items-center gap-2">
                     <Icon size={24} className={`${info.text} drop-shadow-md`} />
-                    <h3 className={`text-2xl font-black tracking-tight ${info.text} drop-shadow-sm`}>
+                    {/* Baslik degil, puan etiketi: h3 iken sayfada h1'den sonra h2'siz h3 kaliyordu (heading-order). */}
+                    <p className={`text-2xl font-black tracking-tight ${info.text} drop-shadow-sm`}>
                         {info.label}
-                    </h3>
+                    </p>
                 </div>
                 <div className="flex flex-col items-end leading-none">
                     <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{t("gameRating.scoreLabel")}</span>
@@ -74,8 +75,8 @@ export const GameRatingBar = ({ rating, onRateClick, actionLabel }: GameRatingBa
                 onClick={onRateClick}
                 className="h-6 w-full bg-zinc-900/80 rounded-full overflow-hidden relative shadow-inner border border-white/5 cursor-pointer hover:border-white/10 transition-all"
             >
-                {/* Arka Plan Noise Deseni */}
-                <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+                {/* Noise dokusu kaldirildi: grainy-gradients.vercel.app 402 donuyordu, doku hic
+                    gorunmuyordu ve her oyun sayfasinda konsol hatasi birakiyordu. */}
 
                 {/* Ana Puan Barı */}
                 <div

@@ -55,10 +55,12 @@ const getScoreStyling = (type: ScoreType, score: number | null | undefined) => {
     return "bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border-indigo-500/20";
   }
 
+  // Acik tema yazi tonlari kontrast icin koyu: /10 zeminde green-600 2,9, yellow-600 2,7, red-600 4,1
+  // veriyordu (4,5 gerekli). Simdi green-800 6,5, yellow-800 6,4, red-700 5,6. Koyu tema degismedi.
   if (!score) return "bg-gray-500/10 text-gray-500 dark:text-gray-400 border-gray-500/20";
-  if (score > 74) return "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20 shadow-[0_0_8px_rgba(34,197,94,0.3)]";
-  if (score > 49) return "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20 shadow-[0_0_8px_rgba(234,179,8,0.3)]";
-  return "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20 shadow-[0_0_8px_rgba(239,68,68,0.3)]";
+  if (score > 74) return "bg-green-500/10 text-green-800 dark:text-green-400 border-green-500/20 shadow-[0_0_8px_rgba(34,197,94,0.3)]";
+  if (score > 49) return "bg-yellow-500/10 text-yellow-800 dark:text-yellow-400 border-yellow-500/20 shadow-[0_0_8px_rgba(234,179,8,0.3)]";
+  return "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20 shadow-[0_0_8px_rgba(239,68,68,0.3)]";
 };
 
 export function ScoreBadge({ type, score }: ScoreBadgeProps) {

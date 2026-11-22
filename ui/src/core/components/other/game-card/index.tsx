@@ -18,8 +18,11 @@ import { getGameImageUrl } from "@/core/lib/get-image-url";
 /**
  * eager: ilk satirdaki kartlar (ekranin ustu) hemen iner, gerisi gorunurken. Onceden 12 ile 40
  * kartin hepsi orijinal boyutta ve hemen iniyordu (Kesfet'te 18.5 MB, gerekce get-image-url.ts).
+ * priority: yalniz ilk kart. Kesfet'in LCP ogesi o kartin gorseli; eager tek basina oncelik
+ * vermiyordu (Lighthouse: fetchpriority=high eksik). 640 genislik telefonda da dogru: kart ~355 px,
+ * 1,75 DPR ile 621 px gerekiyor.
  */
-export const GameCard = memo(function GameCard({ game, eager = false }: { game: Game; eager?: boolean }) {
+export const GameCard = memo(function GameCard({ game, eager = false, priority = false }: { game: Game; eager?: boolean; priority?: boolean }) {
     const { isAuthenticated } = useAuth();
     const locale = useCurrentLocale();
     const t = useI18n();
@@ -65,7 +68,8 @@ export const GameCard = memo(function GameCard({ game, eager = false }: { game: 
                             <img
                                 src={getGameImageUrl(game.backgroundImage, 640) ?? placeHolder2.src}
                                 alt={game.name}
-                                loading={eager ? "eager" : "lazy"}
+                                loading={eager || priority ? "eager" : "lazy"}
+                                fetchPriority={priority ? "high" : undefined}
                                 decoding="async"
                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                             />

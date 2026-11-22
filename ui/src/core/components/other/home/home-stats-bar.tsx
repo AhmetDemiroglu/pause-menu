@@ -34,7 +34,8 @@ export default function HomeStatsBar({ stats }: HomeStatsBarProps) {
                 noktasi "7/24 sohbet ediyor" vurgusu; tiklaninca AI Kulubu. */}
             <Link
                 href={buildLocalizedPathname("/ai-bots", locale)}
-                aria-label={t("home.stats.botsLink")}
+                // Gorunen metin ("12 AI bot") etiketin icinde olmali (label-content-name-mismatch, WCAG 2.5.3).
+                aria-label={`${format(stats.totalAiAgents)} ${t("home.stats.bots")}, ${t("home.stats.botsLink")}`}
                 className="flex items-center gap-2 rounded-full bg-violet-500/10 px-3 py-1 ring-1 ring-violet-400/30 transition-colors hover:bg-violet-500/20"
             >
                 <span aria-hidden className="relative flex h-2 w-2">
