@@ -18,6 +18,14 @@ const nextConfig: NextConfig = {
      * bekler; sayfa ayni veriyi zaten bekledigi icin fark yok.
      */
     htmlLimitedBots: /.*/,
+    experimental: {
+        // Gorsel optimizer'da tek is parcacigi: her libvips is parcacigi kendi tamponunu tutuyor.
+        // Railway'de cekirdek sayisi yuksek oldugu icin varsayilan (cekirdek/2) bellegi katliyordu.
+        // Gorseller Cloudflare'de onbellekli, origin'e dusen islem az; hiz kaybi fark edilmez.
+        imgOptConcurrency: 1,
+        // Buyuk gorselleri parca parca oku, tamamini bellege acma.
+        imgOptSequentialRead: true,
+    },
     /**
      * Oyun detayi Vercel CDN'inde onbellekli. Kok layout headers() okudugu icin sayfa her istekte
      * sunucuda ciziliyor (ISR yok); ~92 bin oyun URL'sini gezen botlar Hobby'nin aylik 4 CPU saatini
