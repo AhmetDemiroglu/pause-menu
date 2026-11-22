@@ -29,7 +29,6 @@ export default function ProfileContent({ username, initialProfile = null }: Prof
     const {
         data: profile,
         isLoading,
-        isError,
     } = useQuery({
         queryKey: ["profile", username],
         queryFn: () => getProfileByUsername(username),
@@ -55,7 +54,9 @@ export default function ProfileContent({ username, initialProfile = null }: Prof
         );
     }
 
-    if (isError || !profile) {
+    // Veri varken (sunucudan gelen initialData) arka plan tazelemesinin hatasi icerigi silmez. API Googlebot'a
+    // robots ile kapali: tazeleme orada hep duser ve eskiden Google sayfayi hata ekrani olarak goruyordu.
+    if (!profile) {
         return (
             <div className="text-center py-10">
                 <h2 className="text-xl font-semibold">Profil bulunamadı</h2>

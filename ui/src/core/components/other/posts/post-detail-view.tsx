@@ -35,7 +35,7 @@ export function PostDetailView({ initialPost = null }: PostDetailViewProps) {
     const postQueryKey = useMemo(() => ["post", postId], [postId]);
     const repliesQueryKey = useMemo(() => ["post-replies", postId], [postId]);
 
-    const { data: post, isLoading, isError } = useQuery({
+    const { data: post, isLoading } = useQuery({
         queryKey: postQueryKey,
         queryFn: () => getPost(postId),
         enabled: Number.isFinite(postId),
@@ -83,7 +83,9 @@ export function PostDetailView({ initialPost = null }: PostDetailViewProps) {
         );
     }
 
-    if (isError || !post) {
+    // Veri varken (sunucudan gelen initialData) arka plan tazelemesinin hatasi icerigi silmez. API Googlebot'a
+    // robots ile kapali: tazeleme orada hep duser ve eskiden Google sayfayi hata ekrani olarak goruyordu.
+    if (!post) {
         return (
             <div className="mx-auto w-full max-w-2xl space-y-4 p-6 text-center">
                 <h1 className="text-xl font-bold">{t("posts.notFoundTitle")}</h1>

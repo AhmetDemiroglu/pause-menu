@@ -72,7 +72,7 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
     const [month, setMonth] = useState(initialMonth);
     const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
-    const { data, isLoading, isError, refetch } = useQuery({
+    const { data, isLoading, refetch } = useQuery({
         queryKey: ["agenda", year, month],
         queryFn: () => agendaApi.get(year, month),
         initialData: year === initialYear && month === initialMonth ? (initialContent ?? undefined) : undefined,
@@ -407,7 +407,7 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
                 </section>
             ) : isLoading ? (
                 <AgendaSkeleton />
-            ) : isError || !data ? (
+            ) : !data ? (
                 <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed p-10 text-center">
                     <p className="text-sm text-muted-foreground">{t("agenda.loadError")}</p>
                     <Button variant="outline" className="cursor-pointer" onClick={() => refetch()}>

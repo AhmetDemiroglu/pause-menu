@@ -632,6 +632,17 @@ app.MapControllers();
 app.MapHub<ChatHub>("/hubs/chat");
 
 app.MapGet("/", () => "Pause Menu API is running!").AllowAnonymous();
+
+// API alan adi arama sonucu degil: icerik web sayfalarinin HTML'inde sunucuda cizili geliyor.
+// Search Console (13-20 Kas 2026): Googlebot 8 gunde 209 bin istek atti, 117.757'si bu alan adina
+// (sayfayi cizerken istemcinin API cagrilarini tekrarliyor, JSON %56). Robots ile kapatinca
+// tarayicilarin API yuku biter; sayfalar sunucudan gelen veriyle cizilir (gorunumler tazeleme
+// hatasinda icerigi silmez). /images/ acik: sunucudaki gorseller gorsel aramada kalsin.
+app.MapGet("/robots.txt", (HttpContext context) =>
+{
+    context.Response.Headers.CacheControl = "public, max-age=3600";
+    return Results.Text("User-agent: *\nAllow: /images/\nDisallow: /\n", "text/plain");
+}).AllowAnonymous();
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow })).AllowAnonymous();
 
 app.Run();

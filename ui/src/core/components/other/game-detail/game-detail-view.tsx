@@ -68,7 +68,9 @@ export const GameDetailView = ({ idOrSlug, initialGame = null, initialReviews = 
 
     if (isLoading) return null;
 
-    if (isError || !game) {
+    // Veri varken (sunucudan gelen initialData) arka plan tazelemesinin hatasi icerigi silmez. API Googlebot'a
+    // robots ile kapali: tazeleme orada hep duser ve eskiden Google sayfayi hata ekrani olarak goruyordu.
+    if (!game) {
         // 404 = oyun gerçekten yok; diğer her şey (timeout, 503 catalog_unavailable, ağ hatası)
         // geçicidir ve "bulunamadı" yalanı yerine tekrar dene seçeneği gösterilir.
         const status = error instanceof AxiosError ? error.response?.status : undefined;
