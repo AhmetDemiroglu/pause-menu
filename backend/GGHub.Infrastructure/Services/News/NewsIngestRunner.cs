@@ -301,7 +301,8 @@ namespace GGHub.Infrastructure.Services.News
                 var paced = (int)Math.Ceiling(settings.NewsDailyArticleCap * (now.Hour + 1) / 24.0);
                 remaining = Math.Max(0, Math.Min(settings.NewsDailyArticleCap, paced) - writtenToday);
             }
-            var generatedToday = await _db.NewsArticles.CountAsync(a => a.CreatedAt >= dayStart && a.ImageKind == NewsImageKind.Generated, ct);
+            // Ilk dolum haberlerine sonradan uretilen onarim gorselleri gunluk hakki yemez.
+            var generatedToday = await _db.NewsArticles.CountAsync(a => a.CreatedAt >= dayStart && !a.IsBackfill && a.ImageKind == NewsImageKind.Generated, ct);
             report.CapRemaining = remaining;
 
             var budget = await _budget.GetStatusAsync(GeminiSources.News, ct);
