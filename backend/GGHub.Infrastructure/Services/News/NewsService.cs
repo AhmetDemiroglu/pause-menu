@@ -33,19 +33,43 @@ namespace GGHub.Infrastructure.Services.News
             _cache = cache;
         }
 
-        public async Task<PaginatedResult<NewsListItemDto>> GetListAsync(int page, int pageSize, string? category, CancellationToken ct = default)
+        public async Task<PaginatedResult<NewsListItemDto>> GetListAsync(int page, int pageSize, string? category, string? search = null, int? days = null, CancellationToken ct = default)
         {
             var safePage = Math.Clamp(page, 1, MaxPage);
             var safeSize = pageSize >= 24 ? 24 : 12;
             NewsCategory? cat = TryParseCategory(category);
-            var key = $"news:list:{Volatile.Read(ref _generation)}:{cat?.ToString() ?? "all"}:{safePage}:{safeSize}";
+            int? safeDays = days is 1 or 3 or 7 or 30 ? days : null;
+            var term = (search ?? string.Empty).Trim();
+            if (term.Length > 60) term = term[..60];
+            var hasSearch = term.Length >= 2;
 
-            if (_cache.TryGetValue(key, out PaginatedResult<NewsListItemDto>? cached) && cached != null)
+            // Serbest metin aramasi onbellege girmez (anahtar sinirsiz olurdu). Tablo en fazla birkac bin
+            // satir (180 gun saklama); ILIKE taramasi ucuz.
+            var key = $"news:list:{Volatile.Read(ref _generation)}:{cat?.ToString() ?? "all"}:{safeDays ?? 0}:{safePage}:{safeSize}";
+            if (!hasSearch && _cache.TryGetValue(key, out PaginatedResult<NewsListItemDto>? cached) && cached != null)
                 return cached;
 
             var query = _context.NewsArticles.AsNoTracking().Where(a => !a.IsHidden);
             if (cat.HasValue)
                 query = query.Where(a => a.Category == cat.Value);
+            if (safeDays.HasValue)
+            {
+                var since = DateTime.UtcNow.AddDays(-safeDays.Value);
+                query = query.Where(a => a.PublishedAt >= since);
+            }
+            if (hasSearch)
+            {
+                // Her kelime bir yerde gecmeli: baslik, ozet (iki dil), kaynak adi ya da eslesen oyunun adi.
+                foreach (var word in term.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(5))
+                {
+                    var pattern = "%" + word.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_") + "%";
+                    query = query.Where(a =>
+                        EF.Functions.ILike(a.TitleTr, pattern, "\\") || EF.Functions.ILike(a.TitleEn, pattern, "\\")
+                        || EF.Functions.ILike(a.SummaryTr, pattern, "\\") || EF.Functions.ILike(a.SummaryEn, pattern, "\\")
+                        || a.Sources.Any(s => EF.Functions.ILike(s.SourceName, pattern, "\\"))
+                        || (a.Game != null && EF.Functions.ILike(a.Game.Name, pattern, "\\")));
+                }
+            }
 
             var total = await query.CountAsync(ct);
             var rows = await query
@@ -86,7 +110,7 @@ namespace GGHub.Infrastructure.Services.News
                 PageSize = safeSize
             };
 
-            _cache.Set(key, result, CacheTtl);
+            if (!hasSearch) _cache.Set(key, result, CacheTtl);
             return result;
         }
 

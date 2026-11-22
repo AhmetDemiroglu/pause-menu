@@ -9,7 +9,9 @@ namespace GGHub.Application.Interfaces
     /// </summary>
     public interface INewsService
     {
-        Task<PaginatedResult<NewsListItemDto>> GetListAsync(int page, int pageSize, string? category, CancellationToken ct = default);
+        /// <param name="search">Baslik, ozet, kaynak adi ve oyun adinda arar (2-60 karakter).</param>
+        /// <param name="days">Son kac gun: 1, 3, 7 ya da 30; baska deger suzmez.</param>
+        Task<PaginatedResult<NewsListItemDto>> GetListAsync(int page, int pageSize, string? category, string? search = null, int? days = null, CancellationToken ct = default);
 
         /// <summary>One cikanlar: son 48 saatin (azsa 7 gunun) gorselli haberleri, onem, kaynak sayisi, tazelik sirasiyla.</summary>
         Task<List<NewsListItemDto>> GetFeaturedAsync(int limit, CancellationToken ct = default);

@@ -24,9 +24,10 @@ namespace GGHub.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetList(
             [FromQuery] int page = 1, [FromQuery] int pageSize = 12, [FromQuery] string? category = null,
+            [FromQuery] string? search = null, [FromQuery] int? days = null,
             CancellationToken ct = default)
         {
-            return Ok(await _service.GetListAsync(page, pageSize, category, ct));
+            return Ok(await _service.GetListAsync(page, pageSize, category, search, days, ct));
         }
 
         [HttpGet("featured")]
