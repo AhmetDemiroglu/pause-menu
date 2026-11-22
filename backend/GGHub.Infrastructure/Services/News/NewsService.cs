@@ -106,7 +106,7 @@ namespace GGHub.Infrastructure.Services.News
                     .Select(a => new
                     {
                         a.Id, a.Slug, a.TitleTr, a.TitleEn, a.SummaryTr, a.SummaryEn, a.Category, a.Importance,
-                        a.ImageUrl, a.ImageKind, a.ImageCredit, a.PublishedAt,
+                        a.ImageUrl, a.ImageKind, a.ImageCredit, a.PublishedAt, a.GameId,
                         FirstSource = a.Sources.OrderBy(s => s.PublishedAt).Select(s => s.SourceName).FirstOrDefault(),
                         SourceCount = a.Sources.Count
                     })
@@ -114,8 +114,12 @@ namespace GGHub.Infrastructure.Services.News
                     .OrderByDescending(a => a.Importance)
                     .ThenByDescending(a => a.SourceCount)
                     .ThenByDescending(a => a.PublishedAt)
-                    .Take(safe)
+                    .Take(safe * 6)
                     .ToListAsync(ct);
+
+                // Ayni oyundan en fazla bir haber one cikar (GTA 6 haftasinda ucu de GTA olmasin).
+                var games = new HashSet<int>();
+                rows = rows.Where(r => r.GameId is null || games.Add(r.GameId.Value)).Take(safe).ToList();
 
                 result = rows.Select(r => new NewsListItemDto
                 {
