@@ -86,19 +86,53 @@ namespace GGHub.Infrastructure.Services.News
             return null;
         }
 
+        /// <summary>
+        /// Once tam ad (ILIKE, trigram indeksi). Bulunamazsa sitenin ortak oyun aramasi (GameSearch):
+        /// "GTA 6" -> Grand Theft Auto VI, "Baldur's Gate 3" -> Baldur's Gate III, aksan ve kesme isareti
+        /// farklari. Yanlis oyuna baglanmasin diye sorgunun HER kelimesi adda ya da uretilmis anahtarlarda
+        /// tam olarak bulunmali ve adda en fazla 2 fazla kelime olabilir (kisaltma/takma adla eslesme haric).
+        /// Esitlikte bilinen oyun kazanir (GameSearch.Score populerligi de tartar).
+        /// </summary>
         private static async Task<CatalogMatch?> FindExactAsync(GGHubDbContext db, string? gameName, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(gameName) || gameName.Length > 120) return null;
             var escaped = gameName.Trim().Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
-            var game = await db.Games.AsNoTracking()
-                .Where(g => g.BackgroundImage != null && g.BackgroundImage != "")
+            var withImage = db.Games.AsNoTracking().Where(g => g.BackgroundImage != null && g.BackgroundImage != "");
+
+            var exact = await withImage
                 .Where(g => EF.Functions.ILike(g.Name, escaped, "\\"))
                 .OrderByDescending(g => g.HypeScore)
                 .ThenByDescending(g => g.RawgAdded ?? 0)
                 .Select(g => new { g.Id, g.Name, g.BackgroundImage })
                 .FirstOrDefaultAsync(ct);
+            if (exact != null) return new CatalogMatch(exact.Id, exact.Name, exact.BackgroundImage!);
 
-            return game is null ? null : new CatalogMatch(game.Id, game.Name, game.BackgroundImage!);
+            var parsed = GameSearch.Parse(gameName);
+            if (parsed.IsEmpty) return null;
+
+            var candidates = await GameSearch.Project(GameSearch.WhereMatches(withImage, parsed.Tokens))
+                .OrderByDescending(c => c.HypeScore)
+                .Take(40)
+                .ToListAsync(ct);
+
+            GameSearch.Candidate? best = null;
+            var bestScore = double.MinValue;
+            foreach (var c in candidates)
+            {
+                var text = c.SearchText ?? GGHub.Core.Specifications.GameSearchKeys.Build(c.Name) ?? string.Empty;
+                var parts = text.Split('|');
+                var nameWords = parts.Length > 1 ? parts[1].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet() : new HashSet<string>();
+                var otherWords = parts.Skip(2).SelectMany(p => p.Split(' ', StringSplitOptions.RemoveEmptyEntries)).ToHashSet();
+
+                if (!parsed.Tokens.All(t => nameWords.Contains(t) || otherWords.Contains(t))) continue;
+                var viaShortForm = parsed.Tokens.Any(t => !nameWords.Contains(t));
+                if (!viaShortForm && nameWords.Count > parsed.Tokens.Count + 2) continue;
+
+                var score = GameSearch.Score(c, parsed);
+                if (score > bestScore) { bestScore = score; best = c; }
+            }
+
+            return best is null ? null : new CatalogMatch(best.Id, best.Name, best.BackgroundImage!);
         }
 
         /// <summary>Gorsel uretir, WebP'ye cevirir, R2'ye yazar. Basarisizsa null.</summary>

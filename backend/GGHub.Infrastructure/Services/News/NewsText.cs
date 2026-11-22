@@ -14,6 +14,7 @@ namespace GGHub.Infrastructure.Services.News
         private static readonly Regex Tag = new(@"<[^>]+>", RegexOptions.Compiled);
         private static readonly Regex Spaces = new(@"[ \t ]+", RegexOptions.Compiled);
         private static readonly Regex Newlines = new(@"\s*\n\s*(\n\s*)+", RegexOptions.Compiled);
+        private static readonly Regex SingleOrMoreNewlines = new(@"[ \t]*\n[\s]*", RegexOptions.Compiled);
         private static readonly Regex NonWord = new(@"[^\p{L}\p{N}]+", RegexOptions.Compiled);
 
         /// <summary>HTML'i duz metne cevirir; paragraflar bos satirla ayrilir. En fazla maxChars.</summary>
@@ -85,7 +86,7 @@ namespace GGHub.Infrastructure.Services.News
             new(@"\breview(s|ed)?\b(?![-\s]*bomb)", RegexOptions.IgnoreCase),
             new(@"\b(deals?|discount(ed|s)?|cheapest|lowest price|price drop|bargain|black friday|cyber monday|prime day|(is|are|goes|now) on sale|sale price)\b", RegexOptions.IgnoreCase),
             new(@"\b\d+\s*%\s*off\b", RegexOptions.IgnoreCase),
-            new(@"\b(guide|walkthrough|how to|tips and tricks|tips|ranked|ranking|tier list|(the )?best (games?|deals?|settings|builds?|loadouts?|weapons?|perks?|classes|mods))\b", RegexOptions.IgnoreCase),
+            new(@"\b(guide|walkthrough|how to|tips and tricks|tips|ranked|ranking|tier list|(the )?best (games?|deals?|settings|builds?|loadouts?|weapons?|perks?|classes|mods|players|cards|picks|teams|decks))\b", RegexOptions.IgnoreCase),
             new(@"\b(safe codes?|cheat codes?|codes? and locations?|sbc|solutions|password|unlock(ing)? (all|every)|all .* codes)\b", RegexOptions.IgnoreCase),
             new(@"\b(wordle|connections|quiz|crossword|podcast|giveaway|sponsored|hands-on|preview|impressions|interview|opinion|talking point|what are you playing)\b", RegexOptions.IgnoreCase),
             new(@"\b(where to (buy|find)|pre-?order (guide|now)|redeem codes?)\b", RegexOptions.IgnoreCase),
@@ -119,8 +120,9 @@ namespace GGHub.Infrastructure.Services.News
         /// <summary>Model ciktisini tek parca metne indirger: bas/son bosluk, cok bos satir, dash.</summary>
         public static string CleanOutput(string? text, int maxChars)
         {
+            // Model paragraflari bazen tek satir sonuyla ayiriyor: her satir sonu paragraf sayilir.
             var s = CleanDashes(text ?? string.Empty).Replace("\r", "");
-            s = Newlines.Replace(s, "\n\n");
+            s = SingleOrMoreNewlines.Replace(s, "\n\n");
             s = Spaces.Replace(s, " ").Trim();
             if (s.Length > maxChars)
             {

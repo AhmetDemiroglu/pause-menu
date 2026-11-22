@@ -193,7 +193,7 @@ namespace GGHub.Infrastructure.Services.News
                     Skip = root.TryGetProperty("skip", out var sk) && sk.ValueKind == JsonValueKind.True,
                     SkipReason = Str(root, "skipReason"),
                     Category = ParseCategory(Str(root, "category")),
-                    Importance = root.TryGetProperty("importance", out var imp) && imp.TryGetInt32(out var iv) ? Math.Clamp(iv, 1, 3) : 1,
+                    Importance = root.TryGetProperty("importance", out var imp) && imp.ValueKind == JsonValueKind.Number && imp.TryGetInt32(out var iv) ? Math.Clamp(iv, 1, 3) : 1,
                     GameName = NullIfEmpty(Str(root, "gameName")),
                     GameNameInSources = NullIfEmpty(Str(root, "gameNameInSources")),
                     ImagePrompt = NullIfEmpty(Str(root, "imagePrompt"))
@@ -211,8 +211,9 @@ namespace GGHub.Infrastructure.Services.News
 
                 return draft;
             }
-            catch (JsonException)
+            catch (Exception ex) when (ex is JsonException or InvalidOperationException or FormatException)
             {
+                // Model semadan sapti (null sayi, yanlis tip): bu yazi atlanir, tur devam eder.
                 return null;
             }
         }

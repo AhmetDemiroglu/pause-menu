@@ -72,7 +72,7 @@ export default function NewsDetailScreen() {
 
   const { title, summary } = pickNewsText(article, locale);
   const paragraphs = pickNewsBody(article, locale)
-    .split(/\n\s*\n/)
+    .split(/\n+/)
     .map((p) => p.trim())
     .filter(Boolean);
   const primary = article.sources[0];

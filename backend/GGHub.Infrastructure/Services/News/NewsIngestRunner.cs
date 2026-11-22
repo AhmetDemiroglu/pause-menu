@@ -329,7 +329,19 @@ namespace GGHub.Infrastructure.Services.News
                         break;
                     }
 
-                    var written = await WriteClusterAsync(cluster, settings, opt, report, imagesLeft > 0, imagesLeft > 0 && imagesLeft > imageCapHalf, handled, ct);
+                    NewsArticle? written;
+                    try
+                    {
+                        written = await WriteClusterAsync(cluster, settings, opt, report, imagesLeft > 0, imagesLeft > 0 && imagesLeft > imageCapHalf, handled, ct);
+                    }
+                    catch (Exception ex) when (ex is not OperationCanceledException && ex is not GeminiQuotaExceededException { IsBilling: true })
+                    {
+                        // Tek bir olayin hatasi (beklenmedik model ciktisi, gecici ag hatasi) turu durdurmaz.
+                        report.ModelFailures++;
+                        _logger.LogWarning(ex, "[News] Olay yazilamadi: {Title}", cluster.Items[0].Title);
+                        _db.ChangeTracker.Clear();
+                        continue;
+                    }
                     if (written == null) continue;
                     handled.UnionWith(cluster.Items.Select(i => i.Url));
 

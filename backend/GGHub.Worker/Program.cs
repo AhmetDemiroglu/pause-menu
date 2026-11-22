@@ -338,7 +338,8 @@ if (args.Contains("--news-once") || args.Contains("--news-backfill"))
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Haber turu hatayla bitti: {ex.GetType().Name}");
+        // Actions'ta yalniz tip (log herkese acik); yerelde tam hata.
+        Console.WriteLine(options.Holder == "actions" ? $"Haber turu hatayla bitti: {ex.GetType().Name}" : $"Haber turu hatayla bitti: {ex}");
         return 1;
     }
     finally
