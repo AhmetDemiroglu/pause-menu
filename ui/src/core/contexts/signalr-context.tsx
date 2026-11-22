@@ -7,7 +7,8 @@ import type { HubConnection } from "@microsoft/signalr";
 import { useAuth } from "@core/hooks/use-auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { MessageDto, ConversationDto } from "@/models/messages/message.model";
-import { NotificationDto } from "@/models/notifications/notification.model";
+import { NotificationDto, NotificationType } from "@/models/notifications/notification.model";
+import { GAMIFICATION_EVENT } from "@/core/components/other/gamification/gamification-events";
 
 type ConnectionStatus = "disconnected" | "connecting" | "connected" | "reconnecting";
 
@@ -60,7 +61,11 @@ export function SignalRProvider({ children }: { children: ReactNode }) {
                 queryClient.setQueryData(["unread-notification-count"], { count });
             });
 
-            connection.on("ReceiveNotification", () => {
+            connection.on("ReceiveNotification", (notification?: NotificationDto) => {
+                // Rozet / seviye bildirimi: GamificationToaster kutlamayi gosterir ve istatistikleri tazeler.
+                if (notification && (notification.type === NotificationType.AchievementUnlocked || notification.type === NotificationType.LevelUp)) {
+                    window.dispatchEvent(new CustomEvent(GAMIFICATION_EVENT, { detail: notification }));
+                }
                 // Yuku onbellege DOGRUDAN yazmiyoruz, bilerek tazeliyoruz.
                 // Bildirim, onu TETIKLEYEN kullanicinin istegi uzerinde uretilir; oradaki
                 // ambient dil aktorun dilidir. Yuku oldugu gibi yazsaydik canli gelen bildirim

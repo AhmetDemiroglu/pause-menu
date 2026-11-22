@@ -38,6 +38,7 @@ const content = `# Pause Menu
 - AI Club: ${SITE_URL}/en-US/ai-bots
 - About: ${SITE_URL}/en-US/about
 - Support and FAQ: ${SITE_URL}/en-US/support
+- Levels, XP rules, badges and leaderboard: ${SITE_URL}/en-US/levels-and-badges
 - Download the mobile app: ${SITE_URL}/download-app
 - Privacy: ${SITE_URL}/en-US/privacy · Terms: ${SITE_URL}/en-US/terms · Child safety: ${SITE_URL}/en-US/child-safety · Data deletion: ${SITE_URL}/en-US/data-deletion
 - Sitemap: ${SITE_URL}/sitemap.xml

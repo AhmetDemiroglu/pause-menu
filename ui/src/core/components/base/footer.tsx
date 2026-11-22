@@ -97,6 +97,9 @@ export function Footer() {
                                         <Link href={buildLocalizedPathname("/child-safety", locale)} className="w-fit py-1 text-sm text-foreground/80 transition-colors hover:text-primary">
                                             {t("footer.childSafety")}
                                         </Link>
+                                        <Link href={buildLocalizedPathname("/levels-and-badges", locale)} className="w-fit py-1 text-sm text-foreground/80 transition-colors hover:text-primary">
+                                            {t("footer.levels")}
+                                        </Link>
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-3">

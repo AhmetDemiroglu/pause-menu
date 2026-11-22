@@ -35,4 +35,7 @@ export enum NotificationType {
     // 16 : sistem uyarısı (yeni sunucu hatası). Yalnızca adminlere gider, aktörü ve linki yoktur;
     // web satıra tıklanınca /errors sayfasını açar.
     SystemAlert = 16,
+    // 17-18 : oyunlastirma. Aktoru yok, link kullanicinin kendi profili.
+    AchievementUnlocked = 17,
+    LevelUp = 18,
 }

@@ -65,6 +65,12 @@ export default function HomeRightSidebar({ trending, leaders }: HomeRightSidebar
                 <div className="mb-3 flex items-center gap-2">
                     <Trophy className="h-4 w-4 text-yellow-500" />
                     <h3 className="text-sm font-bold tracking-tight">{t("home.leaderboardTitle")}</h3>
+                    <Link
+                        href={buildLocalizedPathname("/levels-and-badges", locale) + "#leaderboard"}
+                        className="ml-auto text-[11px] font-medium text-muted-foreground transition-colors hover:text-primary"
+                    >
+                        {t("gamification.seeAll")}
+                    </Link>
                 </div>
                 <div className="space-y-1">
                     {leaders.map((user, index) => (

@@ -33,6 +33,7 @@ const STATIC_PAGES: { path: string; priority: number; changeFrequency: SitemapUr
     { path: "/about", priority: 0.7, changeFrequency: "monthly" },
     { path: "/support", priority: 0.6, changeFrequency: "monthly" },
     { path: "/marketing", priority: 0.5, changeFrequency: "monthly" },
+    { path: "/levels-and-badges", priority: 0.5, changeFrequency: "monthly" },
     { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
     { path: "/terms", priority: 0.3, changeFrequency: "yearly" },
     { path: "/child-safety", priority: 0.3, changeFrequency: "yearly" },

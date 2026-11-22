@@ -7,7 +7,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/en";
 import "dayjs/locale/tr";
 import { useQueryClient } from "@tanstack/react-query";
-import { AtSign, Bell, Bug, Cake, Heart, List, MessageSquare, Repeat2, Reply, Star, ThumbsUp, UserPlus } from "lucide-react";
+import { AtSign, Award, Bell, Bug, Cake, ChevronsUp, Heart, List, MessageSquare, Repeat2, Reply, Star, ThumbsUp, UserPlus } from "lucide-react";
 import { markAllNotificationsAsRead, markNotificationAsRead } from "@/api/notifications/notifications.api";
 import { useNavigationData, useNotifications } from "@/core/hooks/use-navigation-data";
 import { useLocalizedHref } from "@/core/hooks/use-localized-href";
@@ -58,6 +58,10 @@ const notificationIconMeta = (type: NotificationType): { Icon: IconComponent; co
             return { Icon: Cake, color: "text-fuchsia-500" };
         case NotificationType.SystemAlert:
             return { Icon: Bug, color: "text-destructive" };
+        case NotificationType.AchievementUnlocked:
+            return { Icon: Award, color: "text-amber-500" };
+        case NotificationType.LevelUp:
+            return { Icon: ChevronsUp, color: "text-violet-500" };
         default:
             return { Icon: Bell, color: "text-muted-foreground" };
     }

@@ -11,12 +11,11 @@ const GamerDNAChart = dynamic(() => import("./gamer-dna-chart"), {
     loading: () => <Skeleton className="h-[300px] w-full rounded-xl" />,
     ssr: false,
 });
-import { Loader2, TrendingUp, Users, List, Star, Award } from "lucide-react";
+import { Loader2, TrendingUp, Users, List, Star } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/core/components/ui/card";
 import TopFiveGames from "./top-five-games";
-import Image from "next/image";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/core/components/ui/tooltip";
 import { useI18n } from "@/core/contexts/locale-context";
+import { BadgeShowcase } from "@/core/components/other/gamification/badge-showcase";
 
 interface ProfileOverviewProps {
     username: string;
@@ -53,47 +52,7 @@ export default function ProfileOverview({ username }: ProfileOverviewProps) {
                     <GamerDNAChart data={stats.gamerDna} username={username} />
                 </div>
 
-                <div className="relative overflow-hidden rounded-xl border border-yellow-500/20 bg-linear-to-br from-card via-card/50 to-muted/50 p-4 shadow-sm backdrop-blur-sm">
-                    <div className="absolute -top-10 -right-10 h-32 w-32 bg-yellow-500/10 blur-[50px] rounded-full pointer-events-none" />
-
-                    <div className="flex items-center gap-2 mb-4">
-                        <div className="p-1.5 bg-yellow-500/10 rounded-lg">
-                            <Award className="h-5 w-5 text-yellow-600 dark:text-yellow-500" />
-                        </div>
-                        <h3 className="font-semibold text-foreground tracking-tight">{t("profileOverview.badgeCollection")}</h3>
-                    </div>
-
-                    <div className="min-h-20">
-                        {stats.recentAchievements && stats.recentAchievements.length > 0 ? (
-                            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                                {stats.recentAchievements.map((badge, index) => (
-                                    <TooltipProvider key={index}>
-                                        <Tooltip delayDuration={200}>
-                                            <TooltipTrigger asChild>
-                                                <div className="group flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-muted/50 transition-all duration-300 hover:-translate-y-1 border border-transparent hover:border-border/50">
-                                                    <div className="relative h-12 w-12 drop-shadow-md group-hover:drop-shadow-xl transition-all">
-                                                        <Image src={badge.iconUrl} alt={badge.title} fill sizes="48px" className="object-contain" />
-                                                    </div>
-                                                    <span className="text-[10px] font-medium text-center text-muted-foreground group-hover:text-primary transition-colors line-clamp-1 w-full">
-                                                        {badge.title}
-                                                    </span>
-                                                </div>
-                                            </TooltipTrigger>
-                                            <TooltipContent side="top">
-                                                <p className="text-xs text-muted">{badge.description}</p>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center py-6 text-center space-y-2 border border-dashed border-border rounded-lg bg-muted/20">
-                                <Award className="h-8 w-8 text-muted-foreground/30" />
-                                <span className="text-xs text-muted-foreground">{t("profileOverview.noBadges")}</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
+                <BadgeShowcase username={username} stats={stats} />
 
                 <div className="grid grid-cols-2 gap-3">
                     <Card className="bg-primary/5 border-primary/10">
@@ -122,17 +81,22 @@ export default function ProfileOverview({ username }: ProfileOverviewProps) {
                 </div>
             </div>
 
-            <div className="md:col-span-2 space-y-3">
+            {/* flex-1: kart kalan yuksekligi doldurur. Eskiden h-full idi; ustte Favori 5 karti
+                varken sutun yuksekligine ek olarak onun boyu kadar tasip alttaki icerigin ustune biniyordu. */}
+            <div className="flex flex-col gap-3 md:col-span-2">
                 <TopFiveGames username={username} />
 
-                <Card className="h-full border-border/50 bg-transparent shadow-none">
-                    <CardHeader className="px-0 pt-0 pb-0">
-                        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                            <TrendingUp className="h-5 w-5 text-green-500" />
+                {/* Baslik Favori Oyunlar kartiyla ayni: px-4 ve ikon kutusu. Eskiden px-0 idi, ikon kart cizgisine yapisiyordu. */}
+                <Card className="flex-1 border-border/50 bg-card shadow-sm">
+                    <CardHeader className="px-4 pt-0 pb-0.5">
+                        <CardTitle className="flex items-center gap-2 text-sm font-bold">
+                            <div className="rounded-md bg-green-500/10 p-1.5">
+                                <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-500" />
+                            </div>
                             {t("profileOverview.recentActivities")}
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-0">
+                    <CardContent className="px-4">
                         <ActivityFeed activities={activities || []} />
                     </CardContent>
                 </Card>

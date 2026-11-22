@@ -1,6 +1,12 @@
 import { axiosInstance } from "@/core/lib/axios";
-import { UserStats } from "@/models/stats/user-stats.model";
+import type { LeaderboardPage, LeaderboardPeriod, UserAchievements } from "@/models/gamification/gamification.model";
 
-export const getUserGamificationStats = (userId: number): Promise<UserStats> => {
-    return axiosInstance.get<UserStats>(`/gamification/stats/${userId}`).then((response) => response.data);
-};
+export const getUserAchievements = (username: string): Promise<UserAchievements> =>
+    axiosInstance
+        .get<UserAchievements>(`/gamification/users/${encodeURIComponent(username)}/achievements`)
+        .then((response) => response.data);
+
+export const getLeaderboard = (period: LeaderboardPeriod, page = 1): Promise<LeaderboardPage> =>
+    axiosInstance
+        .get<LeaderboardPage>("/gamification/leaderboard", { params: { period, page } })
+        .then((response) => response.data);

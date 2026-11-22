@@ -9,6 +9,12 @@ export interface Achievement {
     description: string;
     iconUrl: string;
     earnedAt: string;
+    // Gamification 2.0: eski API yanitlarinda yok, bu yuzden istege bagli.
+    code?: string;
+    family?: string;
+    category?: string;
+    tier?: number;
+    xpReward?: number;
 }
 
 export interface UserStats {
@@ -25,4 +31,13 @@ export interface UserStats {
     progressPercentage: number;
     recentAchievements: Achievement[];
     totalLists: number;
+
+    // Gamification 2.0 (eski API'de yok).
+    currentLevelXp?: number;
+    remainingXp?: number;
+    isMaxLevel?: boolean;
+    earnedAchievementCount?: number;
+    totalAchievementCount?: number;
+    currentStreak?: number;
+    longestStreak?: number;
 }

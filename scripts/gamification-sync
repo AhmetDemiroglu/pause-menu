@@ -1,0 +1,143 @@
+#!/usr/bin/env node
+/*
+ * Gamification katalogu ve rozet cizimlerini esitler.
+ *
+ * TEK KAYNAK: backend/GGHub.Core/Gamification/catalog.json (kurallar, esikler, metinler)
+ *             ui/src/core/gamification/{catalog,badge-art}.ts (kod kurali, cizim)
+ *
+ * Yaptiklari:
+ *   1) catalog.json -> ui/src/core/gamification/ ve mobile-ui/src/gamification/
+ *   2) catalog.ts + badge-art.ts -> mobile-ui/src/gamification/ (birebir)
+ *   3) ui/public/assets/badges/v2/<kod>.svg + level_<1-7>.svg (statik rozet dosyalari;
+ *      sunucunun IconUrl'i ve eski istemciler bunlari gosterir)
+ *
+ * Kullanim:
+ *   scripts/gamification-sync                 esitle + uret
+ *   scripts/gamification-sync --check         yalniz denetle (fark varsa 1 ile cikar)
+ *   scripts/gamification-sync --preview FILE  tum rozetleri tek sayfada gosteren HTML yaz
+ */
+"use strict";
+
+const fs = require("node:fs");
+const path = require("node:path");
+const Module = require("node:module");
+
+const root = path.resolve(__dirname, "..");
+const ts = require(path.join(root, "ui/node_modules/typescript"));
+
+const SOURCE_CATALOG = path.join(root, "backend/GGHub.Core/Gamification/catalog.json");
+const WEB_DIR = path.join(root, "ui/src/core/gamification");
+const MOBILE_DIR = path.join(root, "mobile-ui/src/gamification");
+const STATIC_DIR = path.join(root, "ui/public/assets/badges/v2");
+
+const args = process.argv.slice(2);
+const checkOnly = args.includes("--check");
+const previewIndex = args.indexOf("--preview");
+const previewFile = previewIndex >= 0 ? args[previewIndex + 1] : null;
+
+function loadTs(file) {
+    const loaded = new Module(file, module);
+    loaded.filename = file;
+    loaded.paths = Module._nodeModulePaths(path.dirname(file));
+    const output = ts.transpileModule(fs.readFileSync(file, "utf8"), {
+        compilerOptions: {
+            module: ts.ModuleKind.CommonJS,
+            target: ts.ScriptTarget.ES2020,
+            esModuleInterop: true,
+            resolveJsonModule: true,
+        },
+    }).outputText;
+    loaded._compile(output, file);
+    return loaded.exports;
+}
+
+const drift = [];
+function syncFile(from, to) {
+    const want = fs.readFileSync(from);
+    const have = fs.existsSync(to) ? fs.readFileSync(to) : null;
+    if (have && Buffer.compare(want, have) === 0) return;
+    drift.push(path.relative(root, to));
+    if (!checkOnly) {
+        fs.mkdirSync(path.dirname(to), { recursive: true });
+        fs.writeFileSync(to, want);
+    }
+}
+
+function writeIfChanged(to, content) {
+    const have = fs.existsSync(to) ? fs.readFileSync(to, "utf8") : null;
+    if (have === content) return;
+    drift.push(path.relative(root, to));
+    if (!checkOnly) {
+        fs.mkdirSync(path.dirname(to), { recursive: true });
+        fs.writeFileSync(to, content);
+    }
+}
+
+syncFile(SOURCE_CATALOG, path.join(WEB_DIR, "catalog.json"));
+syncFile(SOURCE_CATALOG, path.join(MOBILE_DIR, "catalog.json"));
+syncFile(path.join(WEB_DIR, "catalog.ts"), path.join(MOBILE_DIR, "catalog.ts"));
+syncFile(path.join(WEB_DIR, "badge-art.ts"), path.join(MOBILE_DIR, "badge-art.ts"));
+
+const catalog = loadTs(path.join(WEB_DIR, "catalog.ts"));
+const art = loadTs(path.join(WEB_DIR, "badge-art.ts"));
+
+const expected = new Set();
+for (const badge of catalog.CATALOG_BADGES) {
+    const svg = art.renderBadgeSvg(badge, { idPrefix: badge.code, title: badge.title.en });
+    const file = path.join(STATIC_DIR, `${badge.code}.svg`);
+    expected.add(path.basename(file));
+    writeIfChanged(file, svg + "\n");
+}
+for (let level = 1; level <= 7; level++) {
+    const file = path.join(STATIC_DIR, `level_${level}.svg`);
+    if (expected.has(path.basename(file))) continue; // level_2..7 rozet olarak zaten uretildi
+    expected.add(path.basename(file));
+    writeIfChanged(file, art.renderLevelSvg(level, { idPrefix: `level_${level}`, title: `Level ${level}` }) + "\n");
+}
+if (fs.existsSync(STATIC_DIR)) {
+    for (const name of fs.readdirSync(STATIC_DIR)) {
+        if (name.endsWith(".svg") && !expected.has(name)) {
+            drift.push(`${path.relative(root, path.join(STATIC_DIR, name))} (fazla)`);
+            if (!checkOnly) fs.unlinkSync(path.join(STATIC_DIR, name));
+        }
+    }
+}
+
+if (previewFile) {
+    const cell = (svg, label) =>
+        `<figure><div class="b">${svg}</div><figcaption>${label}</figcaption></figure>`;
+    const rows = [];
+    rows.push(`<h2>Seviye amblemleri</h2><section>${[1, 2, 3, 4, 5, 6, 7]
+        .map((l) => cell(art.renderLevelSvg(l, { idPrefix: `pv-l${l}` }), `Seviye ${l}`))
+        .join("")}</section>`);
+    for (const category of catalog.CATALOG_CATEGORIES) {
+        const badges = catalog.CATALOG_BADGES.filter((b) => b.category === category.key);
+        rows.push(`<h2>${category.name.tr} (${badges.length})</h2><section>${badges
+            .map((b) => cell(art.renderBadgeSvg(b, { idPrefix: `pv-${b.code}` }), b.title.tr))
+            .join("")}</section>`);
+    }
+    rows.push(`<h2>Kilitli</h2><section>${catalog.CATALOG_BADGES.filter((b) => b.tier === 3 || b.tier === 0)
+        .slice(0, 8)
+        .map((b) => cell(art.renderBadgeSvg(b, { idPrefix: `pv-k-${b.code}`, locked: true }), b.title.tr))
+        .join("")}</section>`);
+    const html = `<!doctype html><meta charset="utf-8"><title>Rozetler</title><style>
+body{margin:0;font:13px system-ui;display:grid;grid-template-columns:1fr 1fr}
+.pane{padding:20px}.dark{background:#0d0915;color:#eee}.light{background:#f6f4fb;color:#222}
+section{display:flex;flex-wrap:wrap;gap:10px}figure{margin:0;width:92px;text-align:center}
+.b svg{width:72px;height:72px}figcaption{font-size:11px;line-height:1.2;margin-top:4px}
+h2{font-size:14px;margin:18px 0 8px}</style>
+<div class="pane dark">${rows.join("")}</div><div class="pane light">${rows.join("").replace(/pv-/g, "pw-")}</div>`;
+    fs.writeFileSync(previewFile, html);
+    console.log(`onizleme: ${previewFile}`);
+}
+
+const total = catalog.CATALOG_BADGES.length;
+if (checkOnly) {
+    if (drift.length) {
+        console.error(`gamification-sync: ${drift.length} dosya esit degil:\n  ${drift.join("\n  ")}`);
+        process.exit(1);
+    }
+    console.log(`gamification-sync: esit (${total} rozet)`);
+} else {
+    console.log(`gamification-sync: ${total} rozet, ${drift.length} dosya guncellendi`);
+}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PublicProfile } from "@/models/profile/profile.model";
+import type { UserStats } from "@/models/stats/user-stats.model";
 import dayjs from "dayjs";
 import "dayjs/locale/tr";
 import { Avatar, AvatarFallback, AvatarImage } from "@/core/components/ui/avatar";
@@ -27,7 +28,9 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@core/
 import { BlockedUsersDialog } from "@core/components/other/blocked-users-dialog";
 import { useAuth } from "@core/hooks/use-auth";
 import { getImageUrl } from "@/core/lib/get-image-url";
-import { getUserGamificationStats } from "@/api/gamification/gamification.api";
+import { getUserStats } from "@/api/stats/stats.api";
+import { LevelEmblem } from "@/core/components/base/achievement-badge";
+import { Progress } from "@/core/components/ui/progress";
 import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { buildLocalizedPathname } from "@/i18n/config";
 import { isAiConsentDeclined } from "@/core/lib/ai-consent-bridge";
@@ -55,11 +58,14 @@ export default function ProfileHeader({ profile, isOwnProfile = false }: Profile
     const avatarSrc = getImageUrl(profile.profileImageUrl);
     const bannerSrc = getImageUrl(profile.headerImageUrl);
 
+    // Profil ozeti ile AYNI sorgu anahtari: istatistik tek istekle gelir (eskiden iki uc ayri cagriliyordu).
     const { data: stats } = useQuery({
-        queryKey: ["gamification", profile.id],
-        queryFn: () => getUserGamificationStats(profile.id),
-        enabled: !!profile.id,
+        queryKey: ["user-stats", profile.username],
+        queryFn: () => getUserStats(profile.username),
+        enabled: !!profile.username,
+        staleTime: 3 * 60 * 1000,
     });
+    const hasLevel = !!stats && stats.currentLevel > 0;
 
     useEffect(() => {
         setIsFollowing(profile.isFollowing || false);
@@ -436,22 +442,19 @@ export default function ProfileHeader({ profile, isOwnProfile = false }: Profile
                         <div className="flex items-center gap-2">
                             <h1 className="text-2xl font-bold">{displayName}</h1>
                             {profile.isAiAgent && <AiBadge className="text-xs" />}
-                            {stats && (
+                            {hasLevel && stats && (
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <div className="relative h-8 w-8 hover:scale-110 transition-transform">
-                                                <Image
-                                                    src={`/assets/badges/level_${stats.currentLevel}.ico`}
-                                                    alt={t("profile.header.levelImageAlt", { level: stats.currentLevel })}
-                                                    fill
-                                                    sizes="32px"
-                                                    className="object-contain"
-                                                />
-                                            </div>
+                                            <Link
+                                                href={buildLocalizedPathname("/levels-and-badges", locale)}
+                                                className="rounded-md transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                                            >
+                                                <LevelEmblem level={stats.currentLevel} size={32} label={t("gamification.levelTooltip", { level: stats.currentLevel, name: stats.levelName })} />
+                                            </Link>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>{t("profile.header.levelTooltip", { levelName: stats.levelName, levelShort: t("home.levelShort"), level: stats.currentLevel })}</p>
+                                            <p>{t("gamification.levelTooltip", { level: stats.currentLevel, name: stats.levelName })}</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
@@ -494,23 +497,8 @@ export default function ProfileHeader({ profile, isOwnProfile = false }: Profile
                         </div>
                     )}
 
-                    {isOwnProfile && stats && (
-                        <div className="w-full sm:w-60">
-                            <div className="flex justify-between w-full text-[10px] font-medium mb-1.5 px-0.5">
-                                <span className="text-primary">{t("home.levelShort")} {stats.currentLevel}</span>
-                                <span className="text-muted-foreground">
-                                    {stats.currentXp} / {stats.nextLevelXp} XP
-                                </span>
-                            </div>
-
-                            <div className="h-2.5 w-full bg-secondary/50 rounded-full overflow-hidden ring-1 ring-white/5">
-                                <div
-                                    className="h-full bg-linear-to-r from-violet-600 via-purple-500 to-fuchsia-500 shadow-[0_0_10px_rgba(168,85,247,0.4)] transition-all duration-500 ease-out"
-                                    style={{ width: `${Math.max(stats.progressPercentage, 1)}%` }}
-                                />
-                            </div>
-                            <span className="text-[10px] text-muted-foreground">{t("profile.header.remainingXp", { remaining: 100 - stats.progressPercentage })}</span>
-                        </div>
+                    {isOwnProfile && hasLevel && stats && (
+                        <XpProgress stats={stats} />
                     )}
                 </div>
 
@@ -564,6 +552,40 @@ export default function ProfileHeader({ profile, isOwnProfile = false }: Profile
             {!isOwnProfile && user && (
                 <ReportDialog isOpen={isReportDialogOpen} onOpenChange={setIsReportDialogOpen} entityType="User" entityId={profile.id} />
             )}
+        </div>
+    );
+}
+
+/** Kendi profilindeki XP cubugu: sunucunun yuzdesi, kalan GERCEK XP ve en ust seviye durumu. */
+function XpProgress({ stats }: { stats: UserStats }) {
+    const t = useI18n();
+    const locale = useCurrentLocale();
+    const isMax = stats.isMaxLevel ?? stats.nextLevelXp <= stats.currentXp;
+    const remaining = stats.remainingXp ?? Math.max(0, stats.nextLevelXp - stats.currentXp);
+    const formatter = new Intl.NumberFormat(locale);
+
+    return (
+        <div className="w-full sm:w-64">
+            <div className="mb-1.5 flex w-full justify-between px-0.5 text-[11px] font-medium">
+                <span className="text-primary">{t("gamification.levelLabel", { level: stats.currentLevel })}</span>
+                <span className="tabular-nums text-muted-foreground">
+                    {isMax
+                        ? `${formatter.format(stats.currentXp)} XP`
+                        : t("gamification.xpProgress", { current: formatter.format(stats.currentXp), next: formatter.format(stats.nextLevelXp) })}
+                </span>
+            </div>
+            <Progress
+                value={isMax ? 100 : Math.max(stats.progressPercentage, 2)}
+                aria-label={t("gamification.levelLabel", { level: stats.currentLevel })}
+                className="h-2.5 bg-secondary/50 ring-1 ring-white/5"
+                indicatorClassName="bg-linear-to-r from-violet-600 via-purple-500 to-fuchsia-500 duration-500"
+            />
+            <div className="mt-1 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                <span>
+                    {isMax ? t("gamification.maxLevel") : t("gamification.xpToNext", { xp: formatter.format(remaining), level: stats.currentLevel + 1 })}
+                </span>
+                {(stats.currentStreak ?? 0) > 1 && <span className="shrink-0">{t("gamification.streak", { days: stats.currentStreak ?? 0 })}</span>}
+            </div>
         </div>
     );
 }

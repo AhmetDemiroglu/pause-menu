@@ -6,6 +6,7 @@ import { SidebarProvider } from "@/core/contexts/sidebar-context";
 import { Sidebar } from "@core/components/base/sidebar";
 import { AppTopbar, APP_SCROLL_ID } from "@core/components/base/app-topbar";
 import { Footer } from "@core/components/base/footer";
+import { GamificationToaster } from "@core/components/other/gamification/gamification-toaster";
 import { stripLocaleFromPathname } from "@/i18n/config";
 
 /*
@@ -45,6 +46,7 @@ export default function AuthenticatedLayout({ children }: { children: React.Reac
                 </div>
 
                 <AppTopbar />
+                <GamificationToaster />
             </div>
         </SidebarProvider>
     );
