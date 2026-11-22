@@ -11,8 +11,8 @@ import { buildPageMetadata } from "@/core/seo/metadata";
 type Props = { params?: Promise<{ locale?: string }> };
 
 /**
- * Ana sayfa metadata'si. Kanonik daima dil onekli adres (/en-US, /tr): "/" bu ikisinden birine
- * rewrite/redirect eden secici sayfadir ve hreflang x-default olarak onu bildirir.
+ * Ana sayfa metadata'si. Kanonik daima dil onekli adres (/en-US, /tr). "/" bu ikisinden birine
+ * rewrite/redirect eden secici sayfadir; hreflang x-default /en-US'yi bildirir (gerekce metadata.ts).
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const locale = await resolveLocaleFromParams(params);

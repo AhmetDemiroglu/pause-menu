@@ -1,4 +1,4 @@
-import { locales, buildLocalizedPathname, type AppLocale } from "@/i18n/config";
+import { locales, buildLocalizedPathname, defaultLocale, type AppLocale } from "@/i18n/config";
 import { absoluteUrl } from "./site";
 
 /**
@@ -21,7 +21,7 @@ const escapeXml = (value: string) =>
 /** Dil onekli bir yol icin tr, en-US ve x-default alternatifleri (buildPageMetadata ile ayni kural). */
 export const localizedAlternates = (path: string) => [
     ...locales.map((locale) => ({ hreflang: locale, href: absoluteUrl(buildLocalizedPathname(path, locale)) })),
-    { hreflang: "x-default", href: absoluteUrl(path) },
+    { hreflang: "x-default", href: absoluteUrl(buildLocalizedPathname(path, defaultLocale)) },
 ];
 
 /** Ayni sayfanin her dil icin bir <url> girdisi; hepsi birbirini hreflang ile gosterir. */

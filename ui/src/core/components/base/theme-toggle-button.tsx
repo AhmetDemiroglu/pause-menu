@@ -40,7 +40,7 @@ export function ThemeToggleButton() {
     if (!mounted) {
         return (
             <Button variant="ghost" className="h-9 w-9 rounded-full" size="icon">
-                <span className="sr-only">Temayı değiştir</span>
+                <span className="sr-only">{t("misc.changeTheme")}</span>
             </Button>
         );
     }
@@ -95,7 +95,7 @@ export function ThemeToggleButton() {
                     <path d="M4 18H2" strokeDasharray="6" className={`transition-all duration-700 delay-300 ease-in-out ${isAnimatedDark ? "[stroke-dashoffset:0]" : "[stroke-dashoffset:6]"}`} />
                 </svg>
             </div>
-            <span className="sr-only">Temayı değiştir</span>
+            <span className="sr-only">{t("misc.changeTheme")}</span>
         </Button>
     );
 }

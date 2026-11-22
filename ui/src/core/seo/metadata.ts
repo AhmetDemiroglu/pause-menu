@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AppLocale, buildLocalizedPathname, locales } from "@/i18n/config";
+import { AppLocale, buildLocalizedPathname, defaultLocale, locales } from "@/i18n/config";
 import { DEFAULT_OG_IMAGE, SITE_NAME, absoluteUrl } from "./site";
 
 export type SeoImage = { url: string; width?: number; height?: number; alt?: string };
@@ -35,8 +35,9 @@ const normalizeImage = (image: PageMetadataInput["image"]): SeoImage => {
  * Sayfa metadata'sinin TEK uretim yolu. Her herkese acik sayfa bunu cagirir; kanonik URL,
  * hreflang (tr, en-US, x-default), Open Graph ve Twitter kartlari hep ayni sekilde cikar.
  *
- * x-default daima dil oneksiz yoldur: middleware o yolu ziyaretcinin diline yonlendirir,
- * Google'in "dil secici sayfa" tanimi tam olarak budur.
+ * x-default varsayilan dilin (en-US) onekli adresidir. Eskiden dil oneksiz yoldu; o yol 307 ile
+ * yonlendigi icin Google onu asil adres secip /en-US sayfalarini "kopya, Google farkli standart
+ * secti" diye dizin disi birakiyordu (Search Console, Kasim 2026). Yonlenen adres hreflang'e yazilmaz.
  */
 export function buildPageMetadata(input: PageMetadataInput): Metadata {
     const { locale, path, description, noIndex = false, localized = true, type = "website" } = input;
@@ -48,7 +49,7 @@ export function buildPageMetadata(input: PageMetadataInput): Metadata {
     const languages = localized
         ? {
               ...Object.fromEntries(locales.map((code) => [code, absoluteUrl(buildLocalizedPathname(path, code))])),
-              "x-default": absoluteUrl(path),
+              "x-default": absoluteUrl(buildLocalizedPathname(path, defaultLocale)),
           }
         : undefined;
 
