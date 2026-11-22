@@ -13,6 +13,17 @@
         public int ProgressPercentage { get; set; }
         public int TotalLists { get; set; }
         public List<AchievementDto> RecentAchievements { get; set; } = new();
+
+        // Gamification 2.0 (yalniz ekleme; eski alanlarin anlami degismedi).
+        /// <summary>Mevcut seviyenin baslangic esigi.</summary>
+        public int CurrentLevelXp { get; set; }
+        /// <summary>Sonraki seviyeye kalan XP; en ust seviyede 0.</summary>
+        public int RemainingXp { get; set; }
+        public bool IsMaxLevel { get; set; }
+        public int EarnedAchievementCount { get; set; }
+        public int TotalAchievementCount { get; set; }
+        public int CurrentStreak { get; set; }
+        public int LongestStreak { get; set; }
         public List<GenreStatDto> GamerDna { get; set; } = new(); 
     }
 

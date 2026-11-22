@@ -67,6 +67,7 @@ namespace GGHub.Infrastructure.Persistence
         public DbSet<Achievement> Achievements { get; set; }
         public DbSet<UserAchievement> UserAchievements { get; set; }
         public DbSet<UserStats> UserStats { get; set; }
+        public DbSet<XpTransaction> XpTransactions { get; set; }
         public DbSet<RawgImportCheckpoint> RawgImportCheckpoints { get; set; }
         public DbSet<PushToken> PushTokens { get; set; }
         public DbSet<UserNotificationPreference> UserNotificationPreferences { get; set; }
@@ -329,6 +330,31 @@ namespace GGHub.Infrastructure.Persistence
 
             modelBuilder.Entity<UserAchievement>()
                 .HasKey(ua => new { ua.UserId, ua.AchievementId });
+
+            // Gamification 2.0: XP defteri. (UserId, DedupeKey) ayni olayin ikinci kez XP
+            // kazandirmasini veritabani seviyesinde imkansiz kilar; (UserId, CreatedAt) gunluk
+            // tavan sayimi ve gecmis listesi, (CreatedAt) haftalik liderlik icin.
+            modelBuilder.Entity<XpTransaction>(entity =>
+            {
+                entity.Property(x => x.Reason).HasMaxLength(32);
+                entity.Property(x => x.DedupeKey).HasMaxLength(96);
+                entity.HasIndex(x => new { x.UserId, x.DedupeKey }).IsUnique();
+                entity.HasIndex(x => new { x.UserId, x.CreatedAt });
+                entity.HasIndex(x => x.CreatedAt);
+                entity.HasOne(x => x.User)
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Achievement>(entity =>
+            {
+                entity.Property(a => a.Code).HasMaxLength(48);
+                entity.Property(a => a.Family).HasMaxLength(32);
+                entity.Property(a => a.Category).HasMaxLength(32);
+                entity.Property(a => a.Metric).HasMaxLength(32);
+                entity.HasIndex(a => a.Code).IsUnique();
+            });
 
             // RawgImportCheckpoint: unique strategy key
             modelBuilder.Entity<RawgImportCheckpoint>()

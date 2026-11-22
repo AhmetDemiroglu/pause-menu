@@ -86,8 +86,7 @@ namespace GGHub.Infrastructure.Services
                         link: $"/profiles/{follower.Username}",
                         actorUserId: followerId);
 
-                    await _gamificationService.AddXpAsync(followerId, 20, "UserFollowed");
-                    await _gamificationService.CheckAchievementsAsync(followee.Id, "FollowerGained");
+                    await _gamificationService.OnFollowedAsync(followerId, followee.Id);
                 }
 
                 _userSuggestionService.InvalidateSuggestions(followerId);
@@ -109,7 +108,7 @@ namespace GGHub.Infrastructure.Services
 
             if (success)
             {
-                await _gamificationService.AddXpAsync(followerId, -20, "UserUnfollowed");
+                await _gamificationService.OnUnfollowedAsync(followerId, followee.Id);
                 _userSuggestionService.InvalidateSuggestions(followerId);
             }
 
@@ -146,6 +145,7 @@ namespace GGHub.Infrastructure.Services
                     new Dictionary<string, string> { ["listName"] = listToFollow.Name },
                     $"/lists/{listToFollow.Id}",
                     userId);
+                await _gamificationService.OnListFollowedAsync(listToFollow.UserId);
             }
             return success;
         }
@@ -556,7 +556,15 @@ namespace GGHub.Infrastructure.Services
 
             var block = new UserBlock { BlockerId = blockerId, BlockedId = blockedUser.Id };
             await _context.UserBlocks.AddAsync(block);
-            return await _context.SaveChangesAsync() > 0;
+            var saved = await _context.SaveChangesAsync() > 0;
+
+            // Engelleme takipleri siler: takipten cikma gibi XP'si de geri alinir.
+            if (saved)
+            {
+                if (followingLink != null) await _gamificationService.OnUnfollowedAsync(blockerId, blockedUser.Id);
+                if (followerLink != null) await _gamificationService.OnUnfollowedAsync(blockedUser.Id, blockerId);
+            }
+            return saved;
         }
 
         public async Task<bool> UnblockUserAsync(int blockerId, string blockedUsername)

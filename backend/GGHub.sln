@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GGHub.Infrastructure", "GGH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GGHub.Worker", "GGHub.Worker\GGHub.Worker.csproj", "{CD1DF30D-6E79-4766-9690-6C5C8321FB8A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GGHub.Tests", "GGHub.Tests\GGHub.Tests.csproj", "{91B51545-B9C1-4871-A714-9B64561836E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{CD1DF30D-6E79-4766-9690-6C5C8321FB8A}.Release|x64.Build.0 = Release|Any CPU
 		{CD1DF30D-6E79-4766-9690-6C5C8321FB8A}.Release|x86.ActiveCfg = Release|Any CPU
 		{CD1DF30D-6E79-4766-9690-6C5C8321FB8A}.Release|x86.Build.0 = Release|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Debug|x64.Build.0 = Debug|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Debug|x86.Build.0 = Debug|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Release|x64.ActiveCfg = Release|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Release|x64.Build.0 = Release|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Release|x86.ActiveCfg = Release|Any CPU
+		{91B51545-B9C1-4871-A714-9B64561836E9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

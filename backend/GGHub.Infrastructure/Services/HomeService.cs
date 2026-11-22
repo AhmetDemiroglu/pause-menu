@@ -183,15 +183,18 @@ namespace GGHub.Infrastructure.Services
                 .Where(g => g != null)
                 .ToList()!;
 
-            viewModel.TopGamers = await _cache.GetOrCreateAsync("top-gamers", async entry =>
+            // Liderlik: GamificationService ile ayni kural (insan, aktif, tohum degil, profili acik;
+            // esitlikte sabit sira). Seviye adi onbellekte degil, istek dilinde uretilir.
+            var topGamers = await _cache.GetOrCreateAsync("top-gamers-v2", async entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
                 return await _context.UserStats
                     .AsNoTracking()
-                    .Include(s => s.User)
-                    // AI botlari liderlik tablosuna girmez: XP yarisi insanlar arasinda.
-                    .Where(s => !s.User.IsAiAgent && !s.User.IsDeleted && !s.User.IsBanned)
+                    .Where(s => s.CurrentXp > 0 &&
+                                !s.User.IsAiAgent && !s.User.IsDeleted && !s.User.IsBanned && !s.User.IsSeeded &&
+                                s.User.ProfileVisibility == GGHub.Core.Enums.ProfileVisibilitySetting.Public)
                     .OrderByDescending(s => s.CurrentXp)
+                    .ThenBy(s => s.UserId)
                     .Take(10)
                     .Select(s => new LeaderboardDto
                     {
@@ -200,13 +203,22 @@ namespace GGHub.Infrastructure.Services
                         ProfileImageUrl = s.User.ProfileImageUrl,
                         Level = s.CurrentLevel,
                         Xp = s.CurrentXp,
-                        LevelName = _context.Levels
-                            .Where(l => l.LevelNumber == s.CurrentLevel)
-                            .Select(l => l.Name)
-                            .FirstOrDefault() ?? "Gamer"
                     })
                     .ToListAsync();
             }) ?? new List<LeaderboardDto>();
+
+            var leaderboardLocale = GGHub.Infrastructure.Localization.AppText.CurrentLocale();
+            viewModel.TopGamers = topGamers
+                .Select(g => new LeaderboardDto
+                {
+                    UserId = g.UserId,
+                    Username = g.Username,
+                    ProfileImageUrl = g.ProfileImageUrl,
+                    Level = g.Level,
+                    Xp = g.Xp,
+                    LevelName = GGHub.Core.Gamification.GamificationCatalog.LevelName(g.Level, leaderboardLocale),
+                })
+                .ToList();
 
             var siteStats = await _cache.GetOrCreateAsync("site-stats", async entry =>
             {

@@ -30,6 +30,16 @@ namespace GGHub.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)");
+
                     b.Property<string>("CriteriaJson")
                         .IsRequired()
                         .HasColumnType("text");
@@ -38,12 +48,31 @@ namespace GGHub.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Family")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
                     b.Property<string>("IconUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Metric")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Threshold")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Tier")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -53,6 +82,9 @@ namespace GGHub.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
 
                     b.ToTable("Achievements");
                 });
@@ -2465,7 +2497,16 @@ namespace GGHub.Infrastructure.Migrations
                     b.Property<int>("CurrentLevel")
                         .HasColumnType("integer");
 
+                    b.Property<int>("CurrentStreak")
+                        .HasColumnType("integer");
+
                     b.Property<int>("CurrentXp")
+                        .HasColumnType("integer");
+
+                    b.Property<DateOnly?>("LastActiveOn")
+                        .HasColumnType("date");
+
+                    b.Property<int>("LongestStreak")
                         .HasColumnType("integer");
 
                     b.Property<int>("TotalComments")
@@ -2489,6 +2530,45 @@ namespace GGHub.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("UserStats");
+                });
+
+            modelBuilder.Entity("GGHub.Core.Entities.XpTransaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DedupeKey")
+                        .IsRequired()
+                        .HasMaxLength(96)
+                        .HasColumnType("character varying(96)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("UserId", "CreatedAt");
+
+                    b.HasIndex("UserId", "DedupeKey")
+                        .IsUnique();
+
+                    b.ToTable("XpTransactions");
                 });
 
             modelBuilder.Entity("GGHub.Core.Entities.AiAgentProfile", b =>
@@ -3063,6 +3143,17 @@ namespace GGHub.Infrastructure.Migrations
                     b.HasOne("GGHub.Core.Entities.User", "User")
                         .WithOne("Stats")
                         .HasForeignKey("GGHub.Core.Entities.UserStats", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GGHub.Core.Entities.XpTransaction", b =>
+                {
+                    b.HasOne("GGHub.Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

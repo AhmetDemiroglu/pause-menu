@@ -210,7 +210,8 @@ builder.Services.AddHttpClient<IGeminiService, GeminiService>(client =>
     client.Timeout = TimeSpan.FromMinutes(3);
 });
 builder.Services.AddScoped<IStatsService, StatsService>();
-builder.Services.AddScoped<IGamificationService, GamificationService>();
+builder.Services.AddScoped<GamificationService>();
+builder.Services.AddScoped<IGamificationService>(sp => sp.GetRequiredService<GamificationService>());
 builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<IHomeService, HomeService>();
 builder.Services.AddScoped<ISitemapService, SitemapService>();
@@ -229,6 +230,18 @@ builder.Services.AddScoped<IMetacriticService, MetacriticService>();
 // Tek istisna BackgroundEmailService: kullaniciya mail gonderiyor, prod'da calismasi sart.
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Yerel test veritabani kapisi: Development baglantisi CANLI veritabanina gittigi icin migration,
+// yazan seeder'lar ve gecis isi yalniz Production'da calisir. Yerel bir test veritabaninda ayni
+// akisi denemek icin LocalDb:AllowStartupWrites=true verilir; host localhost DEGILSE yok sayilir.
+var localDbWrites = builder.Configuration.GetValue<bool>("LocalDb:AllowStartupWrites") &&
+    IsLocalDatabaseHost(connectionString);
+
+// Gamification 2.0 gecisi (acilis bakiyesi + sessiz rozet tamamlama). Kullanici verisine yazar.
+if (builder.Environment.IsProduction() || localDbWrites)
+{
+    builder.Services.AddHostedService<GamificationBackfillJob>();
+}
 
 //if (builder.Environment.IsProduction())
 //{
@@ -536,23 +549,13 @@ localizationOptions.RequestCultureProviders = new List<IRequestCultureProvider>
     new AcceptLanguageHeaderRequestCultureProvider(),
 };
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<GGHubDbContext>();
-        await GamificationSeeder.SeedAsync(context);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Seeding error: {ex.Message}");
-    }
-}
+// Gamification katalogu (seviyeler + rozetler) eskiden burada, Migrate()'TEN ONCE ve HER ortamda
+// calisiyordu. Artik upsert yaptigi icin (yeni rozetler canliya ulassin diye) yazan bir seeder:
+// asagida migration'dan SONRA ve ayni ortam kosulunda calisir.
 
-if (app.Environment.IsProduction())
+if (app.Environment.IsProduction() || localDbWrites)
 {
-    app.Logger.LogInformation("Production environment detected. Applying database migrations...");
+    app.Logger.LogInformation("Applying database migrations (production or local test database)...");
     try
     {
         using (var scope = app.Services.CreateScope())
@@ -582,8 +585,21 @@ if (app.Environment.IsProduction())
 //    yerelde "dotnet run" demek canli hesaplari gelistirici makinesinden yeniden
 //    adlandirmak anlamina gelirdi.
 // 2) Development'ta Migrate() calismadigi icin kolon henuz yokken sorgu atilirdi.
-if (app.Environment.IsProduction())
+if (app.Environment.IsProduction() || localDbWrites)
 {
+    // Gamification katalogu: Migrate() SONRASI (Code/Family kolonlari migration'la gelir).
+    using (var scope = app.Services.CreateScope())
+    {
+        try
+        {
+            await GamificationSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<GGHubDbContext>());
+        }
+        catch (Exception ex)
+        {
+            app.Logger.LogError(ex, "Gamification katalogu esitlenemedi.");
+        }
+    }
+
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
@@ -682,3 +698,17 @@ app.MapGet("/robots.txt", (HttpContext context) =>
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow })).AllowAnonymous();
 
 app.Run();
+
+static bool IsLocalDatabaseHost(string? connectionString)
+{
+    if (string.IsNullOrWhiteSpace(connectionString)) return false;
+    try
+    {
+        var host = new Npgsql.NpgsqlConnectionStringBuilder(connectionString).Host ?? string.Empty;
+        return host is "localhost" or "127.0.0.1" or "::1";
+    }
+    catch
+    {
+        return false;
+    }
+}

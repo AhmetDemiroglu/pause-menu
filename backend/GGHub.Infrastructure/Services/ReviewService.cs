@@ -67,8 +67,7 @@ namespace GGHub.Infrastructure.Services
             await _context.SaveChangesAsync();
             await UpdateGameRatingStatisticsAsync(game.Id);
 
-            await _gamificationService.AddXpAsync(userId, 25, "ReviewCreated");
-            await _gamificationService.CheckAchievementsAsync(userId, "ReviewCreated");
+            await _gamificationService.OnReviewCreatedAsync(userId, review.Id, review.Content?.Trim().Length ?? 0);
 
             // Inceleme kaydedildikten SONRA bahis bildirimi; best-effort, hata olsa da inceleme durur.
             await _mentionService.NotifyMentionsAsync(
@@ -102,7 +101,7 @@ namespace GGHub.Infrastructure.Services
             await _context.SaveChangesAsync();
             await UpdateGameRatingStatisticsAsync(gameId);
 
-            await _gamificationService.AddXpAsync(userId, -25, "ReviewDeleted");
+            await _gamificationService.OnReviewDeletedAsync(userId, reviewId);
 
             return true;
         }
@@ -177,6 +176,7 @@ namespace GGHub.Infrastructure.Services
 
             var existingVote = await _context.ReviewVotes
                 .FirstOrDefaultAsync(v => v.ReviewId == reviewId && v.UserId == userId);
+            var wasPositive = existingVote?.Value == 1;
 
             if (existingVote == null)
             {
@@ -201,6 +201,13 @@ namespace GGHub.Infrastructure.Services
             }
 
             await _context.SaveChangesAsync();
+
+            // Olumlu oy inceleme sahibine "begeni" XP'si; oy geri alinir ya da olumsuza donerse geri alinir.
+            var isPositive = await _context.ReviewVotes.AnyAsync(v => v.ReviewId == reviewId && v.UserId == userId && v.Value == 1);
+            if (isPositive != wasPositive)
+            {
+                await _gamificationService.OnLikeChangedAsync(review.UserId, userId, "review", reviewId, isPositive);
+            }
             // Oy veren kullanici artik yalnizca aktor ID'si olarak geciliyor; adini almak icin
             // ayrica cekmeye gerek yok (bildirim metni okuma aninda aktorden cozuluyor).
             if (review.UserId != userId)

@@ -159,6 +159,9 @@ namespace GGHub.Infrastructure.Services
             await _context.RefreshTokens.AddAsync(newRefreshToken);
             await _context.SaveChangesAsync();
 
+            // Gunluk ziyaret ve seri (gunde bir kez sayilir; istisna firlatmaz).
+            await _gamificationService.OnActiveAsync(refreshToken.UserId);
+
             return new LoginResponseDto
             {
                 AccessToken = newAccessToken,
@@ -228,8 +231,7 @@ namespace GGHub.Infrastructure.Services
 
             _logger.LogInformation("Email job for {Email} enqueued.", user.Email);
 
-            await _gamificationService.AddXpAsync(user.Id, 50, "Welcome");
-            await _gamificationService.CheckAchievementsAsync(user.Id, "Welcome");
+            await _gamificationService.OnRegisteredAsync(user.Id);
 
             return user;
         }
@@ -674,8 +676,7 @@ namespace GGHub.Infrastructure.Services
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
 
-                await _gamificationService.AddXpAsync(user.Id, 50, "Welcome");
-                await _gamificationService.CheckAchievementsAsync(user.Id, "Welcome");
+                await _gamificationService.OnRegisteredAsync(user.Id);
             }
 
             if (user.IsBanned)
@@ -762,6 +763,8 @@ namespace GGHub.Infrastructure.Services
 
             await _context.RefreshTokens.AddAsync(refreshToken);
             await _context.SaveChangesAsync();
+
+            await _gamificationService.OnActiveAsync(user.Id);
 
             return new LoginResponseDto
             {

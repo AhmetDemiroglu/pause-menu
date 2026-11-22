@@ -12,5 +12,10 @@
         public int TotalComments { get; set; } = 0;
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        // Gunluk seri (UTC gunu). LastActiveOn ayni gunse tekrar sayilmaz.
+        public int CurrentStreak { get; set; }
+        public int LongestStreak { get; set; }
+        public DateOnly? LastActiveOn { get; set; }
     }
 }

@@ -1,84 +1,99 @@
-﻿using GGHub.Core.Entities;
+﻿using System.Text.Json;
+using GGHub.Core.Entities;
+using GGHub.Core.Gamification;
 using Microsoft.EntityFrameworkCore;
 
 namespace GGHub.Infrastructure.Persistence.Seeders
 {
+    /// <summary>
+    /// Levels ve Achievements tablolarini catalog.json ile esitler (upsert, Code anahtariyla).
+    ///
+    /// Eskiden yalniz BOS tabloya yaziyordu: yeni rozet canli veritabanina hic ulasmiyordu.
+    /// Simdi her acilista katalogla esitler; katalogda olmayan eski kayitlar silinmez,
+    /// IsActive=false olur (kazananlarin satirlari bozulmasin).
+    ///
+    /// DIKKAT: yazan bir seeder. Program.cs'te Migrate() SONRASINDA ve yalniz Production (ya da
+    /// localhost veritabani) kosulunda calisir; gelistirme baglantisi canli veritabanina gidiyor.
+    /// </summary>
     public static class GamificationSeeder
     {
         public static async Task SeedAsync(GGHubDbContext context)
         {
-            // 1. Seviyeleri (Levels) Kontrol Et ve Ekle
-            if (!await context.Levels.AnyAsync())
-            {
-                var levels = new List<Level>
-                {
-                    new Level { LevelNumber = 1, Name = "Başlangıç", RequiredXp = 0 },
-                    new Level { LevelNumber = 2, Name = "Acemi", RequiredXp = 100 },
-                    new Level { LevelNumber = 3, Name = "Keşifçi", RequiredXp = 300 },
-                    new Level { LevelNumber = 4, Name = "Deneyimli", RequiredXp = 600 },
-                    new Level { LevelNumber = 5, Name = "Usta", RequiredXp = 1000 },
-                    new Level { LevelNumber = 6, Name = "Efsane", RequiredXp = 2000 },
-                    new Level { LevelNumber = 7, Name = "God Mode", RequiredXp = 5000 }
-                };
+            await SyncLevelsAsync(context);
+            await SyncAchievementsAsync(context);
+        }
 
-                await context.Levels.AddRangeAsync(levels);
-                await context.SaveChangesAsync();
+        private static async Task SyncLevelsAsync(GGHubDbContext context)
+        {
+            var existing = await context.Levels.ToListAsync();
+            foreach (var def in GamificationCatalog.Levels)
+            {
+                var row = existing.Where(l => l.LevelNumber == def.Number).OrderBy(l => l.Id).FirstOrDefault();
+                if (row == null)
+                {
+                    context.Levels.Add(new Level { LevelNumber = def.Number, Name = def.Name.Tr, RequiredXp = def.RequiredXp });
+                    continue;
+                }
+                row.Name = def.Name.Tr;
+                row.RequiredXp = def.RequiredXp;
+            }
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SyncAchievementsAsync(GGHubDbContext context)
+        {
+            var existing = await context.Achievements.ToListAsync();
+            var byCode = existing
+                .Where(a => !string.IsNullOrEmpty(a.Code))
+                .GroupBy(a => a.Code)
+                .ToDictionary(g => g.Key, g => g.OrderBy(a => a.Id).First());
+
+            // Kod alani bos eski satirlar (migration'dan once eklenmis olabilir): basliktan eslenir.
+            foreach (var row in existing.Where(a => string.IsNullOrEmpty(a.Code)))
+            {
+                if (GamificationCatalog.LegacyTitles.TryGetValue(row.Title ?? string.Empty, out var code) && !byCode.ContainsKey(code))
+                {
+                    row.Code = code;
+                    byCode[code] = row;
+                }
+                else
+                {
+                    row.Code = $"legacy_{row.Id}";
+                    row.IsActive = false;
+                }
             }
 
-            // 2. Rozetler 
-            if (!await context.Achievements.AnyAsync())
+            var catalogCodes = new HashSet<string>();
+            foreach (var def in GamificationCatalog.Badges)
             {
-                var achievements = new List<Achievement>
+                catalogCodes.Add(def.Code);
+                if (!byCode.TryGetValue(def.Code, out var row))
                 {
-                    // Başlangıç Rozeti
-                    new Achievement
-                    {
-                        Title = "Novice",
-                        Description = "Topluluğa hoş geldin!",
-                        IconUrl = "/assets/badges/Novice.ico",
-                        XpReward = 50,
-                        CriteriaJson = "{\"Type\": \"Welcome\"}"
-                    },
-                    // İnceleme Rozeti
-                    new Achievement
-                    {
-                        Title = "Critic",
-                        Description = "İlk incelemeni paylaştın.",
-                        IconUrl = "/assets/badges/Critic.ico",
-                        XpReward = 100,
-                        CriteriaJson = "{\"Type\": \"ReviewCreated\", \"Count\": 1}"
-                    },
-                    // Liste Rozeti
-                    new Achievement
-                    {
-                        Title = "Curator",
-                        Description = "İlk koleksiyonunu oluşturdun.",
-                        IconUrl = "/assets/badges/Curator.ico",
-                        XpReward = 150,
-                        CriteriaJson = "{\"Type\": \"ListCreated\", \"Count\": 1}"
-                    },
-                    // Popülerlik Rozeti
-                    new Achievement
-                    {
-                        Title = "Popular",
-                        Description = "10 Takipçiye ulaştın.",
-                        IconUrl = "/assets/badges/Popular.ico",
-                        XpReward = 500,
-                        CriteriaJson = "{\"Type\": \"FollowerGained\", \"Count\": 10}"
-                    },
-                    // Seviye Rozetleri
-                    new Achievement { Title = "Level 1", Description = "Yolculuk başladı.", IconUrl = "/assets/badges/level_1.ico", XpReward = 0, CriteriaJson = "{\"Type\": \"LevelReached\", \"Target\": 1}" },
-                    new Achievement { Title = "Level 2", Description = "Gelişmeye başladın.", IconUrl = "/assets/badges/level_2.ico", XpReward = 0, CriteriaJson = "{\"Type\": \"LevelReached\", \"Target\": 2}" },
-                    new Achievement { Title = "Level 3", Description = "Artık buraları biliyorsun.", IconUrl = "/assets/badges/level_3.ico", XpReward = 0, CriteriaJson = "{\"Type\": \"LevelReached\", \"Target\": 3}" },
-                    new Achievement { Title = "Level 4", Description = "Deneyim konuşuyor.", IconUrl = "/assets/badges/level_4.ico", XpReward = 0, CriteriaJson = "{\"Type\": \"LevelReached\", \"Target\": 4}" },
-                    new Achievement { Title = "Level 5", Description = "Ustalık eserini veriyorsun.", IconUrl = "/assets/badges/level_5.ico", XpReward = 0, CriteriaJson = "{\"Type\": \"LevelReached\", \"Target\": 5}" },
-                    new Achievement { Title = "Level 6", Description = "Adın efsaneler arasına yazıldı.", IconUrl = "/assets/badges/level_6.ico", XpReward = 0, CriteriaJson = "{\"Type\": \"LevelReached\", \"Target\": 6}" },
-                    new Achievement { Title = "Level 7", Description = "Oyunun kurallarını sen yazıyorsun.", IconUrl = "/assets/badges/level_7.ico", XpReward = 0, CriteriaJson = "{\"Type\": \"LevelReached\", \"Target\": 7}" }
-                };
+                    row = new Achievement { Code = def.Code };
+                    context.Achievements.Add(row);
+                    byCode[def.Code] = row;
+                }
 
-                await context.Achievements.AddRangeAsync(achievements);
-                await context.SaveChangesAsync();
+                row.Title = def.TitleText.En;
+                row.Description = def.DescriptionText.En;
+                row.IconUrl = def.IconUrl;
+                row.XpReward = def.XpReward;
+                row.CriteriaJson = JsonSerializer.Serialize(new { metric = def.Metric, threshold = def.Threshold });
+                row.Family = def.Family;
+                row.Category = def.Category;
+                row.Tier = def.Tier;
+                row.Metric = def.Metric;
+                row.Threshold = def.Threshold;
+                row.SortOrder = def.SortOrder;
+                row.IsActive = true;
             }
+
+            foreach (var row in byCode.Values.Where(a => !catalogCodes.Contains(a.Code)))
+            {
+                row.IsActive = false;
+            }
+
+            await context.SaveChangesAsync();
         }
     }
 }

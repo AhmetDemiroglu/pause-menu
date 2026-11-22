@@ -39,6 +39,9 @@ public static class AppText
         // link atmaya zorlardi. Kisisellestirme kutlama sayfasinda.
         ["birthday.emailSubject"] = "Pause Menu - Doğum Günün Kutlu Olsun 🎉",
         ["birthday.notification"] = "İyi ki doğdun! Kutlamanı görmek için dokun. 🎂",
+        ["gamification.achievementUnlocked"] = "Yeni rozet kazandın: {badge}. Koleksiyonunu görmek için dokun.",
+        ["gamification.achievementsUnlocked"] = "{count} yeni rozet kazandın, aralarında {badge} var.",
+        ["gamification.levelUp"] = "Seviye atladın! Artık Seviye {levelNumber}: {levelName}.",
         // Yeni sunucu hatasi (yalniz adminlere). Aktoru yok, {username} tasimaz.
         ["admin.newErrorNotification"] = "Yeni sunucu hatası: {endpoint} ({error})",
         ["admin.reopenedErrorNotification"] = "Çözüldü denen hata yeniden görüldü: {endpoint} ({error})",
@@ -226,6 +229,9 @@ public static class AppText
         ["auth.passwordChangedSubject"] = "Pause Menu - Password Change Notification",
         ["birthday.emailSubject"] = "Pause Menu - Happy Birthday 🎉",
         ["birthday.notification"] = "Happy birthday! Tap to see your celebration. 🎂",
+        ["gamification.achievementUnlocked"] = "You earned a new badge: {badge}. Tap to see your collection.",
+        ["gamification.achievementsUnlocked"] = "You earned {count} new badges, including {badge}.",
+        ["gamification.levelUp"] = "Level up! You are now Level {levelNumber}: {levelName}.",
         ["admin.newErrorNotification"] = "New server error: {endpoint} ({error})",
         ["admin.reopenedErrorNotification"] = "An error marked resolved came back: {endpoint} ({error})",
         ["admin.feedbackNotification"] = "New feedback ({category}) - {sender}: {message}",
@@ -399,6 +405,22 @@ public static class AppText
             : EnUs.GetValueOrDefault(key) ?? Tr.GetValueOrDefault(key);
 
         template ??= key;
+
+        // Gamification bildirimleri rozet/seviye ADINI degil KODUNU saklar; ad, okuyanin dilinde
+        // katalogdan cozulur (bildirim listesi ve push ayni yoldan gecer).
+        if (values is not null && (values.ContainsKey("badgeCode") || values.ContainsKey("levelNumber")))
+        {
+            values = new Dictionary<string, object?>(values);
+            if (values.TryGetValue("badgeCode", out var badgeCode) && badgeCode is not null)
+            {
+                values["badge"] = GGHub.Core.Gamification.GamificationCatalog.BadgeTitle(Convert.ToString(badgeCode, CultureInfo.InvariantCulture)!, locale);
+            }
+            if (values.TryGetValue("levelNumber", out var levelNumber) &&
+                int.TryParse(Convert.ToString(levelNumber, CultureInfo.InvariantCulture), out var level))
+            {
+                values["levelName"] = GGHub.Core.Gamification.GamificationCatalog.LevelName(level, NormalizeLocale(locale));
+            }
+        }
 
         if (values is null || values.Count == 0)
         {

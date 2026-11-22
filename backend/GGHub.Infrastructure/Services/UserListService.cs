@@ -53,9 +53,7 @@ namespace GGHub.Infrastructure.Services
             await _context.UserLists.AddAsync(userList);
             await _context.SaveChangesAsync();
 
-            await _gamificationService.AddXpAsync(userId, 30, "ListCreated");
-            await _gamificationService.CheckAchievementsAsync(userId, "ListCreated");
-
+            // Liste XP'si olusturmada degil, liste 3. oyununa ulasinca verilir (OnListGameAddedAsync).
             return userList;
         }
         // Liste basina tavan: anonim liste detayi ve kullanici istatistikleri listedeki TUM oyunlari
@@ -107,6 +105,8 @@ namespace GGHub.Infrastructure.Services
 
             await _context.UserListGames.AddAsync(userListGame);
             await _context.SaveChangesAsync();
+
+            await _gamificationService.OnListGameAddedAsync(userId, listId);
 
             var followers = await _context.UserListFollows
             .Where(f => f.FollowedListId == listId)
@@ -563,7 +563,7 @@ namespace GGHub.Infrastructure.Services
 
             if (result)
             {
-                await _gamificationService.AddXpAsync(userId, -30, "ListDeleted");
+                await _gamificationService.OnListDeletedAsync(userId, listId);
             }
 
             return result;
@@ -615,6 +615,7 @@ namespace GGHub.Infrastructure.Services
                     AddedAt = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
+                await _gamificationService.OnCollectionChangedAsync(userId);
                 return true; 
             }
         }
@@ -791,6 +792,7 @@ namespace GGHub.Infrastructure.Services
                     AddedAt = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
+                await _gamificationService.OnCollectionChangedAsync(userId);
                 return true;
             }
         }

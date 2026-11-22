@@ -99,7 +99,15 @@ namespace GGHub.Infrastructure.Services
                 NextLevelXp = gamificationStats.NextLevelXp,
                 ProgressPercentage = gamificationStats.ProgressPercentage,
                 RecentAchievements = gamificationStats.RecentAchievements,
-                TotalLists = totalLists
+                TotalLists = totalLists,
+                UserId = user.Id,
+                CurrentLevelXp = gamificationStats.CurrentLevelXp,
+                RemainingXp = gamificationStats.RemainingXp,
+                IsMaxLevel = gamificationStats.IsMaxLevel,
+                EarnedAchievementCount = gamificationStats.EarnedAchievementCount,
+                TotalAchievementCount = gamificationStats.TotalAchievementCount,
+                CurrentStreak = gamificationStats.CurrentStreak,
+                LongestStreak = gamificationStats.LongestStreak
             };
         }
         private class RawgGenre

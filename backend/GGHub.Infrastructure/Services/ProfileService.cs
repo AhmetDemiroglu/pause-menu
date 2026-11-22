@@ -18,6 +18,7 @@ namespace GGHub.Infrastructure.Services
         private readonly IAiInteractionPolicy _aiPolicy;
         private readonly IAccountPurgeService _accountPurge;
         private readonly ILogger<ProfileService> _logger;
+        private readonly IGamificationService _gamificationService;
 
         public ProfileService(
             GGHubDbContext context,
@@ -25,8 +26,10 @@ namespace GGHub.Infrastructure.Services
             IUserDtoEnricher userDtoEnricher,
             IAiInteractionPolicy aiPolicy,
             IAccountPurgeService accountPurge,
-            ILogger<ProfileService> logger)
+            ILogger<ProfileService> logger,
+            IGamificationService gamificationService)
         {
+            _gamificationService = gamificationService;
             _accountPurge = accountPurge;
             _logger = logger;
             _context = context;
@@ -119,6 +122,7 @@ namespace GGHub.Infrastructure.Services
             }
 
             await _auditService.LogAsync(userId, "UpdateProfile", "User", userId, profileDto);
+            await _gamificationService.OnProfileUpdatedAsync(userId);
 
             return await GetProfileAsync(userId);
         }

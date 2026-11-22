@@ -27,6 +27,7 @@ namespace GGHub.Infrastructure.Services
         private readonly IUserDtoEnricher _userDtoEnricher;
         private readonly IAiAgentEvents _aiEvents;
         private readonly IAiInteractionPolicy _aiPolicy;
+        private readonly IGamificationService _gamificationService;
 
         public PostService(
             GGHubDbContext context,
@@ -34,7 +35,8 @@ namespace GGHub.Infrastructure.Services
             IMentionService mentionService,
             IUserDtoEnricher userDtoEnricher,
             IAiAgentEvents aiEvents,
-            IAiInteractionPolicy aiPolicy)
+            IAiInteractionPolicy aiPolicy,
+            IGamificationService gamificationService)
         {
             _context = context;
             _notificationService = notificationService;
@@ -42,6 +44,7 @@ namespace GGHub.Infrastructure.Services
             _userDtoEnricher = userDtoEnricher;
             _aiEvents = aiEvents;
             _aiPolicy = aiPolicy;
+            _gamificationService = gamificationService;
         }
 
         // ------------------------------------------------------------------
@@ -200,6 +203,11 @@ namespace GGHub.Infrastructure.Services
 
             await _context.SaveChangesAsync();
 
+            // Gonderi XP'si: en az 10 karakter, gorsel ya da anket. Bos/tek kelimelik gonderi sayilmaz.
+            var qualifies = (post.Content?.Trim().Length ?? 0) >= (GGHub.Core.Gamification.GamificationCatalog.Rule("post").MinLength ?? 0) ||
+                post.Images.Count > 0 || post.Poll != null;
+            await _gamificationService.OnPostCreatedAsync(userId, post.Id, qualifies);
+
             await NotifyOnCreateAsync(post, parent, userId, parsed, resolved);
 
             // Bot tepkisi (yanit, etiket, ilk gonderi). Best-effort: istisna firlatmaz.
@@ -323,8 +331,14 @@ namespace GGHub.Infrastructure.Services
                 if (source != null && source.RepostCount > 0) source.RepostCount -= 1;
             }
 
+            var ownerId = post.UserId;
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
+
+            if (!post.RepostOfPostId.HasValue)
+            {
+                await _gamificationService.OnPostDeletedAsync(ownerId, postId);
+            }
         }
 
         // ------------------------------------------------------------------
@@ -442,6 +456,8 @@ namespace GGHub.Infrastructure.Services
                 post.LikeCount += 1;
                 await _context.SaveChangesAsync();
 
+                await _gamificationService.OnLikeChangedAsync(post.UserId, userId, "post", postId, true);
+
                 if (post.UserId != userId)
                 {
                     await _notificationService.CreateNotificationAsync(
@@ -457,6 +473,7 @@ namespace GGHub.Infrastructure.Services
                 _context.PostLikes.Remove(existing);
                 if (post.LikeCount > 0) post.LikeCount -= 1;
                 await _context.SaveChangesAsync();
+                await _gamificationService.OnLikeChangedAsync(post.UserId, userId, "post", postId, false);
             }
 
             return await BuildInteractionResultAsync(post, userId);

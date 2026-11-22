@@ -81,7 +81,8 @@ namespace GGHub.Infrastructure.Services
             await _context.UserListComments.AddAsync(comment);
             await _context.SaveChangesAsync();
 
-            await _gamificationService.AddXpAsync(userId, 5, "CommentCreated");
+            var listOwnerId = await _context.UserLists.Where(l => l.Id == listId).Select(l => l.UserId).FirstOrDefaultAsync();
+            await _gamificationService.OnCommentCreatedAsync(userId, "list", comment.Id, listOwnerId, comment.Content?.Trim().Length ?? 0);
 
             // Bildirim (self haric): yanit -> ust yorum sahibine; ust yorum -> liste sahibine.
             // notifiedUserId: bu olay icin ZATEN bildirim alan kisi. Asagida bahis yayilimindan
@@ -165,7 +166,7 @@ namespace GGHub.Infrastructure.Services
 
             if (success)
             {
-                await _gamificationService.AddXpAsync(userId, -5, "CommentDeleted");
+                await _gamificationService.OnCommentDeletedAsync(userId, "list", commentId);
             }
 
             return success;

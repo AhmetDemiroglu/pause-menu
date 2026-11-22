@@ -1,0 +1,765 @@
+{
+  "version": 2,
+  "tierRewards": [
+    10,
+    25,
+    50,
+    100,
+    200
+  ],
+  "tiers": [
+    {
+      "tier": 1,
+      "key": "bronze",
+      "name": {
+        "tr": "Bronz",
+        "en": "Bronze"
+      }
+    },
+    {
+      "tier": 2,
+      "key": "silver",
+      "name": {
+        "tr": "Gümüş",
+        "en": "Silver"
+      }
+    },
+    {
+      "tier": 3,
+      "key": "gold",
+      "name": {
+        "tr": "Altın",
+        "en": "Gold"
+      }
+    },
+    {
+      "tier": 4,
+      "key": "platinum",
+      "name": {
+        "tr": "Platin",
+        "en": "Platinum"
+      }
+    },
+    {
+      "tier": 5,
+      "key": "diamond",
+      "name": {
+        "tr": "Elmas",
+        "en": "Diamond"
+      }
+    }
+  ],
+  "levels": [
+    {
+      "number": 1,
+      "requiredXp": 0,
+      "name": {
+        "tr": "Başlangıç",
+        "en": "Beginner"
+      }
+    },
+    {
+      "number": 2,
+      "requiredXp": 100,
+      "name": {
+        "tr": "Acemi",
+        "en": "Novice"
+      }
+    },
+    {
+      "number": 3,
+      "requiredXp": 300,
+      "name": {
+        "tr": "Keşifçi",
+        "en": "Explorer"
+      }
+    },
+    {
+      "number": 4,
+      "requiredXp": 600,
+      "name": {
+        "tr": "Deneyimli",
+        "en": "Experienced"
+      }
+    },
+    {
+      "number": 5,
+      "requiredXp": 1000,
+      "name": {
+        "tr": "Usta",
+        "en": "Master"
+      }
+    },
+    {
+      "number": 6,
+      "requiredXp": 2000,
+      "name": {
+        "tr": "Efsane",
+        "en": "Legend"
+      }
+    },
+    {
+      "number": 7,
+      "requiredXp": 5000,
+      "name": {
+        "tr": "God Mode",
+        "en": "God Mode"
+      }
+    }
+  ],
+  "xpRules": [
+    {
+      "key": "register",
+      "xp": 50,
+      "dailyCap": null,
+      "label": {
+        "tr": "Pause Menu'ye katılmak",
+        "en": "Joining Pause Menu"
+      },
+      "note": {
+        "tr": "Hesap başına bir kez.",
+        "en": "Once per account."
+      }
+    },
+    {
+      "key": "review",
+      "xp": 25,
+      "shortXp": 10,
+      "minLength": 80,
+      "dailyCap": 5,
+      "label": {
+        "tr": "Oyun incelemesi yazmak",
+        "en": "Writing a game review"
+      },
+      "note": {
+        "tr": "80 karakterden kısa incelemeler 10 XP kazandırır.",
+        "en": "Reviews shorter than 80 characters earn 10 XP."
+      }
+    },
+    {
+      "key": "list",
+      "xp": 30,
+      "minGames": 3,
+      "dailyCap": 2,
+      "label": {
+        "tr": "Liste hazırlamak",
+        "en": "Building a list"
+      },
+      "note": {
+        "tr": "Liste 3. oyununa ulaştığında verilir.",
+        "en": "Awarded when the list reaches its 3rd game."
+      }
+    },
+    {
+      "key": "comment",
+      "xp": 5,
+      "minLength": 10,
+      "dailyCap": 10,
+      "label": {
+        "tr": "Yorum yazmak",
+        "en": "Writing a comment"
+      },
+      "note": {
+        "tr": "Başkalarının inceleme ve listelerine, en az 10 karakter.",
+        "en": "On other people's reviews and lists, at least 10 characters."
+      }
+    },
+    {
+      "key": "post",
+      "xp": 10,
+      "minLength": 10,
+      "dailyCap": 5,
+      "label": {
+        "tr": "Gönderi paylaşmak",
+        "en": "Sharing a post"
+      },
+      "note": {
+        "tr": "En az 10 karakter, görsel ya da anket. Yeniden paylaşım sayılmaz.",
+        "en": "At least 10 characters, an image or a poll. Reposts do not count."
+      }
+    },
+    {
+      "key": "follow",
+      "xp": 5,
+      "dailyCap": 10,
+      "label": {
+        "tr": "Birini takip etmek",
+        "en": "Following someone"
+      },
+      "note": {
+        "tr": "Her kişi için yalnız bir kez.",
+        "en": "Only once per person."
+      }
+    },
+    {
+      "key": "follower",
+      "xp": 10,
+      "dailyCap": 20,
+      "label": {
+        "tr": "Takipçi kazanmak",
+        "en": "Gaining a follower"
+      },
+      "note": {
+        "tr": "Bot ve askıya alınmış hesaplar sayılmaz.",
+        "en": "Bots and suspended accounts do not count."
+      }
+    },
+    {
+      "key": "like",
+      "xp": 2,
+      "dailyCap": 20,
+      "label": {
+        "tr": "Beğeni almak",
+        "en": "Receiving a like"
+      },
+      "note": {
+        "tr": "Gönderi beğenileri ve olumlu inceleme oyları.",
+        "en": "Post likes and positive review votes."
+      }
+    },
+    {
+      "key": "daily",
+      "xp": 5,
+      "dailyCap": 1,
+      "label": {
+        "tr": "Günlük ziyaret",
+        "en": "Daily visit"
+      },
+      "note": {
+        "tr": "Günde bir kez.",
+        "en": "Once a day."
+      }
+    },
+    {
+      "key": "streak7",
+      "xp": 25,
+      "dailyCap": null,
+      "label": {
+        "tr": "7 günlük seri",
+        "en": "7 day streak"
+      },
+      "note": {
+        "tr": "Serinin 7. gününde.",
+        "en": "On day 7 of a streak."
+      }
+    },
+    {
+      "key": "streak30",
+      "xp": 100,
+      "dailyCap": null,
+      "label": {
+        "tr": "30 günlük seri",
+        "en": "30 day streak"
+      },
+      "note": {
+        "tr": "Serinin her 30. gününde.",
+        "en": "On every 30th day of a streak."
+      }
+    }
+  ],
+  "categories": [
+    {
+      "key": "content",
+      "frame": "shield",
+      "name": {
+        "tr": "İçerik",
+        "en": "Content"
+      }
+    },
+    {
+      "key": "collection",
+      "frame": "gem",
+      "name": {
+        "tr": "Koleksiyon",
+        "en": "Collection"
+      }
+    },
+    {
+      "key": "social",
+      "frame": "hexagon",
+      "name": {
+        "tr": "Topluluk",
+        "en": "Community"
+      }
+    },
+    {
+      "key": "dedication",
+      "frame": "circle",
+      "name": {
+        "tr": "Bağlılık",
+        "en": "Dedication"
+      }
+    },
+    {
+      "key": "special",
+      "frame": "star",
+      "name": {
+        "tr": "Özel",
+        "en": "Special"
+      }
+    }
+  ],
+  "families": [
+    {
+      "key": "critic",
+      "category": "content",
+      "metric": "reviews",
+      "thresholds": [
+        1,
+        5,
+        15,
+        40,
+        100
+      ],
+      "name": {
+        "tr": "Eleştirmen",
+        "en": "Critic"
+      },
+      "summary": {
+        "tr": "Oyun incelemesi yaz.",
+        "en": "Write game reviews."
+      },
+      "description": {
+        "tr": "{n} oyun incelemesi yaz.",
+        "en": "Write {n} game reviews."
+      },
+      "descriptionOne": {
+        "tr": "İlk oyun incelemeni yaz.",
+        "en": "Write your first game review."
+      }
+    },
+    {
+      "key": "deep",
+      "category": "content",
+      "metric": "deep_reviews",
+      "thresholds": [
+        1,
+        5,
+        20
+      ],
+      "name": {
+        "tr": "Derinlemesine",
+        "en": "In Depth"
+      },
+      "summary": {
+        "tr": "500 karakteri aşan, ayrıntılı incelemeler yaz.",
+        "en": "Write detailed reviews longer than 500 characters."
+      },
+      "description": {
+        "tr": "500 karakteri aşan {n} inceleme yaz.",
+        "en": "Write {n} reviews longer than 500 characters."
+      },
+      "descriptionOne": {
+        "tr": "500 karakteri aşan bir inceleme yaz.",
+        "en": "Write a review longer than 500 characters."
+      }
+    },
+    {
+      "key": "genre",
+      "category": "content",
+      "metric": "genres",
+      "thresholds": [
+        3,
+        6,
+        10
+      ],
+      "name": {
+        "tr": "Tür Kaşifi",
+        "en": "Genre Explorer"
+      },
+      "summary": {
+        "tr": "Farklı türlerden oyunlar incele.",
+        "en": "Review games from different genres."
+      },
+      "unit": {
+        "tr": "tür",
+        "en": "genres"
+      },
+      "description": {
+        "tr": "{n} farklı türden oyun incele.",
+        "en": "Review games from {n} different genres."
+      }
+    },
+    {
+      "key": "author",
+      "category": "content",
+      "metric": "posts",
+      "thresholds": [
+        1,
+        10,
+        50,
+        150
+      ],
+      "name": {
+        "tr": "Yazar",
+        "en": "Author"
+      },
+      "summary": {
+        "tr": "Gönderi paylaş.",
+        "en": "Share posts."
+      },
+      "description": {
+        "tr": "{n} gönderi paylaş.",
+        "en": "Share {n} posts."
+      },
+      "descriptionOne": {
+        "tr": "İlk gönderini paylaş.",
+        "en": "Share your first post."
+      }
+    },
+    {
+      "key": "curator",
+      "category": "collection",
+      "metric": "curated_lists",
+      "thresholds": [
+        1,
+        3,
+        8,
+        15,
+        30
+      ],
+      "name": {
+        "tr": "Küratör",
+        "en": "Curator"
+      },
+      "summary": {
+        "tr": "En az 3 oyunlu listeler hazırla.",
+        "en": "Build lists with at least 3 games."
+      },
+      "description": {
+        "tr": "En az 3 oyunlu {n} liste hazırla.",
+        "en": "Build {n} lists with at least 3 games."
+      },
+      "descriptionOne": {
+        "tr": "En az 3 oyunlu ilk listeni hazırla.",
+        "en": "Build your first list with at least 3 games."
+      }
+    },
+    {
+      "key": "collector",
+      "category": "collection",
+      "metric": "listed_games",
+      "thresholds": [
+        10,
+        50,
+        150,
+        400,
+        1000
+      ],
+      "name": {
+        "tr": "Koleksiyoncu",
+        "en": "Collector"
+      },
+      "summary": {
+        "tr": "Listelerine farklı oyunlar ekle.",
+        "en": "Add different games to your lists."
+      },
+      "description": {
+        "tr": "Listelerine toplam {n} farklı oyun ekle.",
+        "en": "Add {n} different games to your lists."
+      }
+    },
+    {
+      "key": "wishlist",
+      "category": "collection",
+      "metric": "wishlist_games",
+      "thresholds": [
+        5,
+        25,
+        100
+      ],
+      "name": {
+        "tr": "Dilek Avcısı",
+        "en": "Wish Hunter"
+      },
+      "summary": {
+        "tr": "İstek listeni doldur.",
+        "en": "Fill your wishlist."
+      },
+      "description": {
+        "tr": "İstek listene {n} oyun ekle.",
+        "en": "Add {n} games to your wishlist."
+      }
+    },
+    {
+      "key": "favorites",
+      "category": "collection",
+      "metric": "favorite_games",
+      "thresholds": [
+        3,
+        5
+      ],
+      "name": {
+        "tr": "Vitrin",
+        "en": "Showcase"
+      },
+      "summary": {
+        "tr": "Favori oyunlarını seç.",
+        "en": "Pick your favorite games."
+      },
+      "description": {
+        "tr": "Favorilerine {n} oyun ekle.",
+        "en": "Add {n} games to your favorites."
+      }
+    },
+    {
+      "key": "list_star",
+      "category": "collection",
+      "metric": "list_max_followers",
+      "thresholds": [
+        10
+      ],
+      "single": true,
+      "reward": 50,
+      "name": {
+        "tr": "Liste Yıldızı",
+        "en": "List Star"
+      },
+      "summary": {
+        "tr": "Listelerinden biri 10 takipçiye ulaşsın.",
+        "en": "Have one of your lists reach 10 followers."
+      },
+      "description": {
+        "tr": "Listelerinden biri 10 takipçiye ulaşsın.",
+        "en": "Have one of your lists reach 10 followers."
+      }
+    },
+    {
+      "key": "popular",
+      "category": "social",
+      "metric": "followers",
+      "thresholds": [
+        5,
+        10,
+        50,
+        150,
+        500
+      ],
+      "name": {
+        "tr": "Popüler",
+        "en": "Popular"
+      },
+      "summary": {
+        "tr": "Takipçi kazan.",
+        "en": "Gain followers."
+      },
+      "description": {
+        "tr": "{n} takipçiye ulaş.",
+        "en": "Reach {n} followers."
+      }
+    },
+    {
+      "key": "social",
+      "category": "social",
+      "metric": "following",
+      "thresholds": [
+        5,
+        25,
+        75
+      ],
+      "name": {
+        "tr": "Sosyal",
+        "en": "Socialite"
+      },
+      "summary": {
+        "tr": "Başka oyuncuları takip et.",
+        "en": "Follow other players."
+      },
+      "description": {
+        "tr": "{n} kişiyi takip et.",
+        "en": "Follow {n} people."
+      }
+    },
+    {
+      "key": "commenter",
+      "category": "social",
+      "metric": "comments",
+      "thresholds": [
+        1,
+        10,
+        50,
+        150,
+        500
+      ],
+      "name": {
+        "tr": "Yorumcu",
+        "en": "Commentator"
+      },
+      "summary": {
+        "tr": "Başkalarının inceleme ve listelerine yorum yaz.",
+        "en": "Comment on other people's reviews and lists."
+      },
+      "description": {
+        "tr": "Başkalarının inceleme ve listelerine {n} yorum yaz.",
+        "en": "Write {n} comments on other people's reviews and lists."
+      },
+      "descriptionOne": {
+        "tr": "Başka birinin inceleme ya da listesine ilk yorumunu yaz.",
+        "en": "Write your first comment on someone else's review or list."
+      }
+    },
+    {
+      "key": "liked",
+      "category": "social",
+      "metric": "likes_received",
+      "thresholds": [
+        5,
+        25,
+        100,
+        400,
+        1000
+      ],
+      "name": {
+        "tr": "Beğenilen",
+        "en": "Appreciated"
+      },
+      "summary": {
+        "tr": "Gönderi ve incelemelerin beğeni alsın.",
+        "en": "Get likes on your posts and reviews."
+      },
+      "description": {
+        "tr": "Gönderi ve incelemelerin toplam {n} beğeni alsın.",
+        "en": "Receive {n} likes on your posts and reviews."
+      }
+    },
+    {
+      "key": "streak",
+      "category": "dedication",
+      "metric": "longest_streak",
+      "thresholds": [
+        3,
+        7,
+        14,
+        30,
+        100
+      ],
+      "name": {
+        "tr": "İstikrarlı",
+        "en": "Consistent"
+      },
+      "summary": {
+        "tr": "Pause Menu'ye her gün uğra.",
+        "en": "Visit Pause Menu every day."
+      },
+      "unit": {
+        "tr": "gün",
+        "en": "days"
+      },
+      "description": {
+        "tr": "{n} gün üst üste uğra.",
+        "en": "Visit {n} days in a row."
+      }
+    },
+    {
+      "key": "veteran",
+      "category": "dedication",
+      "metric": "account_age_days",
+      "thresholds": [
+        30,
+        180,
+        365,
+        730
+      ],
+      "name": {
+        "tr": "Kıdemli",
+        "en": "Veteran"
+      },
+      "summary": {
+        "tr": "Topluluğun kıdemli üyelerinden ol.",
+        "en": "Stay with the community over time."
+      },
+      "unit": {
+        "tr": "gün",
+        "en": "days"
+      },
+      "description": {
+        "tr": "{n} gündür Pause Menu'de ol.",
+        "en": "Be a member for {n} days."
+      }
+    },
+    {
+      "key": "level",
+      "category": "dedication",
+      "metric": "level",
+      "thresholds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "levelBadges": true,
+      "reward": 0,
+      "name": {
+        "tr": "Seviye",
+        "en": "Level"
+      },
+      "summary": {
+        "tr": "XP topla, seviye atla.",
+        "en": "Earn XP and level up."
+      },
+      "description": {
+        "tr": "{n}. seviyeye ulaş.",
+        "en": "Reach level {n}."
+      }
+    },
+    {
+      "key": "welcome",
+      "category": "special",
+      "metric": "welcome",
+      "thresholds": [
+        1
+      ],
+      "single": true,
+      "reward": 0,
+      "name": {
+        "tr": "Hoş Geldin",
+        "en": "Welcome"
+      },
+      "summary": {
+        "tr": "Pause Menu'ye katıl.",
+        "en": "Join Pause Menu."
+      },
+      "description": {
+        "tr": "Pause Menu'ye katıl.",
+        "en": "Join Pause Menu."
+      }
+    },
+    {
+      "key": "profile_complete",
+      "category": "special",
+      "metric": "profile_complete",
+      "thresholds": [
+        1
+      ],
+      "single": true,
+      "reward": 25,
+      "name": {
+        "tr": "Tam Profil",
+        "en": "Complete Profile"
+      },
+      "summary": {
+        "tr": "Profil fotoğrafı, kapak görseli ve biyografi ekle.",
+        "en": "Add a profile photo, a cover image and a bio."
+      },
+      "description": {
+        "tr": "Profil fotoğrafı, kapak görseli ve biyografi ekle.",
+        "en": "Add a profile photo, a cover image and a bio."
+      }
+    }
+  ],
+  "legacyTitles": {
+    "Novice": "welcome",
+    "Critic": "critic_1",
+    "Curator": "curator_1",
+    "Popular": "popular_2",
+    "Level 1": "level_1",
+    "Level 2": "level_2",
+    "Level 3": "level_3",
+    "Level 4": "level_4",
+    "Level 5": "level_5",
+    "Level 6": "level_6",
+    "Level 7": "level_7"
+  }
+}

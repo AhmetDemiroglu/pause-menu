@@ -35,6 +35,11 @@
         // Yalnizca Admin rolundeki kullanicilara gider ve tercihe tabi degil.
         // Link BILEREK bos: mobilde admin hata sayfasi yok, linksiz satira dokunmak
         // gezinmez. Web tipi taniyip /errors sayfasini acar.
-        SystemAlert
+        SystemAlert,
+        // 17-18 : Gamification 2.0. Yine SONA eklendi, aktoru yok, link kullanicinin kendi
+        // profili (/profiles/{username}); eski mobil surum de bu rotayi taniyor ve bilinmeyen
+        // tipi jenerik ikona dusuruyor.
+        AchievementUnlocked,
+        LevelUp
     }
 }
