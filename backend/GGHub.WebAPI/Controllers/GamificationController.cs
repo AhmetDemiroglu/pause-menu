@@ -49,7 +49,7 @@ namespace GGHub.WebAPI.Controllers
             var user = await ProfileContentAccess.GetViewableUserAsync(_context, username, CurrentUserId);
             if (user == null) return NotFound();
 
-            return Ok(await _gamificationService.GetAchievementsAsync(user.Id));
+            return Ok(await _gamificationService.GetAchievementsAsync(user.Id, includeProgress: CurrentUserId == user.Id));
         }
 
         /// <summary>period: all | week. Sayfa 50 satir, en fazla 4 sayfa; 15 dk onbellek.</summary>

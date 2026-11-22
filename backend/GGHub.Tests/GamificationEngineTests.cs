@@ -363,9 +363,13 @@ public class GamificationEngineTests
         var user = await _fx.CreateUserAsync();
         await Service(sp).OnRegisteredAsync(user.Id);
 
-        var result = await Service(sp).GetAchievementsAsync(user.Id);
+        var result = await Service(sp).GetAchievementsAsync(user.Id, includeProgress: true);
         Assert.Equal(GamificationCatalog.Badges.Count, result.TotalCount);
         Assert.Equal(1, result.EarnedCount);
         Assert.Equal(0, result.Items.Single(i => i.Code == "critic_1").Current);
+
+        var publicView = await Service(sp).GetAchievementsAsync(user.Id, includeProgress: false);
+        Assert.All(publicView.Items, i => Assert.Null(i.Current));
+        Assert.Equal(1, publicView.EarnedCount);
     }
 }

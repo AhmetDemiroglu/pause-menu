@@ -12,8 +12,11 @@ namespace GGHub.Application.Dtos.Gamification
         public string IconUrl { get; set; } = string.Empty;
         public int XpReward { get; set; }
         public int Threshold { get; set; }
-        /// <summary>Hedef metrigin bugunku degeri (ilerleme cubugu icin). Esigi gecebilir.</summary>
-        public int Current { get; set; }
+        /// <summary>
+        /// Hedef metrigin bugunku degeri (ilerleme cubugu icin). Yalniz profil sahibine dolu; baskasina null
+        /// (istek listesi gibi gizli sayilar sizmasin).
+        /// </summary>
+        public int? Current { get; set; }
         public DateTime? EarnedAt { get; set; }
     }
 

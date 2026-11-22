@@ -31,7 +31,8 @@ namespace GGHub.Application.Interfaces
         Task OnListFollowedAsync(int listOwnerId);
 
         Task<UserStatsDto> GetUserStatsAsync(int userId);
-        Task<UserAchievementsDto> GetAchievementsAsync(int userId);
+        /// <param name="includeProgress">Ilerleme sayilari (ornegin gizli istek listesi) yalniz profil sahibine.</param>
+        Task<UserAchievementsDto> GetAchievementsAsync(int userId, bool includeProgress);
         Task<LeaderboardPageDto> GetLeaderboardAsync(string? period, int page);
         Task<XpHistoryPageDto> GetHistoryAsync(int userId, int page);
     }

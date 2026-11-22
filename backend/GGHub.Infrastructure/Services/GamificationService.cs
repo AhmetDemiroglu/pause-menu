@@ -326,7 +326,7 @@ namespace GGHub.Infrastructure.Services
 
         private sealed record AchievementSnapshot(Dictionary<string, int> Metrics, Dictionary<string, DateTime> Earned);
 
-        public async Task<UserAchievementsDto> GetAchievementsAsync(int userId)
+        public async Task<UserAchievementsDto> GetAchievementsAsync(int userId, bool includeProgress)
         {
             var locale = AppText.CurrentLocale();
             var snapshot = await _cache.GetOrCreateAsync(AchievementsCacheKey(userId), async entry =>
@@ -362,7 +362,7 @@ namespace GGHub.Infrastructure.Services
                     IconUrl = b.IconUrl,
                     XpReward = b.XpReward,
                     Threshold = b.Threshold,
-                    Current = snapshot.Metrics.GetValueOrDefault(b.Metric),
+                    Current = includeProgress ? snapshot.Metrics.GetValueOrDefault(b.Metric) : null,
                     EarnedAt = snapshot.Earned.TryGetValue(b.Code, out var at) ? at : null,
                 })
                 .ToList();

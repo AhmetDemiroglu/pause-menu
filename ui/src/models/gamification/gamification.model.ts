@@ -8,7 +8,8 @@ export interface AchievementProgress {
     iconUrl: string;
     xpReward: number;
     threshold: number;
-    current: number;
+    /** Yalniz profil sahibine dolu; baskasinin profilinde null. */
+    current: number | null;
     earnedAt: string | null;
 }
 
