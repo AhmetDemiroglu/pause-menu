@@ -13,6 +13,7 @@ import { SidebarTrigger } from "@/core/components/base/sidebar";
 import { GlassSurface } from "@/core/components/base/glass-surface";
 import { TopbarSearch } from "@/core/components/base/topbar-search";
 import { NotificationsMenu } from "@/core/components/base/notifications-menu";
+import { MessagesMenu } from "@/core/components/base/messages-menu";
 import { AppDownloadBadge } from "@/core/components/base/app-download-badge";
 import { APP_SCROLL_ID, useTopbarMotion, type TopbarRefs } from "@/core/components/base/topbar-motion";
 
@@ -107,7 +108,8 @@ export function AppTopbar() {
                         </div>
                         <div className="flex-1 md:hidden" />
 
-                        {/* Sag: mobil arama, uygulama rozeti, bildirimler */}
+                        {/* Sag: mobil arama, uygulama rozeti, mesajlar (masaustu), bildirimler.
+                            Mesajlar kenar cubugundan buraya tasindi: menu kucuk ekranda kaymasin. Mobilde menude kalir. */}
                         <div className="flex shrink-0 items-center gap-1 md:gap-2">
                             <button
                                 type="button"
@@ -118,6 +120,7 @@ export function AppTopbar() {
                                 <Search className="size-5" />
                             </button>
                             <AppDownloadBadge />
+                            {isAuthenticated ? <MessagesMenu className="hidden md:flex" /> : null}
                             {isAuthenticated ? <NotificationsMenu /> : null}
                         </div>
                     </div>

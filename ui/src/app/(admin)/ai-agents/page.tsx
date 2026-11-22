@@ -177,6 +177,7 @@ export default function AiAgentsPage() {
     const budgets = usageQuery.data?.budgets ?? [];
     const translation = budgets.find((b) => b.source === "translation");
     const agentsBudget = budgets.find((b) => b.source === "ai-agent");
+    const newsBudget = budgets.find((b) => b.source === "news");
     const purgeTotal = preview ? Object.values(preview.counts).reduce((a, b) => a + b, 0) : 0;
 
     return (
@@ -272,6 +273,23 @@ export default function AiAgentsPage() {
                         {numberField("activeToHour", t("aiAdmin.activeTo"))}
                     </div>
                     <p className="text-xs text-muted-foreground">{t("aiAdmin.englishShareHint")}</p>
+
+                    {/* Haber botu: Mac'teki Worker ve GitHub Actions okur. Kapaliyken hicbir cagri yapilmaz. */}
+                    <div className="space-y-3 rounded-lg border p-3">
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="ai-news-enabled" className="font-semibold">{t("aiAdmin.newsEnabled")}</Label>
+                            <Switch id="ai-news-enabled" checked={draft.newsEnabled} onCheckedChange={(v) => setDraft({ ...draft, newsEnabled: v })} />
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-3">
+                            {numberField("newsMonthlyBudgetTry", t("aiAdmin.newsBudget"), "0.01")}
+                            {numberField("newsDailyArticleCap", t("aiAdmin.newsDailyArticles"))}
+                            {numberField("newsDailyGeneratedImageCap", t("aiAdmin.newsDailyImages"))}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            {newsBudget ? t("aiAdmin.newsBudgetStatus", { spent: fmtTry(newsBudget.spentTry), limit: fmtTry(newsBudget.limitTry) }) + " " : ""}
+                            {t("aiAdmin.newsHint")}
+                        </p>
+                    </div>
                     <Button onClick={() => saveSettings.mutate(draft)} disabled={saveSettings.isPending} className="cursor-pointer">
                         {saveSettings.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                         {t("aiAdmin.save")}

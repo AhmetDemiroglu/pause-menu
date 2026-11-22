@@ -5,6 +5,7 @@ namespace GGHub.Application.Interfaces
     {
         public const string Translation = "translation";
         public const string AiAgent = "ai-agent";
+        public const string News = "news";
     }
 
     public interface IGeminiBudgetService

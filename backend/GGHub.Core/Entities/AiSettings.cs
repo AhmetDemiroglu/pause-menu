@@ -59,6 +59,21 @@ namespace GGHub.Core.Entities
         public int ActiveFromHour { get; set; } = 9;
         public int ActiveToHour { get; set; } = 1;
 
+        /// <summary>
+        /// Haber botunun ana salteri. Varsayilan KAPALI: Worker her push'ta kendini yeniden derliyor;
+        /// kurulum (R2 ayari, ilk dolum) bitmeden tek cagri yapilmasin, tek satir yazilmasin.
+        /// </summary>
+        public bool NewsEnabled { get; set; }
+
+        /// <summary>Haber botunun (metin + uretilen gorsel) aylik TL tavani. %80'i dolunca gorsel uretimi durur.</summary>
+        public decimal NewsMonthlyBudgetTry { get; set; } = 450m;
+
+        /// <summary>Gunde en fazla kac yeni haber yazilir.</summary>
+        public int NewsDailyArticleCap { get; set; } = 40;
+
+        /// <summary>Gunde en fazla kac gorsel uretilir (katalogda eslesmeyen haberler icin).</summary>
+        public int NewsDailyGeneratedImageCap { get; set; } = 8;
+
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -52,6 +52,9 @@ export function Footer() {
                                         <Link href={buildLocalizedPathname("/agenda", locale)} className="w-fit py-1 text-sm text-foreground/80 transition-colors hover:text-primary">
                                             {t("nav.agenda")}
                                         </Link>
+                                        <Link href={buildLocalizedPathname("/news", locale)} className="w-fit py-1 text-sm text-foreground/80 transition-colors hover:text-primary">
+                                            {t("nav.news")}
+                                        </Link>
                                         <Link href={buildLocalizedPathname("/ai-bots", locale)} className="w-fit py-1 text-sm text-foreground/80 transition-colors hover:text-primary">
                                             {t("nav.aiClub")}
                                         </Link>

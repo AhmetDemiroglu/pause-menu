@@ -30,6 +30,10 @@ namespace GGHub.Infrastructure.Settings
             ["gemini-3.5-flash-lite"] = new() { InputUsdPerMillion = 0.30m, OutputUsdPerMillion = 2.50m },
             ["gemma-4-31b-it"] = new() { InputUsdPerMillion = 0m, OutputUsdPerMillion = 0m },
             ["gemma-4-26b-a4b-it"] = new() { InputUsdPerMillion = 0m, OutputUsdPerMillion = 0m },
+
+            // Haber gorseli. 1024 px gorsel 1.120 cikti token'i = 0,0336 USD (aistudio.google.com/docs/pricing,
+            // 22 Kas 2026, ucretsiz katman yok). Bu satir olmasa sayac modeli taniyamaz ve harcamayi yanlis yazar.
+            ["gemini-3.1-flash-lite-image"] = new() { InputUsdPerMillion = 0.25m, OutputUsdPerMillion = 30m },
         };
     }
 

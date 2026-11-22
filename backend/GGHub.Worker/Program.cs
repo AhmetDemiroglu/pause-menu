@@ -1,6 +1,7 @@
 ﻿using GGHub.Application.Interfaces;
 using GGHub.Infrastructure.Persistence;
 using GGHub.Infrastructure.Services;
+using GGHub.Infrastructure.Services.News;
 using GGHub.Infrastructure.Settings;
 using GGHub.Worker;
 using Microsoft.EntityFrameworkCore;
@@ -95,6 +96,25 @@ builder.Services.Configure<IndexNowSettings>(builder.Configuration.GetSection("J
 builder.Services.PostConfigure<IndexNowSettings>(s => s.StatePath ??= Path.Combine(botHome, "indexnow-state.json"));
 builder.Services.AddHttpClient("IndexNow", client => client.Timeout = TimeSpan.FromSeconds(60));
 
+// Haber botu (Oyun dunyasindan haberler). Ana salter AiSettings.NewsEnabled (admin paneli, varsayilan
+// kapali). R2 istemcisi NewsImageStore icinde TEMBEL kurulur: "R2" ayari yoksa Worker yine acilir,
+// yalniz gorsel uretimi kapali kalir. Mac uyurken ayni turu GitHub Actions atar (--news-once).
+builder.Services.AddSingleton<GeminiRateLimiter>();
+builder.Services.AddHttpClient(NewsFeedReader.HttpClientName, client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(20);
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("PauseMenuNewsBot/1.0 (+https://pausemenu.app)");
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/rss+xml, application/atom+xml, application/xml, text/xml, text/html;q=0.8, */*;q=0.5");
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    AutomaticDecompression = System.Net.DecompressionMethods.All,
+    MaxAutomaticRedirections = 5
+});
+builder.Services.AddSingleton<NewsImageStore>();
+builder.Services.AddScoped<NewsFeedReader>();
+builder.Services.AddScoped<NewsWriter>();
+builder.Services.AddScoped<NewsIngestRunner>();
+
 // Kosulsuz kaydediyoruz; "acik mi kapali mi" sorusunun tek cevap yeri appsettings.json olsun.
 // Bunun calismasi icin her job'in Enabled bayragini KENDI ICINDE kontrol etmesi sart. Bayraklar
 // eskiden burada (WebAPI Program.cs) kontrol ediliyordu; kayit yeri degisince kontrol tamamen
@@ -113,6 +133,7 @@ builder.Services.AddHostedService<CatalogDedupeJob>();
 builder.Services.AddHostedService<TrendScoreJob>();
 builder.Services.AddHostedService<HypeScoreJob>();
 builder.Services.AddHostedService<IndexNowJob>();
+builder.Services.AddHostedService<NewsIngestJob>();
 
 // RawgImportJob (genisleme/breadth) BILEREK kayitli degil. 4 stratejide de ~950. sayfada duruyor;
 // oradaki oyunlari RAWG'de 13 kisi eklemis, kendi MinAdded=20 esigimizin altinda. Sayfa 5000'de
@@ -256,6 +277,45 @@ using (var startupScope = host.Services.CreateScope())
             pending.Count, string.Join(", ", pending));
         return 1;
     }
+}
+
+// Haber botu tek seferlik modlari. host.RunAsync'ten ONCE donerler: katalog job'lari HIC baslamaz.
+//   --news-once [--holder actions] [--skip-if-recent <dk>]   bir tur at, cik (GitHub Actions bunu kullanir)
+//   --news-once --dry-run [--sample N]                       hicbir sey yazmadan say, N haberi ekrana yazdir
+//   --news-backfill <gun>                                    ilk dolum: gunluk tavan 250, gorsel uretmez
+if (args.Contains("--news-once") || args.Contains("--news-backfill"))
+{
+    string? ArgValue(string name)
+    {
+        var i = Array.IndexOf(args, name);
+        return i >= 0 && i + 1 < args.Length ? args[i + 1] : null;
+    }
+
+    var backfillDays = 0;
+    if (args.Contains("--news-backfill") && (!int.TryParse(ArgValue("--news-backfill"), out backfillDays) || backfillDays is < 1 or > 30))
+    {
+        Console.WriteLine("Kullanim: --news-backfill <gun 1-30>");
+        return 1;
+    }
+
+    var options = new NewsRunOptions
+    {
+        Holder = ArgValue("--holder") ?? "manual",
+        DryRun = args.Contains("--dry-run"),
+        Sample = int.TryParse(ArgValue("--sample"), out var sample) ? Math.Clamp(sample, 0, 20) : 0,
+        BackfillDays = backfillDays,
+        SkipIfCompletedWithin = int.TryParse(ArgValue("--skip-if-recent"), out var recentMin) && recentMin > 0
+            ? TimeSpan.FromMinutes(recentMin)
+            : null
+    };
+
+    using var newsScope = host.Services.CreateScope();
+    var runner = newsScope.ServiceProvider.GetRequiredService<NewsIngestRunner>();
+    using var newsCts = new CancellationTokenSource(TimeSpan.FromMinutes(backfillDays > 0 ? 120 : 9));
+    var newsReport = await runner.RunAsync(options, newsCts.Token);
+    Console.WriteLine(newsReport.ToString());
+    host.Services.GetService<NewsImageStore>()?.Dispose();
+    return 0;
 }
 
 logger.LogInformation("=== Pause Menu Worker basladi ===");

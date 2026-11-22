@@ -59,7 +59,7 @@ namespace GGHub.Infrastructure.Services
         {
             if (!_gemini.Models.ContainsKey(dto.PrimaryModel) || !_gemini.Models.ContainsKey(dto.FallbackModel))
                 throw new ArgumentException("Model fiyat tablosunda yok. Bilinen modellerden birini seçin.");
-            if (dto.TranslationMonthlyBudgetTry < 0 || dto.AgentMonthlyBudgetTry < 0)
+            if (dto.TranslationMonthlyBudgetTry < 0 || dto.AgentMonthlyBudgetTry < 0 || dto.NewsMonthlyBudgetTry < 0)
                 throw new ArgumentException("Bütçe tavanı negatif olamaz.");
             if (dto.UsdToTryRate <= 0)
                 throw new ArgumentException("Kur sıfırdan büyük olmalı.");
@@ -85,6 +85,10 @@ namespace GGHub.Infrastructure.Services
                 s.EnglishAgentShare = Math.Clamp(dto.EnglishAgentShare, 0, 90);
                 s.ActiveFromHour = dto.ActiveFromHour;
                 s.ActiveToHour = dto.ActiveToHour;
+                s.NewsEnabled = dto.NewsEnabled;
+                s.NewsMonthlyBudgetTry = dto.NewsMonthlyBudgetTry;
+                s.NewsDailyArticleCap = Math.Clamp(dto.NewsDailyArticleCap, 0, 200);
+                s.NewsDailyGeneratedImageCap = Math.Clamp(dto.NewsDailyGeneratedImageCap, 0, 50);
             }, ct);
 
             _logger.LogInformation("[AiAgents] Ayarlar guncellendi. Motor: {Enabled}", updated.AgentsEnabled);
@@ -111,9 +115,16 @@ namespace GGHub.Infrastructure.Services
             EnglishAgentShare = s.EnglishAgentShare,
             ActiveFromHour = s.ActiveFromHour,
             ActiveToHour = s.ActiveToHour,
+            NewsEnabled = s.NewsEnabled,
+            NewsMonthlyBudgetTry = s.NewsMonthlyBudgetTry,
+            NewsDailyArticleCap = s.NewsDailyArticleCap,
+            NewsDailyGeneratedImageCap = s.NewsDailyGeneratedImageCap,
             UpdatedAt = s.UpdatedAt,
             HostEnabled = _host.HostEnabled,
-            KnownModels = _gemini.Models.Keys.OrderBy(k => k).ToList()
+            // Gorsel modelleri metin modeli olarak secilemez.
+            KnownModels = _gemini.Models.Keys
+                .Where(k => !k.EndsWith("-image", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(k => k).ToList()
         };
 
         // ------------------------------------------------------------------ botlar
@@ -442,7 +453,7 @@ namespace GGHub.Infrastructure.Services
 
             var report = new AiUsageReportDto();
 
-            foreach (var source in new[] { GeminiSources.Translation, GeminiSources.AiAgent })
+            foreach (var source in new[] { GeminiSources.Translation, GeminiSources.AiAgent, GeminiSources.News })
             {
                 var st = await _budget.GetStatusAsync(source, ct);
                 report.Budgets.Add(new AiBudgetStatusDto

@@ -180,6 +180,8 @@ builder.Services.AddHostedService<BirthdayGreetingJob>();
 // Besinci mesru istisna: hata kaydi yazicisi. Prod'daki hatalari yazmak icin prod'da calismak
 // ZORUNDA. Hata olmadikca bos bekler (kuyruk), CPU maliyeti yok.
 builder.Services.AddScoped<IErrorLogService, ErrorLogService>();
+// Haberler: yalniz okuma. Yazan NewsIngestJob, Worker'da (Railway'de calismaz).
+builder.Services.AddScoped<INewsService, GGHub.Infrastructure.Services.News.NewsService>();
 builder.Services.AddHostedService<ErrorLogWriter>();
 // Dorduncu mesru istisna: AI bot motoru. Kullaniciya DM atan, gonderisine yanit veren bir is
 // prod'da calismak ZORUNDA (SignalR ve push yalnizca WebAPI'den gider). Iki kapi: host kapisi

@@ -22,6 +22,12 @@ namespace GGHub.Application.Dtos
 
         public int ActiveFromHour { get; set; }
         public int ActiveToHour { get; set; }
+
+        public bool NewsEnabled { get; set; }
+        public decimal NewsMonthlyBudgetTry { get; set; }
+        public int NewsDailyArticleCap { get; set; }
+        public int NewsDailyGeneratedImageCap { get; set; }
+
         public DateTime UpdatedAt { get; set; }
 
         /// <summary>Salt okunur: sunucunun host kapisi (Railway env AiAgents__HostEnabled).</summary>

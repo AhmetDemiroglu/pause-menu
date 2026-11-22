@@ -43,7 +43,7 @@ export type SiteActionName =
  * "/other" olarak gider; backend de bilmedigi sablonu ayni sekilde ele alir.
  */
 const STATIC_ROUTES = new Set([
-    "/", "/discover", "/agenda", "/lists", "/my-lists", "/wishlist", "/favorites", "/profile", "/messages",
+    "/", "/discover", "/agenda", "/news", "/lists", "/my-lists", "/wishlist", "/favorites", "/profile", "/messages",
     "/login", "/register", "/forgot-password", "/reset-password",
     "/about", "/privacy", "/terms", "/child-safety", "/data-deletion", "/support", "/my-reports", "/birthday", "/marketing",
     "/download", "/download-app", "/ai-bots",
@@ -51,6 +51,7 @@ const STATIC_ROUTES = new Set([
 
 const DYNAMIC_ROUTES: Array<[prefix: string, template: string]> = [
     ["/games/", "/games/[id]"],
+    ["/news/", "/news/[slug]"],
     ["/lists/", "/lists/[listId]"],
     ["/posts/", "/posts/[postId]"],
     ["/profiles/", "/profiles/[username]"],

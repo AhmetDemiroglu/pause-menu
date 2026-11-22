@@ -21,6 +21,11 @@ export interface AiSettings {
     englishAgentShare: number;
     activeFromHour: number;
     activeToHour: number;
+    /** Haber botu ana salteri (varsayilan kapali). */
+    newsEnabled: boolean;
+    newsMonthlyBudgetTry: number;
+    newsDailyArticleCap: number;
+    newsDailyGeneratedImageCap: number;
     updatedAt: string;
     /** Salt okunur: sunucunun host kapisi (Railway env AiAgents__HostEnabled). */
     hostEnabled: boolean;

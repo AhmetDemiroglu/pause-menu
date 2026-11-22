@@ -51,6 +51,8 @@ namespace GGHub.Infrastructure.Services
             ["/"] = "home",
             ["/discover"] = "discover",
             ["/agenda"] = "agenda",
+            ["/news"] = "news",
+            ["/news/[slug]"] = "news",
             ["/games/[id]"] = "games",
             ["/lists"] = "lists",
             ["/lists/[listId]"] = "lists",

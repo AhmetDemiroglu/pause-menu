@@ -40,6 +40,18 @@ export const shrinkForUpload = async (
   }
 };
 
+const RAWG_MEDIA_PREFIX = 'https://media.rawg.io/media/';
+
+/**
+ * RAWG gorselini CDN'de kucultur (/media/resize/{genislik}/-/...). API orijinal dosyayi veriyor;
+ * tek kapak 8 MB olabiliyor. RAWG disindaki adresler oldugu gibi doner.
+ */
+export const getResizedGameImageUrl = (path: string | null | undefined, width: 420 | 640 | 1280): string | undefined => {
+  const url = getImageUrl(path);
+  if (!url || !url.startsWith(RAWG_MEDIA_PREFIX) || url.includes('/media/resize/')) return url;
+  return `${RAWG_MEDIA_PREFIX}resize/${width}/-/${url.slice(RAWG_MEDIA_PREFIX.length)}`;
+};
+
 export const getImageUrl = (path: string | null | undefined): string | undefined => {
   if (!path) {
     return undefined;

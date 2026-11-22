@@ -1,12 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import "dayjs/locale/en";
-import "dayjs/locale/tr";
 import {
     Bot,
     CalendarDays,
@@ -20,9 +16,9 @@ import {
     List,
     LogIn,
     LogOut,
-    Mail,
     Menu,
     MessageSquare,
+    Newspaper,
     PanelLeftClose,
     PanelLeftOpen,
     Settings,
@@ -34,16 +30,14 @@ import { toast } from "sonner";
 import { BrandLogo } from "@core/components/base/brand-logo";
 import { useAuth } from "@core/hooks/use-auth";
 import { useSidebar } from "@/core/contexts/sidebar-context";
-import { useNavigationData, useRecentMessages } from "@/core/hooks/use-navigation-data";
+import { useNavigationData } from "@/core/hooks/use-navigation-data";
 import { getImageUrl } from "@/core/lib/get-image-url";
-import { UserLink } from "@/core/components/base/user-link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/core/components/ui/avatar";
 import { Badge } from "@/core/components/ui/badge";
 import { Button } from "@/core/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/core/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/core/components/ui/alert-dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/core/components/ui/popover";
 import { Separator } from "@/core/components/ui/separator";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/core/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/core/components/ui/tooltip";
@@ -51,8 +45,6 @@ import { LanguageSwitcher } from "@/core/components/base/language-switcher";
 import { ThemeToggleButton } from "@/core/components/base/theme-toggle-button";
 import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { useLocalizedHref } from "@/core/hooks/use-localized-href";
-
-dayjs.extend(relativeTime);
 
 // ─── Sidebar Trigger (hamburger button for mobile) ───────────────────────────
 export function SidebarTrigger() {
@@ -118,17 +110,10 @@ function SidebarInner({ isMobile }: { isMobile: boolean }) {
     const { isAuthenticated, user, logout } = useAuth();
     const { unreadMsgCount, profile } = useNavigationData();
 
-    const [messagesOpen, setMessagesOpen] = useState(false);
     const [logoutOpen, setLogoutOpen] = useState(false);
-
-    const { data: recentMessages } = useRecentMessages(messagesOpen);
 
     // Collapsed state is always false on mobile (always expanded)
     const collapsed = isMobile ? false : isCollapsed;
-
-    useEffect(() => {
-        dayjs.locale(locale === "tr" ? "tr" : "en");
-    }, [locale]);
 
     const handleLogout = () => {
         logout();
@@ -152,6 +137,7 @@ function SidebarInner({ isMobile }: { isMobile: boolean }) {
         { href: "/", label: t("nav.home"), icon: Home },
         { href: "/discover", label: t("nav.discover"), icon: Gamepad2 },
         { href: "/agenda", label: t("nav.agenda"), icon: CalendarDays },
+        { href: "/news", label: t("nav.news"), icon: Newspaper },
         { href: "/ai-bots", label: t("nav.aiClub"), icon: Bot },
         ...(isAuthenticated
             ? [
@@ -192,104 +178,21 @@ function SidebarInner({ isMobile }: { isMobile: boolean }) {
                     />
                 )}
 
-                {/* ── Messages + admin ───────────────────────────────────── */}
-                {isAuthenticated && (
+                {/* ── Admin ─────────────────────────────────────────────────
+                    Masaustu mesajlar ust cubukta (MessagesMenu): menuye sayfa eklendikce cubuk kaymasin. */}
+                {isAuthenticated && user?.role === "Admin" && (
                     <>
                         <div className="sidebar-section py-1">
                             <Separator className="my-1" />
                         </div>
-
-                        {/* Messages popover (desktop sidebar) */}
-                        {!isMobile && (
-                            <Popover open={messagesOpen} onOpenChange={setMessagesOpen}>
-                                <PopoverTrigger asChild>
-                                    <NavButton label={t("nav.messages")} icon={Mail} collapsed={collapsed} badge={unreadMsgCount?.count} />
-                                </PopoverTrigger>
-                                <PopoverContent className="w-80 overflow-hidden rounded-2xl p-0" side="right" align="start" collisionPadding={12}>
-                                    <div className="border-b p-3">
-                                        <h3 className="font-semibold">{t("nav.messagesTitle")}</h3>
-                                    </div>
-                                    <div className="max-h-[min(60vh,20rem)] overflow-y-auto">
-                                        {recentMessages?.length ? (
-                                            recentMessages.slice(0, 5).map((conversation) => {
-                                                // ConversationDto ad/soyad tasimiyor; displayName() username'e duser.
-                                                // Gercek ad + isProfileAccessible icin tam UserDto; eski yanitlarda duz alanlara duseriz.
-                                                const partner = conversation.partner ?? {
-                                                    username: conversation.partnerUsername,
-                                                    profileImageUrl: conversation.partnerProfileImageUrl,
-                                                };
-                                                const closePopover = () => setMessagesOpen(false);
-
-                                                return (
-                                                    // Satiri kaplayan link: thread'e gider; avatar/ad z-20 ile ustte kalip profile gider.
-                                                    <div key={conversation.partnerId} className="relative border-b p-3 hover:bg-accent">
-                                                        <Link
-                                                            href={localizeHref(`/messages/${conversation.partnerUsername}`)}
-                                                            className="absolute inset-0 z-10 cursor-pointer"
-                                                            aria-label={t("nav.messagesTitle")}
-                                                            onClick={closePopover}
-                                                        />
-                                                        <div className="flex items-center gap-3">
-                                                            <UserLink
-                                                                user={partner}
-                                                                variant="avatar"
-                                                                className="relative z-20 shrink-0"
-                                                                avatarClassName="h-9 w-9"
-                                                                avatarFallback={conversation.partnerUsername.charAt(0).toUpperCase()}
-                                                                onNavigate={closePopover}
-                                                            />
-                                                            <div className="min-w-0 flex-1">
-                                                                <div className="mb-0.5 flex items-center justify-between">
-                                                                    <UserLink
-                                                                        user={partner}
-                                                                        variant="name"
-                                                                        className="relative z-20 truncate text-sm font-semibold hover:underline"
-                                                                        onNavigate={closePopover}
-                                                                    />
-                                                                    {conversation.unreadCount > 0 && (
-                                                                        <Badge variant="default" className="ml-2 flex h-5 w-5 shrink-0 items-center justify-center p-0 text-xs">
-                                                                            {conversation.unreadCount}
-                                                                        </Badge>
-                                                                    )}
-                                                                </div>
-                                                                <p className="truncate text-xs text-muted-foreground">{conversation.lastMessage}</p>
-                                                                <p className="mt-0.5 text-xs text-muted-foreground">{dayjs(conversation.lastMessageSentAt).fromNow()}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })
-                                        ) : (
-                                            <div className="p-8 text-center text-sm text-muted-foreground">{t("nav.noMessages")}</div>
-                                        )}
-                                    </div>
-                                    <div className="border-t p-2">
-                                        <Button variant="ghost" className="w-full text-sm" asChild>
-                                            <Link href={localizeHref("/messages")} onClick={() => setMessagesOpen(false)}>
-                                                {t("nav.viewAllMessages")}
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
-                        )}
-
-                        {/* Admin Panel */}
-                        {user?.role === "Admin" && (
-                            <>
-                                <div className="sidebar-section py-1">
-                                    <Separator className="my-1" />
-                                </div>
-                                <NavItem
-                                    href={localizeHref("/dashboard")}
-                                    label={t("nav.adminPanel")}
-                                    icon={LayoutDashboard}
-                                    active={isActive("/dashboard")}
-                                    collapsed={collapsed}
-                                    onClick={onLinkClick}
-                                />
-                            </>
-                        )}
+                        <NavItem
+                            href={localizeHref("/dashboard")}
+                            label={t("nav.adminPanel")}
+                            icon={LayoutDashboard}
+                            active={isActive("/dashboard")}
+                            collapsed={collapsed}
+                            onClick={onLinkClick}
+                        />
                     </>
                 )}
             </nav>
@@ -510,54 +413,3 @@ function NavItem({ href, label, icon: Icon, active, collapsed, badge, onClick }:
 
     return item;
 }
-
-// ─── NavButton Component (for popovers like notifications) ────────────────────
-interface NavButtonProps {
-    label: string;
-    icon: React.ComponentType<{ className?: string }>;
-    collapsed: boolean;
-    badge?: number;
-}
-
-const NavButton = React.forwardRef<HTMLButtonElement, NavButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>>(
-    ({ label, icon: Icon, collapsed, badge, ...props }, ref) => {
-        const btn = (
-            <button
-                ref={ref}
-                {...props}
-                className={`group relative flex w-full cursor-pointer items-center rounded-lg text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground ${
-                    collapsed ? "justify-center px-2 py-2.5" : "gap-3 px-3 py-2.5"
-                }`}
-            >
-                <Icon className="h-[1.15rem] w-[1.15rem] shrink-0" />
-                {!collapsed && <span className="sidebar-label truncate text-sm font-medium">{label}</span>}
-                {badge ? (
-                    collapsed ? (
-                        <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive" />
-                    ) : (
-                        <Badge variant="destructive" className="sidebar-label ml-auto flex h-5 min-w-5 items-center justify-center p-0 text-xs">
-                            {badge}
-                        </Badge>
-                    )
-                ) : null}
-            </button>
-        );
-
-        if (collapsed) {
-            return (
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>{btn}</TooltipTrigger>
-                        <TooltipContent side="right">
-                            <span>{label}</span>
-                            {badge ? <Badge variant="destructive" className="ml-2 h-4 px-1 text-[10px]">{badge}</Badge> : null}
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            );
-        }
-
-        return btn;
-    }
-);
-NavButton.displayName = "NavButton";

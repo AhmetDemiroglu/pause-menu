@@ -1,6 +1,7 @@
 export { axiosInstance, setAuthTokens, setLogoutCallback, setLocaleGetter } from './client';
 export * from './auth';
 export { gameApi } from './game';
+export { newsApi } from './news';
 export * from './list';
 export * from './review';
 export * from './profile';

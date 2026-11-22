@@ -144,9 +144,12 @@ namespace GGHub.Infrastructure.Services
                 .ToListAsync(cancellationToken);
 
             var rate = settings.UsdToTryRate > 0 ? settings.UsdToTryRate : 1m;
-            var limitTry = source == GeminiSources.AiAgent
-                ? settings.AgentMonthlyBudgetTry
-                : settings.TranslationMonthlyBudgetTry;
+            var limitTry = source switch
+            {
+                GeminiSources.AiAgent => settings.AgentMonthlyBudgetTry,
+                GeminiSources.News => settings.NewsMonthlyBudgetTry,
+                _ => settings.TranslationMonthlyBudgetTry
+            };
             var limitUsd = limitTry / rate;
 
             var spent = monthRows.Sum(u => u.SpentUsd);

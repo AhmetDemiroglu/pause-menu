@@ -289,4 +289,34 @@ export const socialPostJsonLd = (post: Post, locale: AppLocale): JsonLdObject =>
     };
 };
 
+/** Haber: NewsArticle. Yazar kurum (Pause Menu); kaynaklar isBasedOn ile baglanir. */
+export const newsArticleJsonLd = (input: {
+    locale: AppLocale;
+    path: string;
+    headline: string;
+    description: string;
+    image?: string | null;
+    datePublished: string;
+    sources: { name: string; url: string }[];
+}): JsonLdObject => {
+    const url = localizedUrl(input.path, input.locale);
+    return {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "@id": `${url}#article`,
+        url,
+        mainEntityOfPage: url,
+        inLanguage: inLanguage(input.locale),
+        headline: truncate(input.headline, 110),
+        description: input.description,
+        datePublished: input.datePublished,
+        dateModified: input.datePublished,
+        ...(input.image ? { image: [absoluteUrl(input.image)] } : {}),
+        author: { "@id": ORGANIZATION_ID },
+        publisher: { "@id": ORGANIZATION_ID },
+        isBasedOn: input.sources.map((s) => ({ "@type": "CreativeWork", name: s.name, url: s.url })),
+        isPartOf: { "@id": WEBSITE_ID },
+    };
+};
+
 export { person as personJsonLd };

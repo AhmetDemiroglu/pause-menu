@@ -89,6 +89,11 @@ namespace GGHub.Infrastructure.Persistence
         public DbSet<AppReleasePolicy> AppReleasePolicies { get; set; }
         public DbSet<ErrorGroup> ErrorGroups { get; set; }
         public DbSet<ErrorEvent> ErrorEvents { get; set; }
+        public DbSet<NewsArticle> NewsArticles { get; set; }
+        public DbSet<NewsArticleSource> NewsArticleSources { get; set; }
+        public DbSet<NewsFeedState> NewsFeedStates { get; set; }
+        public DbSet<NewsRunLease> NewsRunLeases { get; set; }
+        public DbSet<NewsSkippedItem> NewsSkippedItems { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Raporlayan istege bagli (misafir geri bildirimi). Hesap silinince raporlari
@@ -853,6 +858,83 @@ namespace GGHub.Infrastructure.Persistence
                 // Saklama budamasi.
                 entity.HasIndex(e => e.OccurredAt)
                     .HasDatabaseName("IX_ErrorEvents_OccurredAt");
+            });
+
+            // Oyun haberleri (Worker yazar, API okur).
+            modelBuilder.Entity<NewsArticle>(entity =>
+            {
+                entity.Property(e => e.Slug).HasMaxLength(160).IsRequired();
+                entity.Property(e => e.TitleTr).HasMaxLength(300).IsRequired();
+                entity.Property(e => e.TitleEn).HasMaxLength(300).IsRequired();
+                entity.Property(e => e.SummaryTr).HasMaxLength(800).IsRequired();
+                entity.Property(e => e.SummaryEn).HasMaxLength(800).IsRequired();
+                entity.Property(e => e.BodyTr).HasMaxLength(6000).IsRequired();
+                entity.Property(e => e.BodyEn).HasMaxLength(6000).IsRequired();
+                entity.Property(e => e.ImageUrl).HasMaxLength(600);
+
+                entity.HasIndex(e => e.Slug).IsUnique().HasDatabaseName("IX_NewsArticles_Slug");
+
+                // Liste: gizli olmayanlar, en yeni once, istege bagli kategori.
+                entity.HasIndex(e => new { e.IsHidden, e.PublishedAt })
+                    .HasDatabaseName("IX_NewsArticles_IsHidden_PublishedAt");
+                entity.HasIndex(e => new { e.Category, e.PublishedAt })
+                    .HasDatabaseName("IX_NewsArticles_Category_PublishedAt");
+
+                // Oyun silinirse haber kalir, yalniz baglanti kopar.
+                entity.HasOne(e => e.Game)
+                    .WithMany()
+                    .HasForeignKey(e => e.GameId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<NewsArticleSource>(entity =>
+            {
+                entity.Property(e => e.SourceName).HasMaxLength(80).IsRequired();
+                entity.Property(e => e.FeedKey).HasMaxLength(40).IsRequired();
+                entity.Property(e => e.Url).HasMaxLength(800).IsRequired();
+                entity.Property(e => e.OriginalTitle).HasMaxLength(400).IsRequired();
+                entity.Property(e => e.Language).HasMaxLength(8).IsRequired();
+
+                entity.HasIndex(e => e.Url).IsUnique().HasDatabaseName("IX_NewsArticleSources_Url");
+
+                entity.HasOne(e => e.NewsArticle)
+                    .WithMany(a => a.Sources)
+                    .HasForeignKey(e => e.NewsArticleId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<NewsFeedState>(entity =>
+            {
+                entity.HasKey(e => e.FeedKey);
+                entity.Property(e => e.FeedKey).HasMaxLength(40);
+                entity.Property(e => e.ETag).HasMaxLength(200);
+                entity.Property(e => e.LastModified).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<NewsSkippedItem>(entity =>
+            {
+                entity.HasKey(e => e.Url);
+                entity.Property(e => e.Url).HasMaxLength(800);
+                entity.Property(e => e.Reason).HasMaxLength(40).IsRequired();
+                entity.HasIndex(e => e.SkippedAt).HasDatabaseName("IX_NewsSkippedItems_SkippedAt");
+            });
+
+            modelBuilder.Entity<NewsRunLease>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Holder).HasMaxLength(64);
+                entity.Property(e => e.LastCompletedBy).HasMaxLength(64);
+                entity.HasData(new NewsRunLease { Id = 1, ExpiresAt = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc) });
+            });
+
+            // Haber ayarlari: AiSettingsProvider satiri ham SQL ile acarken bu kolonlari yazmiyor,
+            // varsayilanlar DB'den gelsin.
+            modelBuilder.Entity<AiSettings>(entity =>
+            {
+                entity.Property(e => e.NewsEnabled).HasDefaultValue(false);
+                entity.Property(e => e.NewsMonthlyBudgetTry).HasPrecision(12, 2).HasDefaultValue(450m);
+                entity.Property(e => e.NewsDailyArticleCap).HasDefaultValue(40);
+                entity.Property(e => e.NewsDailyGeneratedImageCap).HasDefaultValue(8);
             });
         }
     }

@@ -30,6 +30,19 @@ namespace GGHub.Application.Interfaces
         /// <exception cref="GeminiBudgetExceededException">Kaynagin aylik tavani dolduysa (yalniz ucretli model).</exception>
         /// <exception cref="GeminiQuotaExceededException">Google 429 dondu (kota ya da bakiye).</exception>
         Task<GeminiGenerateResult> GenerateAsync(GeminiGenerateRequest request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Gorsel uretir (haber botunun temsili gorseli). Basarisizsa null. Harcama verilen kaynaga yazilir.
+        /// </summary>
+        /// <exception cref="GeminiBudgetExceededException">Kaynagin aylik tavani dolduysa.</exception>
+        /// <exception cref="GeminiQuotaExceededException">Google 429 dondu.</exception>
+        Task<GeminiImageResult?> GenerateImageAsync(string source, string model, string prompt, string aspectRatio, CancellationToken cancellationToken = default);
+    }
+
+    public sealed class GeminiImageResult
+    {
+        public byte[] Bytes { get; init; } = Array.Empty<byte>();
+        public string MimeType { get; init; } = "image/png";
     }
 
     /// <summary>Konusma sirasi. Role: "user" ya da "model".</summary>
@@ -43,6 +56,9 @@ namespace GGHub.Application.Interfaces
         public IReadOnlyList<GeminiTurn> Turns { get; init; } = Array.Empty<GeminiTurn>();
         public int MaxOutputTokens { get; init; } = 400;
         public double Temperature { get; init; } = 0.9;
+
+        /// <summary>Yanit JSON olarak istenir (responseMimeType). Desteklemeyen modelde cagiran istem icinde sema verir.</summary>
+        public bool JsonOutput { get; init; }
     }
 
     public sealed class GeminiGenerateResult

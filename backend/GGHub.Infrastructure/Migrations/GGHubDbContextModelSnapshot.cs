@@ -344,6 +344,27 @@ namespace GGHub.Infrastructure.Migrations
                     b.Property<int>("MaxUnsolicitedDmPerUserPerWeek")
                         .HasColumnType("integer");
 
+                    b.Property<int>("NewsDailyArticleCap")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(40);
+
+                    b.Property<int>("NewsDailyGeneratedImageCap")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(8);
+
+                    b.Property<bool>("NewsEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<decimal>("NewsMonthlyBudgetTry")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(12, 2)
+                        .HasColumnType("numeric(12,2)")
+                        .HasDefaultValue(450m);
+
                     b.Property<string>("PrimaryModel")
                         .IsRequired()
                         .HasMaxLength(48)
@@ -1121,6 +1142,219 @@ namespace GGHub.Infrastructure.Migrations
                         .HasDatabaseName("IX_Messages_SenderId_RecipientId_SentAt");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("GGHub.Core.Entities.NewsArticle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BodyEn")
+                        .IsRequired()
+                        .HasMaxLength(6000)
+                        .HasColumnType("character varying(6000)");
+
+                    b.Property<string>("BodyTr")
+                        .IsRequired()
+                        .HasMaxLength(6000)
+                        .HasColumnType("character varying(6000)");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("GameId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ImageKind")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(600)
+                        .HasColumnType("character varying(600)");
+
+                    b.Property<int>("Importance")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("PublishedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)");
+
+                    b.Property<string>("SummaryEn")
+                        .IsRequired()
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
+
+                    b.Property<string>("SummaryTr")
+                        .IsRequired()
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
+
+                    b.Property<string>("TitleEn")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("TitleTr")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("IX_NewsArticles_Slug");
+
+                    b.HasIndex("Category", "PublishedAt")
+                        .HasDatabaseName("IX_NewsArticles_Category_PublishedAt");
+
+                    b.HasIndex("IsHidden", "PublishedAt")
+                        .HasDatabaseName("IX_NewsArticles_IsHidden_PublishedAt");
+
+                    b.ToTable("NewsArticles");
+                });
+
+            modelBuilder.Entity("GGHub.Core.Entities.NewsArticleSource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FeedKey")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
+                    b.Property<int>("NewsArticleId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("OriginalTitle")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
+
+                    b.Property<DateTime>("PublishedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SourceName")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NewsArticleId");
+
+                    b.HasIndex("Url")
+                        .IsUnique()
+                        .HasDatabaseName("IX_NewsArticleSources_Url");
+
+                    b.ToTable("NewsArticleSources");
+                });
+
+            modelBuilder.Entity("GGHub.Core.Entities.NewsFeedState", b =>
+                {
+                    b.Property<string>("FeedKey")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<int>("ConsecutiveFailures")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ETag")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("LastFetchedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModified")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("FeedKey");
+
+                    b.ToTable("NewsFeedStates");
+                });
+
+            modelBuilder.Entity("GGHub.Core.Entities.NewsRunLease", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Holder")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("LastCompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastCompletedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NewsRunLeases");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ExpiresAt = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        });
+                });
+
+            modelBuilder.Entity("GGHub.Core.Entities.NewsSkippedItem", b =>
+                {
+                    b.Property<string>("Url")
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<DateTime>("SkippedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Url");
+
+                    b.HasIndex("SkippedAt")
+                        .HasDatabaseName("IX_NewsSkippedItems_SkippedAt");
+
+                    b.ToTable("NewsSkippedItems");
                 });
 
             modelBuilder.Entity("GGHub.Core.Entities.Notification", b =>
@@ -2333,6 +2567,27 @@ namespace GGHub.Infrastructure.Migrations
                     b.Navigation("Sender");
                 });
 
+            modelBuilder.Entity("GGHub.Core.Entities.NewsArticle", b =>
+                {
+                    b.HasOne("GGHub.Core.Entities.Game", "Game")
+                        .WithMany()
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("GGHub.Core.Entities.NewsArticleSource", b =>
+                {
+                    b.HasOne("GGHub.Core.Entities.NewsArticle", "NewsArticle")
+                        .WithMany("Sources")
+                        .HasForeignKey("NewsArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NewsArticle");
+                });
+
             modelBuilder.Entity("GGHub.Core.Entities.Notification", b =>
                 {
                     b.HasOne("GGHub.Core.Entities.User", "Actor")
@@ -2773,6 +3028,11 @@ namespace GGHub.Infrastructure.Migrations
             modelBuilder.Entity("GGHub.Core.Entities.Game", b =>
                 {
                     b.Navigation("Tags");
+                });
+
+            modelBuilder.Entity("GGHub.Core.Entities.NewsArticle", b =>
+                {
+                    b.Navigation("Sources");
                 });
 
             modelBuilder.Entity("GGHub.Core.Entities.Post", b =>

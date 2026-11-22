@@ -8,6 +8,7 @@ import { absoluteUrl } from "@/core/seo/site";
  *   /sitemaps/games-{n}.xml    kalite esigini gecen oyunlar, 5.000'lik parcalar
  *   /sitemaps/lists-{n}.xml    herkese acik listeler
  *   /sitemaps/profiles-{n}.xml icerigi olan herkese acik profiller
+ *   /sitemaps/news-1.xml       son 1.000 haber (tek parca)
  */
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,7 @@ const KINDS: Record<SitemapKind, { path: (key: string) => string; changeFrequenc
     games: { path: (slug) => `/games/${slug}`, changeFrequency: "weekly", priority: 0.8 },
     lists: { path: (id) => `/lists/${id}`, changeFrequency: "weekly", priority: 0.6 },
     profiles: { path: (username) => `/profiles/${username}`, changeFrequency: "weekly", priority: 0.5 },
+    news: { path: (slug) => `/news/${slug}`, changeFrequency: "monthly", priority: 0.6 },
 };
 
 /**
@@ -25,6 +27,7 @@ const STATIC_PAGES: { path: string; priority: number; changeFrequency: SitemapUr
     { path: "/", priority: 1, changeFrequency: "daily" },
     { path: "/discover", priority: 0.9, changeFrequency: "daily" },
     { path: "/agenda", priority: 0.9, changeFrequency: "daily" },
+    { path: "/news", priority: 0.9, changeFrequency: "hourly" },
     { path: "/lists", priority: 0.8, changeFrequency: "daily" },
     { path: "/ai-bots", priority: 0.7, changeFrequency: "daily" },
     { path: "/about", priority: 0.7, changeFrequency: "monthly" },
@@ -44,7 +47,7 @@ const pagesSitemap = () => {
 };
 
 const parseFile = (file: string): { kind: SitemapKind; page: number } | null => {
-    const match = /^(games|lists|profiles)-(\d{1,4})\.xml$/.exec(file);
+    const match = /^(games|lists|profiles|news)-(\d{1,4})\.xml$/.exec(file);
     return match ? { kind: match[1] as SitemapKind, page: Number(match[2]) } : null;
 };
 

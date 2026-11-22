@@ -88,6 +88,11 @@ namespace GGHub.Infrastructure.Services
                 ["temperature"] = request.Temperature
             };
 
+            if (request.JsonOutput)
+            {
+                generationConfig["responseMimeType"] = "application/json";
+            }
+
             // Bot metinleri kisa ve gunluk dilde; dusunme adimi yalnizca token ve gecikme ekliyor.
             // "minimal" Gemma 4 ve Gemini 3 ailesinde gecerli (ai.google.dev, Eyl 2026).
             if (request.Model.StartsWith("gemma-", StringComparison.OrdinalIgnoreCase) ||
@@ -222,6 +227,94 @@ namespace GGHub.Infrastructure.Services
             };
         }
 
+        public async Task<GeminiImageResult?> GenerateImageAsync(
+            string source, string model, string prompt, string aspectRatio, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(model) || string.IsNullOrWhiteSpace(prompt))
+            {
+                return null;
+            }
+
+            await _budget.EnsureBudgetAvailableAsync(source, model, cancellationToken);
+
+            var requestBody = new Dictionary<string, object>
+            {
+                ["contents"] = new[] { new { role = "user", parts = new[] { new { text = prompt } } } },
+                ["generationConfig"] = new Dictionary<string, object>
+                {
+                    ["responseModalities"] = new[] { "IMAGE" },
+                    ["imageConfig"] = new { aspectRatio }
+                }
+            };
+
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent";
+            using var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = JsonContent.Create(requestBody) };
+            request.Headers.Add("x-goog-api-key", _settings.ApiKey);
+
+            using var response = await _httpClient.SendAsync(request, cancellationToken);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            {
+                await _budget.RecordRejectedCallAsync(source, model, cancellationToken);
+                var quotaBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                var isBilling = quotaBody.Contains("prepayment", StringComparison.OrdinalIgnoreCase)
+                    || quotaBody.Contains("credits are depleted", StringComparison.OrdinalIgnoreCase)
+                    || quotaBody.Contains("billing", StringComparison.OrdinalIgnoreCase);
+                _logger.LogWarning("[Gemini] Gorsel 429 ({Model}). {Body}", model, SafeText.Truncate(quotaBody, 300));
+                throw new GeminiQuotaExceededException($"Gemini gorsel kotasi doldu (HTTP 429, {model}).", isBilling);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogWarning("[Gemini] Gorsel HTTP {Status} ({Model}): {Body}",
+                    (int)response.StatusCode, model, SafeText.Truncate(body, 300));
+                return null;
+            }
+
+            GeminiResponse? result;
+            try
+            {
+                result = await response.Content.ReadFromJsonAsync<GeminiResponse>(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "[Gemini] Gorsel yaniti parse edilemedi ({Model}).", model);
+                return null;
+            }
+
+            var inputTokens = result?.UsageMetadata?.PromptTokenCount ?? 0;
+            var outputTokens = (result?.UsageMetadata?.CandidatesTokenCount ?? 0)
+                             + (result?.UsageMetadata?.ThoughtsTokenCount ?? 0);
+            if (inputTokens > 0 || outputTokens > 0)
+            {
+                await _budget.RecordUsageAsync(source, model, inputTokens, outputTokens, cancellationToken);
+            }
+
+            var inline = result?.Candidates?.FirstOrDefault()?.Content?.Parts?
+                .Select(p => p.InlineData)
+                .FirstOrDefault(d => d != null && !string.IsNullOrEmpty(d.Data));
+            if (inline?.Data is null)
+            {
+                _logger.LogWarning("[Gemini] Gorsel yanitinda gorsel yok ({Model}, {Reason}).",
+                    model, result?.Candidates?.FirstOrDefault()?.FinishReason);
+                return null;
+            }
+
+            try
+            {
+                return new GeminiImageResult
+                {
+                    Bytes = Convert.FromBase64String(inline.Data),
+                    MimeType = inline.MimeType ?? "image/png"
+                };
+            }
+            catch (FormatException)
+            {
+                return null;
+            }
+        }
+
         private static string BuildPrompt(string englishText)
         {
             // Ham string literal: kapanis tirnaginin girintisi taban kabul edilir, yani her satirin
@@ -289,6 +382,18 @@ namespace GGHub.Infrastructure.Services
 
             [JsonPropertyName("thought")]
             public bool? Thought { get; set; }
+
+            [JsonPropertyName("inlineData")]
+            public InlineData? InlineData { get; set; }
+        }
+
+        private class InlineData
+        {
+            [JsonPropertyName("mimeType")]
+            public string? MimeType { get; set; }
+
+            [JsonPropertyName("data")]
+            public string? Data { get; set; }
         }
     }
 }

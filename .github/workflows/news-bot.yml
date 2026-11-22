@@ -1,0 +1,97 @@
+# Haber botu yedegi: Mac uyurken ya da kapaliyken haber turunu GitHub Actions atar.
+#
+# Asil calisan Mac'teki Worker'dir (20 dakikada bir). Bu is saatte bir uyanir, Worker'i derler ve
+# "--news-once --skip-if-recent 40" ile calistirir: son 40 dakikada bir tur atilmissa (Mac aciksa)
+# hicbir kaynaga istek atmadan, hicbir model cagrisi yapmadan cikar.
+#
+# Neden yalniz schedule + elle tetik: repo herkese acik; pull_request tetigi olsaydi baskasinin kodu
+# bu sirlarla calisabilirdi. Sirlar tanimli degilse is sessizce atlanir (kurulum bitmeden hata
+# e-postasi yagmasin).
+#
+# Sirlar (Settings > Secrets and variables > Actions):
+#   NEWS_DB_CONNECTION, R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, R2_PUBLIC_URL, GEMINI_API_KEY
+name: Haber botu
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      skip_if_recent:
+        description: "Son kac dakikada tur atildiysa atla (0 = her durumda calis)"
+        required: false
+        default: "40"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: news-bot
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Sirlar tanimli mi
+        id: guard
+        env:
+          DB: ${{ secrets.NEWS_DB_CONNECTION }}
+          KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -n "$DB" ] && [ -n "$KEY" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Sirlar henuz tanimli degil, is atlandi."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.guard.outputs.ready == 'true'
+        with:
+          sparse-checkout: backend
+
+      - uses: actions/setup-dotnet@v4
+        if: steps.guard.outputs.ready == 'true'
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: NuGet onbellegi
+        if: steps.guard.outputs.ready == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('backend/**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Worker'i derle
+        if: steps.guard.outputs.ready == 'true'
+        run: dotnet publish backend/GGHub.Worker/GGHub.Worker.csproj -c Release -o "$RUNNER_TEMP/worker" --nologo -v quiet
+
+      - name: Haber turu
+        if: steps.guard.outputs.ready == 'true'
+        env:
+          GGHUB_BOT_HOME: ${{ runner.temp }}/bot
+          DOTNET_ENVIRONMENT: Production
+          ConnectionStrings__DefaultConnection: ${{ secrets.NEWS_DB_CONNECTION }}
+          R2__AccountId: ${{ secrets.R2_ACCOUNT_ID }}
+          R2__AccessKeyId: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2__SecretAccessKey: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2__BucketName: ${{ secrets.R2_BUCKET }}
+          R2__PublicUrl: ${{ secrets.R2_PUBLIC_URL }}
+          Gemini__ApiKey: ${{ secrets.GEMINI_API_KEY }}
+          SKIP_IF_RECENT: ${{ github.event.inputs.skip_if_recent || '40' }}
+        run: |
+          mkdir -p "$GGHUB_BOT_HOME"
+          # Yalniz konsol logu; sir icermez.
+          cat > "$GGHUB_BOT_HOME/appsettings.json" <<'JSON'
+          {
+            "Serilog": {
+              "Using": [ "Serilog.Sinks.Console" ],
+              "MinimumLevel": { "Default": "Information", "Override": { "Microsoft": "Warning", "System": "Warning" } },
+              "WriteTo": [ { "Name": "Console" } ]
+            }
+          }
+          JSON
+          "$RUNNER_TEMP/worker/GGHub.Worker" --news-once --holder actions --skip-if-recent "$SKIP_IF_RECENT"

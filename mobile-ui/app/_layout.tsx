@@ -123,6 +123,9 @@ function RootLayoutNav() {
         <Stack.Screen name="agenda" />
         {/* AI Kulubu: web'deki /ai-bots ile ayni yol. */}
         <Stack.Screen name="ai-bots" />
+        {/* Oyun haberleri: web'deki /news ve /news/[slug] ile ayni yol. */}
+        <Stack.Screen name="news/index" />
+        <Stack.Screen name="news/[slug]" />
         <Stack.Screen name="wishlist" />
         <Stack.Screen name="favorites" />
         <Stack.Screen name="my-reports" />

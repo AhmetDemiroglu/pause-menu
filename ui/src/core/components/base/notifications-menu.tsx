@@ -16,6 +16,7 @@ import { displayName } from "@/core/lib/display-name";
 import { cn } from "@/core/lib/utils";
 import { NotificationType, type NotificationDto } from "@/models/notifications/notification.model";
 import { UserLink } from "@/core/components/base/user-link";
+import { TopbarIconButton } from "@/core/components/base/topbar-icon-button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/core/components/ui/popover";
 
 dayjs.extend(relativeTime);
@@ -124,21 +125,7 @@ export function NotificationsMenu() {
     return (
         <Popover open={open} onOpenChange={handleOpenChange}>
             <PopoverTrigger asChild>
-                <button
-                    type="button"
-                    aria-label={t("nav.notifications")}
-                    className={cn(
-                        "relative flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground",
-                        open && "bg-accent text-foreground",
-                    )}
-                >
-                    <Bell className="size-5" />
-                    {unread > 0 ? (
-                        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold leading-none text-white ring-2 ring-background">
-                            {unread > 99 ? "99+" : unread}
-                        </span>
-                    ) : null}
-                </button>
+                <TopbarIconButton icon={Bell} label={t("nav.notifications")} badge={unread} active={open} />
             </PopoverTrigger>
             <PopoverContent
                 side="bottom"

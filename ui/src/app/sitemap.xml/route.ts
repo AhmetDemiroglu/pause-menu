@@ -11,7 +11,7 @@ import { absoluteUrl } from "@/core/seo/site";
 // altta fetch'ler Next Data Cache'inde zaten bir saat onbellekli.
 export const dynamic = "force-dynamic";
 
-const KINDS: SitemapKind[] = ["games", "lists", "profiles"];
+const KINDS: SitemapKind[] = ["games", "lists", "profiles", "news"];
 
 const pageCount = async (kind: SitemapKind) => {
     const { data } = await getSitemapPageServer(kind, 1);

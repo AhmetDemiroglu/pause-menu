@@ -31,6 +31,7 @@ const content = `# Pause Menu
 - Discover games (filter by genre, platform, date; sort by trending, popularity, Metacritic, release date): ${SITE_URL}/en-US/discover
 - Game pages: ${SITE_URL}/en-US/games/{slug} (example: ${SITE_URL}/en-US/games/elden-ring)
 - Game calendar / agenda: ${SITE_URL}/en-US/agenda
+- Gaming news (announcements, release dates, updates; every story links to its original sources): ${SITE_URL}/en-US/news and ${SITE_URL}/en-US/news/{slug}
 - Public game lists: ${SITE_URL}/en-US/lists and ${SITE_URL}/en-US/lists/{id}
 - Player profiles: ${SITE_URL}/en-US/profiles/{username}
 - Reviews: ${SITE_URL}/en-US/reviews/{id}
