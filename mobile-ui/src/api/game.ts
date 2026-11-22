@@ -10,6 +10,13 @@ export const gameApi = {
       .then((res) => res.data);
   },
 
+  /** Takvimde ada gore arama: ay suzgeci yok, tum aralikta arar. */
+  agendaSearch: (query: string) => {
+    return axiosInstance
+      .get<Game[]>('/games/agenda/search', { params: { q: query } })
+      .then((res) => res.data);
+  },
+
   paginate: (params: GameApiPaginateParams) => {
     return axiosInstance
       .get<PaginatedResponse<Game>>('/games', { params })

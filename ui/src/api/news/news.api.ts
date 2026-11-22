@@ -3,9 +3,11 @@ import { NEWS_PAGE_SIZE, type NewsCategory, type NewsListItem } from "@/models/n
 import type { PaginatedResponse } from "@/models/system/api.model";
 
 export const newsApi = {
-    list: (page: number, category?: NewsCategory | null) =>
+    list: (page: number, category?: NewsCategory | null, search?: string, days?: number) =>
         axiosInstance
-            .get<PaginatedResponse<NewsListItem>>("/news", { params: { page, pageSize: NEWS_PAGE_SIZE, category: category ?? undefined } })
+            .get<PaginatedResponse<NewsListItem>>("/news", {
+                params: { page, pageSize: NEWS_PAGE_SIZE, category: category ?? undefined, search: search || undefined, days: days || undefined },
+            })
             .then((res) => res.data),
     featured: () => axiosInstance.get<NewsListItem[]>("/news/featured", { params: { limit: 3 } }).then((res) => res.data),
     setHidden: (id: number, hidden: boolean) => axiosInstance.put(`/admin/news/${id}/hidden`, { hidden }),

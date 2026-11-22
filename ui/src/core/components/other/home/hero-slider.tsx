@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CalendarDays, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Play, Newspaper } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { agendaApi } from "@/api/agenda/agenda.api";
 import type { Game } from "@/models/gaming/game.model";
@@ -180,11 +180,17 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                     {t("home.agendaPromoTitle")}
                                 </h2>
                                 <p className="line-clamp-2 max-w-md text-sm text-[#14101F]/65 md:line-clamp-none md:text-base dark:text-white/65">{t("home.agendaPromoSubtitle")}</p>
-                                <div className="pt-1.5">
+                                <div className="flex flex-wrap gap-2 pt-1.5">
                                     <Link href={buildLocalizedPathname("/agenda", locale)} className="inline-flex">
                                         <Button size="lg" className="text-md cursor-pointer gap-2 font-semibold shadow-[0_8px_30px_-8px_rgba(0,0,0,0.6)] transition-transform hover:scale-[1.03]">
                                             <CalendarDays className="h-4 w-4" />
                                             {t("home.agendaPromoCta")}
+                                        </Button>
+                                    </Link>
+                                    <Link href={buildLocalizedPathname("/news", locale)} className="inline-flex">
+                                        <Button size="lg" variant="outline" className="text-md cursor-pointer gap-2 font-semibold transition-transform hover:scale-[1.03]">
+                                            <Newspaper className="h-4 w-4" />
+                                            {t("home.agendaPromoNewsCta")}
                                         </Button>
                                     </Link>
                                 </div>

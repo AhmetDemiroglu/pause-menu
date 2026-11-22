@@ -20,9 +20,11 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 interface GameCardProps {
   game: Game;
   variant?: 'compact' | 'list';
+  /** Kucuk kart bulundugu satirin yuksekligini doldurur (yatay seritte tum kartlar ayni boy olsun). */
+  fill?: boolean;
 }
 
-export function GameCard({ game, variant = 'compact' }: GameCardProps) {
+export function GameCard({ game, variant = 'compact', fill = false }: GameCardProps) {
   const { colors } = useTheme();
   const router = useRouter();
   const imageUri = getImageUrl(game.coverImage ?? game.backgroundImage);
@@ -85,7 +87,7 @@ export function GameCard({ game, variant = 'compact' }: GameCardProps) {
 
   return (
     <AnimatedPressable
-      style={[styles.compactCard, { backgroundColor: colors.surface }, animatedStyle]}
+      style={[styles.compactCard, fill && styles.compactFill, { backgroundColor: colors.surface }, animatedStyle]}
       onPress={handlePress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
@@ -148,6 +150,10 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
     overflow: 'hidden',
     marginBottom: Spacing.sm,
+  },
+  compactFill: {
+    flex: 1,
+    marginBottom: 0,
   },
   compactImage: {
     width: '100%',

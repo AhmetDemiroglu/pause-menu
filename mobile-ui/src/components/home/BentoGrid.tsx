@@ -27,31 +27,34 @@ export function BentoGrid({ trendingGames, leaderboard, showJoinCta }: BentoGrid
     <View style={styles.container}>
       <TrendingGames games={trendingGames} />
 
-      {/* Oyun Gundemi erisim karti: bu ay cikan/cikacak oyunlarin sayfasina goturur. */}
-      <Pressable
-        style={({ pressed }) => [
-          styles.agendaCard,
-          { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.85 : 1 },
-        ]}
-        onPress={() => {
-          haptics.impactLight();
-          router.push('/agenda');
-        }}
-      >
-        <View style={[styles.agendaIconWrap, { backgroundColor: `${colors.primary}18` }]}>
-          <Ionicons name="calendar" size={22} color={colors.primary} />
+      {/* Guncel kal karti: cikis takvimine ve oyun haberlerine goturur. */}
+      <View style={[styles.agendaCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <BrandLogo variant="primary" height={22} style={styles.agendaLogo} />
+        <Text style={[styles.agendaTitle, { color: colors.text }]}>{messages.agenda.homeCardTitle}</Text>
+        <Text style={[styles.agendaDescription, { color: colors.textSecondary }]}>{messages.agenda.homeCardDescription}</Text>
+        <View style={styles.agendaActions}>
+          <Pressable
+            style={({ pressed }) => [styles.agendaButton, { backgroundColor: colors.primary, opacity: pressed ? 0.85 : 1 }]}
+            onPress={() => {
+              haptics.impactLight();
+              router.push('/agenda');
+            }}
+          >
+            <Ionicons name="calendar" size={16} color="#ffffff" />
+            <Text style={[styles.agendaButtonText, { color: '#ffffff' }]}>{messages.nav.agenda}</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.agendaButton, styles.agendaButtonOutline, { borderColor: colors.border, opacity: pressed ? 0.85 : 1 }]}
+            onPress={() => {
+              haptics.impactLight();
+              router.push('/news');
+            }}
+          >
+            <Ionicons name="newspaper-outline" size={16} color={colors.text} />
+            <Text style={[styles.agendaButtonText, { color: colors.text }]}>{messages.nav.news}</Text>
+          </Pressable>
         </View>
-        <View style={styles.agendaTextWrap}>
-          <BrandLogo variant="primary" height={22} style={styles.agendaLogo} />
-          <Text style={[styles.agendaTitle, { color: colors.text }]}>
-            {messages.agenda.homeCardTitle}
-          </Text>
-          <Text style={[styles.agendaDescription, { color: colors.textSecondary }]} numberOfLines={2}>
-            {messages.agenda.homeCardDescription}
-          </Text>
-        </View>
-        <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
-      </Pressable>
+      </View>
 
       <LeaderboardCard users={leaderboard} />
 
@@ -85,25 +88,33 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   agendaCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
+    gap: Spacing.xs,
     marginHorizontal: Spacing.lg,
     marginBottom: Spacing.lg,
     padding: Spacing.lg,
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
   },
-  agendaIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: BorderRadius.full,
+  agendaActions: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    marginTop: Spacing.sm,
+  },
+  agendaButton: {
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: Spacing.xs,
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.md,
   },
-  agendaTextWrap: {
-    flex: 1,
-    gap: 2,
+  agendaButtonOutline: {
+    borderWidth: 1,
+  },
+  agendaButtonText: {
+    fontSize: FontSize.sm,
+    fontWeight: '700',
   },
   agendaLogo: {
     alignSelf: 'flex-start',

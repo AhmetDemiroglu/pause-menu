@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
+  ActivityIndicator,
   View,
   Text,
   StyleSheet,
@@ -12,6 +13,8 @@ import { useQuery } from '@tanstack/react-query';
 import { ScreenWrapper } from '@/src/components/common/ScreenWrapper';
 import { ScreenHeader } from '@/src/components/shell';
 import { EmptyState } from '@/src/components/common/EmptyState';
+import { SearchField } from '@/src/components/common/SearchField';
+import { useDebounce } from '@/src/hooks/use-debounce';
 import { LoadingScreen } from '@/src/components/common/LoadingScreen';
 import { SegmentedTabs } from '@/src/components/common/SegmentedTabs';
 import { BottomSheet, BottomSheetFlatList } from '@/src/components/common/BottomSheet';
@@ -112,6 +115,17 @@ export default function AgendaScreen() {
 
   const games = tab === 'upcoming' ? (data?.upcoming ?? []) : (data?.released ?? []);
 
+  // Ada gore arama: ay ve sekme suzgecinden bagimsiz, takvimin tum araliginda arar (web ile ayni uc).
+  const [searchInput, setSearchInput] = useState('');
+  const searchTerm = useDebounce(searchInput.trim(), 350);
+  const isSearching = searchTerm.length >= 2;
+  const searchQuery = useQuery({
+    queryKey: ['agenda-search', searchTerm],
+    queryFn: () => gameApi.agendaSearch(searchTerm),
+    enabled: isSearching,
+    staleTime: 5 * 60 * 1000,
+  });
+
   // Ayni gun (Tum Yil modunda ayni ay) cikan oyunlar tek baslik altinda toplanir;
   // API siralamasi korunur.
   const isYearView = month === 0;
@@ -177,6 +191,38 @@ export default function AgendaScreen() {
     <ScreenWrapper noPadding safeArea={false}>
       <ScreenHeader title={messages.nav.screenTitles.agenda} />
 
+      <SearchField
+        value={searchInput}
+        onChangeText={setSearchInput}
+        placeholder={messages.agenda.searchPlaceholder}
+        clearLabel={messages.agenda.searchClear}
+        style={styles.search}
+      />
+
+      {isSearching ? (
+        <FlatList
+          data={searchQuery.data ?? []}
+          keyExtractor={(game) => `s-${game.id}`}
+          renderItem={({ item }) => <GameCard game={item} variant="list" />}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          contentContainerStyle={[styles.listContent, { paddingBottom: tabBarHeight + Spacing.md }]}
+          ListHeaderComponent={
+            <View style={[styles.sectionTitleRow, styles.searchTitleRow]}>
+              <Ionicons name="search" size={18} color={colors.primary} />
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>{messages.agenda.searchResults}</Text>
+            </View>
+          }
+          ListEmptyComponent={
+            searchQuery.isPending ? (
+              <ActivityIndicator style={{ marginTop: Spacing.lg }} color={colors.primary} />
+            ) : (
+              <EmptyState icon="search-outline" title={searchQuery.isError ? messages.agenda.loadError : messages.agenda.searchEmpty} />
+            )
+          }
+        />
+      ) : (
+      <>
       {/* Ay + yil secici cipleri */}
       <View style={styles.controls}>
         <Pressable
@@ -269,7 +315,7 @@ export default function AgendaScreen() {
                     contentContainerStyle={styles.highlightsList}
                     renderItem={({ item: game }) => (
                       <View style={styles.highlightCard}>
-                        <GameCard game={game} variant="compact" />
+                        <GameCard game={game} variant="compact" fill />
                         <ReleaseBadge released={game.released} locale={locale} tbaLabel={messages.common.tba} />
                       </View>
                     )}
@@ -287,6 +333,8 @@ export default function AgendaScreen() {
             />
           }
         />
+      )}
+      </>
       )}
 
       <ValuePickerSheet
@@ -393,22 +441,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-    marginTop: Spacing.lg,
+    marginTop: Spacing.md,
     marginBottom: Spacing.sm,
   },
   sectionTitle: {
     fontSize: FontSize.lg,
     fontWeight: '700',
   },
+  // Vitrin ile liste arasi: yalniz sonraki tarih basliginin kendi ust boslugu kalir.
   highlightsWrap: {
-    marginBottom: Spacing.md,
+    marginBottom: 0,
+  },
+  search: {
+    marginHorizontal: Spacing.lg,
+    marginTop: Spacing.md,
+  },
+  searchTitleRow: {
+    marginTop: Spacing.sm,
   },
   highlightsList: {
     gap: Spacing.md,
     paddingRight: Spacing.lg,
   },
+  // Tum vitrin kartlari ayni boy: satirin en uzun karti kadar uzar (GameCard fill).
   highlightCard: {
     width: 230,
+    flex: 1,
   },
   retryText: {
     fontSize: FontSize.md,
