@@ -94,6 +94,7 @@ namespace GGHub.Infrastructure.Persistence
         public DbSet<NewsFeedState> NewsFeedStates { get; set; }
         public DbSet<NewsRunLease> NewsRunLeases { get; set; }
         public DbSet<NewsSkippedItem> NewsSkippedItems { get; set; }
+        public DbSet<NewsPendingItem> NewsPendingItems { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Raporlayan istege bagli (misafir geri bildirimi). Hesap silinince raporlari
@@ -909,6 +910,16 @@ namespace GGHub.Infrastructure.Persistence
                 entity.Property(e => e.FeedKey).HasMaxLength(40);
                 entity.Property(e => e.ETag).HasMaxLength(200);
                 entity.Property(e => e.LastModified).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<NewsPendingItem>(entity =>
+            {
+                entity.HasKey(e => e.Url);
+                entity.Property(e => e.Url).HasMaxLength(800);
+                entity.Property(e => e.FeedKey).HasMaxLength(40).IsRequired();
+                entity.Property(e => e.Title).HasMaxLength(400).IsRequired();
+                entity.Property(e => e.Text).HasMaxLength(4000).IsRequired();
+                entity.HasIndex(e => e.FirstSeenAt).HasDatabaseName("IX_NewsPendingItems_FirstSeenAt");
             });
 
             modelBuilder.Entity<NewsSkippedItem>(entity =>

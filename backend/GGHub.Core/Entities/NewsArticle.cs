@@ -85,6 +85,22 @@ namespace GGHub.Core.Entities
         public DateTime SkippedAt { get; set; }
     }
 
+    /// <summary>
+    /// Gunluk tavana takilan yazilar. Kaybolmasinlar diye burada bekler ve sonraki gunlerde ILK sirada
+    /// yazilir (once en eski gun). Kaynak akislari 1-3 gun tuttugu icin bu tablo olmadan tavani asan
+    /// haber akistan dusup hic yazilmazdi. Model 3 kez yazamazsa atlanan kayitlara tasinir.
+    /// </summary>
+    public class NewsPendingItem
+    {
+        public string Url { get; set; } = null!;
+        public string FeedKey { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public string Text { get; set; } = string.Empty;
+        public DateTime PublishedAt { get; set; }
+        public DateTime FirstSeenAt { get; set; }
+        public int Attempts { get; set; }
+    }
+
     /// <summary>Kaynak basina kosullu GET durumu (ETag / Last-Modified).</summary>
     public class NewsFeedState
     {

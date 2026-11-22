@@ -1,0 +1,77 @@
+#!/bin/bash
+# Haber botu kurulumu: GitHub Actions sirlari + Mac botunun R2 ayari, tek seferde.
+#
+#   scripts/news-actions-setup
+#
+# Ne yapar:
+#  1. Veritabani baglantisini ve Gemini anahtarini ~/.gghub-bot/appsettings.json'dan okur (sorulmaz).
+#  2. Railway "api" servisindeki 5 R2 degerini sorar (yapistir, Enter). Ekrana yazilmaz.
+#  3. Bu 5 degeri ~/.gghub-bot/appsettings.json'a "R2" bolumu olarak yazar (once yedek alir).
+#  4. 7 sirri GitHub'a yukler (gh secret set). Degerler ekrana ve loga yazilmaz.
+#  5. Botu yeniden baslatir ve Actions'ta bir deneme kosusu tetikler.
+#
+# Hicbir deger repoya girmez. gh CLI oturumu acik olmali (gh auth status).
+
+set -euo pipefail
+
+REPO="AhmetDemiroglu/pause-menu"
+CONFIG="${GGHUB_BOT_HOME:-$HOME/.gghub-bot}/appsettings.json"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+command -v gh >/dev/null || { echo "gh bulunamadi"; exit 1; }
+gh auth status >/dev/null 2>&1 || { echo "gh oturumu yok: gh auth login"; exit 1; }
+[ -f "$CONFIG" ] || { echo "Bot ayari yok: $CONFIG"; exit 1; }
+
+echo "Railway > api servisi > Variables ekranindan su 5 degeri sirayla yapistir."
+echo "(Yapistirdigin deger ekranda gorunmez, her birinden sonra Enter.)"
+echo
+
+REPO="$REPO" CONFIG="$CONFIG" python3 -I - <<'PY'
+import getpass, json, os, shutil, subprocess, sys, time
+
+repo, config = os.environ["REPO"], os.environ["CONFIG"]
+with open(config, encoding="utf-8") as f:
+    data = json.load(f)
+
+conn = (data.get("ConnectionStrings") or {}).get("DefaultConnection") or ""
+gemini = (data.get("Gemini") or {}).get("ApiKey") or ""
+if not conn or not gemini:
+    sys.exit("Bot ayarinda baglanti dizesi ya da Gemini anahtari yok.")
+
+fields = [
+    ("AccountId", "R2__AccountId", "R2_ACCOUNT_ID"),
+    ("AccessKeyId", "R2__AccessKeyId", "R2_ACCESS_KEY_ID"),
+    ("SecretAccessKey", "R2__SecretAccessKey", "R2_SECRET_ACCESS_KEY"),
+    ("BucketName", "R2__BucketName", "R2_BUCKET"),
+    ("PublicUrl", "R2__PublicUrl", "R2_PUBLIC_URL"),
+]
+r2 = {}
+for key, railway_name, _ in fields:
+    value = getpass.getpass(f"  {railway_name}: ").strip()
+    if not value:
+        sys.exit(f"{railway_name} bos birakildi, hicbir sey degistirilmedi.")
+    r2[key] = value
+r2["PublicUrl"] = r2["PublicUrl"].rstrip("/")
+
+backup = f"{config}.bak-{time.strftime('%Y%m%d-%H%M%S')}"
+shutil.copy2(config, backup)
+data["R2"] = r2
+with open(config, "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
+os.chmod(config, 0o600)
+print(f"\nBot ayarina R2 yazildi (yedek: {backup}).")
+
+secrets = {"NEWS_DB_CONNECTION": conn, "GEMINI_API_KEY": gemini}
+for key, _, secret_name in fields:
+    secrets[secret_name] = r2[key]
+
+for name, value in secrets.items():
+    subprocess.run(["gh", "secret", "set", name, "--repo", repo], input=value.encode(), check=True,
+                   stdout=subprocess.DEVNULL)
+    print(f"  GitHub sirri yuklendi: {name}")
+PY
+
+echo
+"$SCRIPT_DIR/gghub-bot" restart >/dev/null 2>&1 && echo "Bot yeniden baslatildi (R2 ayari okundu)." || echo "Bot yeniden baslatilamadi: scripts/gghub-bot restart"
+gh workflow run news-bot.yml --repo "$REPO" -f skip_if_recent=0 >/dev/null && echo "Actions deneme kosusu tetiklendi: https://github.com/$REPO/actions/workflows/news-bot.yml"
+echo "Bitti."

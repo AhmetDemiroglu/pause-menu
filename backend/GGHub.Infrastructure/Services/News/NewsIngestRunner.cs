@@ -45,6 +45,8 @@ namespace GGHub.Infrastructure.Services.News
         public int NoImage { get; set; }
         public int Deleted { get; set; }
         public int CapRemaining { get; set; }
+        public int QueueCarried { get; set; }
+        public int QueueLeft { get; set; }
         public List<string> Samples { get; } = new();
 
         public override string ToString()
@@ -57,6 +59,7 @@ namespace GGHub.Infrastructure.Services.News
             sb.AppendLine($"Kume: {Clusters} yeni olay, {AttachedToExisting} yazi mevcut habere kaynak olarak eklendi");
             sb.AppendLine($"Yazilan: {Written}, model 'haber degil' dedi: {SkippedByModel}, model hatasi: {ModelFailures}, gunluk kalan hak: {CapRemaining}");
             sb.AppendLine($"Gorsel: {CatalogImages} katalog, {GeneratedImages} uretildi, {NoImage} gorselsiz");
+            sb.AppendLine($"Kuyruk: onceki turlardan {QueueCarried} yazi geldi, {QueueLeft} yazi sonraki turlara kaldi");
             if (Deleted > 0) sb.AppendLine($"Saklama: {Deleted} eski haber silindi");
             foreach (var s in Samples) sb.AppendLine(s);
             return sb.ToString();
@@ -80,6 +83,9 @@ namespace GGHub.Infrastructure.Services.News
         private const int BackfillDailyCap = 250;
         private const int RetentionDays = 180;
         private const int MaxSourcesPerArticle = 8;
+        /// <summary>Kuyrukta bu kadar gun bekleyen yazi artik haber degildir, atlanir.</summary>
+        private const int MaxQueueDays = 14;
+        private const int MaxModelAttempts = 3;
         private const double ImageBudgetShare = 0.8;
         private static readonly TimeSpan LeaseLength = TimeSpan.FromMinutes(15);
 
@@ -115,6 +121,9 @@ namespace GGHub.Infrastructure.Services.News
         private sealed class Cluster
         {
             public List<NewsFeedItem> Items { get; } = new();
+
+            /// <summary>Kuyrukta bekledigi en eski gun; bugun gelenler icin bugun. Eski gun once yazilir.</summary>
+            public DateTime QueueDay => Items.Min(i => (i.QueuedAt ?? DateTime.UtcNow).Date);
             // Tazelik agir basar: 6 saatlik haber 2 puan kaybeder. Cok kaynakli olay (herkes yaziyor) one cikar.
             public double Score => Items.Sum(i => i.Feed.Weight) + Items.Count * 3
                 - (DateTime.UtcNow - Items.Min(i => i.PublishedAt)).TotalHours / 3.0;
@@ -219,6 +228,33 @@ namespace GGHub.Infrastructure.Services.News
             report.ItemsExcluded = beforeExclude - items.Count;
             handled.UnionWith(inWindow.Except(items).Select(i => i.Url));
 
+            // Bekleme kuyrugu: onceki turlarda tavana takilan yazilar. Zaman araligina bakilmaz (dun
+            // kalan haber bugun yazilir). Ilk dolum kuyruga dokunmaz: eski haberler gunluk akisi doldurmasin.
+            var useQueue = opt.BackfillDays == 0;
+            var pendingRows = useQueue
+                ? await _db.NewsPendingItems.AsNoTracking().OrderBy(q => q.FirstSeenAt).Take(3000).ToListAsync(ct)
+                : new List<NewsPendingItem>();
+            var pendingByUrl = pendingRows.ToDictionary(q => q.Url, StringComparer.Ordinal);
+            var expiredBefore = now.AddDays(-MaxQueueDays);
+            var fetchedUrls = items.Select(i => i.Url).ToHashSet(StringComparer.Ordinal);
+            foreach (var i in items)
+            {
+                if (pendingByUrl.TryGetValue(i.Url, out var q)) i.QueuedAt = q.FirstSeenAt;
+            }
+            foreach (var q in pendingRows)
+            {
+                if (fetchedUrls.Contains(q.Url) || q.FirstSeenAt < expiredBefore) continue;
+                var feed = NewsSources.Find(q.FeedKey);
+                if (feed is null) continue;
+                items.Add(new NewsFeedItem
+                {
+                    Feed = feed, Title = q.Title, Url = q.Url, Text = q.Text,
+                    PublishedAt = q.PublishedAt, QueuedAt = q.FirstSeenAt
+                });
+            }
+            report.QueueCarried = items.Count(i => i.QueuedAt != null);
+            var failed = new HashSet<string>(StringComparer.Ordinal);
+
             var urls = items.Select(i => i.Url).ToList();
             var known = new HashSet<string>(
                 await _db.NewsArticleSources.AsNoTracking().Where(s => urls.Contains(s.Url)).Select(s => s.Url).ToListAsync(ct));
@@ -280,6 +316,7 @@ namespace GGHub.Infrastructure.Services.News
             // hakkin %30'u ayrilir, Ingilizce bu payi yiyemez. Turkce az gelirse kalan hak bos kalmaz,
             // bir sonraki turda Ingilizceye doner.
             var trItemCount = items.Count(i => i.Feed.Language == "tr");
+            // Siralama: once kuyrukta en uzun bekleyen gun (dun kalan bugun ilk yazilir), sonra onem/tazelik.
             int TrReserve(int budget) => trItemCount == 0 ? 0 : Math.Min(trItemCount, (int)Math.Ceiling(budget * 0.3));
             var trReserveWrites = TrReserve(remaining);
             var trReserveSamples = TrReserve(opt.Sample);
@@ -328,7 +365,7 @@ namespace GGHub.Infrastructure.Services.News
                 // Kaynak siniri dolu habere benzeyen yazi da islenmis sayilir (bilerek eklenmedi).
                 handled.UnionWith(langItems.Where(i => !clusters.Any(c => c.Items.Contains(i))).Select(i => i.Url));
 
-                foreach (var cluster in clusters.OrderByDescending(c => c.Score))
+                foreach (var cluster in clusters.OrderBy(c => c.QueueDay).ThenByDescending(c => c.Score))
                 {
                     ct.ThrowIfCancellationRequested();
 
@@ -345,12 +382,13 @@ namespace GGHub.Infrastructure.Services.News
                     NewsArticle? written;
                     try
                     {
-                        written = await WriteClusterAsync(cluster, settings, opt, report, imagesLeft > 0, imagesLeft > 0 && imagesLeft > imageCapHalf, handled, ct);
+                        written = await WriteClusterAsync(cluster, settings, opt, report, imagesLeft > 0, imagesLeft > 0 && imagesLeft > imageCapHalf, handled, failed, ct);
                     }
                     catch (Exception ex) when (ex is not OperationCanceledException && ex is not GeminiQuotaExceededException { IsBilling: true })
                     {
                         // Tek bir olayin hatasi (beklenmedik model ciktisi, gecici ag hatasi) turu durdurmaz.
                         report.ModelFailures++;
+                        failed.UnionWith(cluster.Items.Select(i => i.Url));
                         _logger.LogWarning(ex, "[News] Olay yazilamadi: {Title}", cluster.Items[0].Title);
                         _db.ChangeTracker.Clear();
                         continue;
@@ -374,10 +412,45 @@ namespace GGHub.Infrastructure.Services.News
 
             report.CapRemaining = remaining;
 
-            // ---- 6. akis durumu: hata sayaci her zaman, dogrulayici yalniz yazisi kalmayan akista
+            // ---- 6. kuyruk: islenen cikar, kalan (tavana takilan) girer, 3 kez yazilamayan atlanir
+            var leftover = items.Where(i => !handled.Contains(i.Url)).ToList();
+            report.QueueLeft = leftover.Count;
+            if (!opt.DryRun && useQueue)
+            {
+                var drop = pendingRows.Where(q => handled.Contains(q.Url) || q.FirstSeenAt < expiredBefore).Select(q => q.Url).ToList();
+                foreach (var q in pendingRows.Where(q => q.FirstSeenAt < expiredBefore && !handled.Contains(q.Url)))
+                    _db.NewsSkippedItems.Add(new NewsSkippedItem { Url = q.Url, Reason = "queue-expired", SkippedAt = now });
+
+                foreach (var i in leftover)
+                {
+                    var attempts = failed.Contains(i.Url) ? 1 : 0;
+                    if (pendingByUrl.TryGetValue(i.Url, out var q))
+                    {
+                        if (attempts == 0) continue;
+                        attempts += q.Attempts;
+                        drop.Add(i.Url);
+                    }
+                    if (attempts >= MaxModelAttempts)
+                    {
+                        _db.NewsSkippedItems.Add(new NewsSkippedItem { Url = i.Url, Reason = "model-failed", SkippedAt = now });
+                        continue;
+                    }
+                    _db.NewsPendingItems.Add(new NewsPendingItem
+                    {
+                        Url = i.Url, FeedKey = i.Feed.Key, Title = Trunc(i.Title, 400)!,
+                        Text = Trunc(i.Text, 4000) ?? string.Empty, PublishedAt = i.PublishedAt,
+                        FirstSeenAt = i.QueuedAt ?? now, Attempts = attempts
+                    });
+                }
+
+                if (drop.Count > 0)
+                    await _db.NewsPendingItems.Where(q => drop.Contains(q.Url)).ExecuteDeleteAsync(ct);
+                await SaveIgnoringDuplicatesAsync(ct);
+            }
+
+            // ---- 7. akis durumu. Tavana takilan yazi kuyrukta durdugu icin dogrulayici her zaman kaydedilir.
             if (!opt.DryRun)
             {
-                var leftoverFeeds = items.Where(i => !handled.Contains(i.Url)).Select(i => i.Feed.Key).ToHashSet();
                 foreach (var f in fetches)
                 {
                     if (!states.TryGetValue(f.Feed.Key, out var st))
@@ -393,7 +466,7 @@ namespace GGHub.Infrastructure.Services.News
                     if (f.Error != null) { st.ConsecutiveFailures++; continue; }
                     st.ConsecutiveFailures = 0;
                     if (f.NotModified) continue;
-                    if (leftoverFeeds.Contains(f.Feed.Key) || !useConditional)
+                    if (!useConditional || !useQueue)
                     {
                         st.ETag = null;
                         st.LastModified = null;
@@ -407,7 +480,7 @@ namespace GGHub.Infrastructure.Services.News
                 await SaveIgnoringDuplicatesAsync(ct);
             }
 
-            // ---- 7. saklama
+            // ---- 8. saklama
             if (!opt.DryRun)
             {
                 await CleanupAsync(report, ct);
@@ -415,7 +488,7 @@ namespace GGHub.Infrastructure.Services.News
         }
 
         private async Task<NewsArticle?> WriteClusterAsync(Cluster cluster, AiSettings settings, NewsRunOptions opt,
-            NewsRunReport report, bool canGenerate, bool canGenerateRoutine, HashSet<string> handled, CancellationToken ct)
+            NewsRunReport report, bool canGenerate, bool canGenerateRoutine, HashSet<string> handled, HashSet<string> failed, CancellationToken ct)
         {
             var picked = cluster.Items
                 .OrderByDescending(i => i.Feed.Weight)
@@ -446,6 +519,7 @@ namespace GGHub.Infrastructure.Services.News
             if (draft is null)
             {
                 report.ModelFailures++;
+                failed.UnionWith(cluster.Items.Select(i => i.Url));
                 return null;
             }
 

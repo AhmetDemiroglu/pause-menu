@@ -18,6 +18,9 @@ namespace GGHub.Infrastructure.Services.News
         public IReadOnlyList<string> Categories { get; init; } = Array.Empty<string>();
 
         public HashSet<string> Tokens { get; set; } = new();
+
+        /// <summary>Bekleme kuyrugundan geldiyse ilk goruldugu an (tavana takilip ertesi gune kalan yazi).</summary>
+        public DateTime? QueuedAt { get; set; }
     }
 
     public sealed class NewsFeedFetchResult

@@ -1307,6 +1307,44 @@ namespace GGHub.Infrastructure.Migrations
                     b.ToTable("NewsFeedStates");
                 });
 
+            modelBuilder.Entity("GGHub.Core.Entities.NewsPendingItem", b =>
+                {
+                    b.Property<string>("Url")
+                        .HasMaxLength(800)
+                        .HasColumnType("character varying(800)");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FeedKey")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<DateTime>("FirstSeenAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("PublishedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
+
+                    b.HasKey("Url");
+
+                    b.HasIndex("FirstSeenAt")
+                        .HasDatabaseName("IX_NewsPendingItems_FirstSeenAt");
+
+                    b.ToTable("NewsPendingItems");
+                });
+
             modelBuilder.Entity("GGHub.Core.Entities.NewsRunLease", b =>
                 {
                     b.Property<int>("Id")
