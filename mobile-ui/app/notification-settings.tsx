@@ -32,7 +32,7 @@ const SETTINGS_KEY = ['notificationSettings'] as const;
  * (bkz. NotificationPreferences.Configurable). Sunucu ileride yeni bir tip donerse
  * ve burada bir gruba yazilmamissa, "diger" grubunda yine de gorunur.
  */
-const GROUPS: { titleKey: 'sectionMessages' | 'sectionSocial' | 'sectionPosts' | 'sectionReviews' | 'sectionLists'; types: NotificationType[] }[] = [
+const GROUPS: { titleKey: 'sectionMessages' | 'sectionSocial' | 'sectionPosts' | 'sectionReviews' | 'sectionLists' | 'sectionAchievements'; types: NotificationType[] }[] = [
   { titleKey: 'sectionMessages', types: [NotificationType.Message] },
   {
     titleKey: 'sectionSocial',
@@ -60,6 +60,10 @@ const GROUPS: { titleKey: 'sectionMessages' | 'sectionSocial' | 'sectionPosts' |
       NotificationType.ListRating,
     ],
   },
+  {
+    titleKey: 'sectionAchievements',
+    types: [NotificationType.AchievementUnlocked, NotificationType.LevelUp],
+  },
 ];
 
 const TYPE_LABEL_KEYS: Record<number, string> = {
@@ -78,6 +82,8 @@ const TYPE_LABEL_KEYS: Record<number, string> = {
   [NotificationType.PostLike]: 'postLike',
   [NotificationType.PostReply]: 'postReply',
   [NotificationType.PostRepost]: 'postRepost',
+  [NotificationType.AchievementUnlocked]: 'achievementUnlocked',
+  [NotificationType.LevelUp]: 'levelUp',
 };
 
 export default function NotificationSettingsScreen() {

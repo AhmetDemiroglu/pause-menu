@@ -207,6 +207,15 @@ export default function ProfileSettingsScreen() {
 
         <TouchableOpacity
           style={[styles.menuItem, { borderBottomColor: colors.border }]}
+          onPress={() => router.push('/levels-and-badges')}
+        >
+          <Ionicons name="ribbon-outline" size={22} color={colors.text} />
+          <Text style={[styles.menuText, { color: colors.text }]}>{messages.footer.levels}</Text>
+          <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.menuItem, { borderBottomColor: colors.border }]}
           onPress={() => router.push('/terms')}
         >
           <Ionicons name="document-text-outline" size={22} color={colors.text} />

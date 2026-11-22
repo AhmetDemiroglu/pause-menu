@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { AiBadge } from '@/src/components/common/AiBadge';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withDelay,
-  interpolate,
-  Extrapolation,
-} from 'react-native-reanimated';
 import { Avatar } from '@/src/components/common/Avatar';
 import { ProfileBannerUploader } from '@/src/components/profile/ProfileBannerUploader';
 import { useTheme } from '@/src/hooks/use-theme';
@@ -19,9 +11,10 @@ import { useLocale } from '@/src/hooks/use-locale';
 import { AVATAR_MAX_EDGE, getImageUrl, shrinkForUpload } from '@/src/utils/image';
 import { formatCalendarMonthDay, formatNumericDate } from '@/src/utils/date';
 import { uploadProfilePhoto } from '@/src/api/photo';
-import { Spacing, FontSize, BorderRadius, Springs, Shadows } from '@/src/constants/theme';
+import { Spacing, FontSize, BorderRadius } from '@/src/constants/theme';
 import { APP_CONFIG } from '@/src/constants/config';
 import * as haptics from '@/src/utils/haptics';
+import { ProfileLevelRow } from '@/src/components/gamification/ProfileLevelRow';
 
 const AVATAR_SIZE = 88;
 // Avatarin banner uzerine binme miktari (yariya yakini banner'da kalir)
@@ -42,8 +35,11 @@ interface ProfileHeaderProps {
   createdAt: string;
   /** Yalnizca gun/ay, "MM-dd". Sunucu bunu sadece profil herkese acikken doldurur. */
   birthdayMonthDay?: string | null;
+  /** @deprecated Seviye ve XP artik ProfileLevelRow icinde sunucudan okunuyor; eski cagrilar icin duruyor. */
   level?: number;
+  /** @deprecated */
   xp?: number;
+  /** @deprecated */
   xpToNextLevel?: number;
   followersCount: number;
   followingCount: number;
@@ -71,9 +67,6 @@ export function ProfileHeader({
   onAvatarUploaded,
   createdAt,
   birthdayMonthDay,
-  level = 1,
-  xp = 0,
-  xpToNextLevel = 100,
   followersCount,
   followingCount,
   onFollowersPress,
@@ -97,7 +90,6 @@ export function ProfileHeader({
         return formatCalendarMonthDay(month, day, locale);
       })()
     : null;
-  const xpPercent = xpToNextLevel > 0 ? Math.min((xp / xpToNextLevel) * 100, 100) : 0;
   const bannerUri = getImageUrl(headerImageUrl);
 
   // Yuklenen avatar'i aninda gostermek icin yerel override
@@ -105,15 +97,6 @@ export function ProfileHeader({
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const effectiveAvatar = localAvatar ?? avatarUrl;
 
-  // XP bar animasyon
-  const xpProgress = useSharedValue(0);
-  useEffect(() => {
-    xpProgress.value = withDelay(200, withSpring(xpPercent / 100, Springs.bouncy));
-  }, [xpPercent, xpProgress]);
-
-  const xpFillStyle = useAnimatedStyle(() => ({
-    width: `${interpolate(xpProgress.value, [0, 1], [0, 100], Extrapolation.CLAMP)}%`,
-  }));
 
   const handleFollowersPress = () => {
     haptics.impactLight();
@@ -210,22 +193,8 @@ export function ProfileHeader({
 
         {bio ? <Text style={[styles.bio, { color: colors.textSecondary }]}>{bio}</Text> : null}
 
-        <View style={styles.levelRow}>
-          <View style={[styles.levelBadge, { backgroundColor: colors.primary }, Shadows.sm]}>
-            <Ionicons name="shield-checkmark" size={14} color="#ffffff" />
-            <Text style={styles.levelText}>Lv. {level}</Text>
-          </View>
-          <View style={styles.xpContainer}>
-            <View style={[styles.xpBar, { backgroundColor: colors.surfaceHighlight }]}>
-              <Animated.View
-                style={[styles.xpFill, { backgroundColor: colors.primary }, xpFillStyle]}
-              />
-            </View>
-            <Text style={[styles.xpText, { color: colors.textMuted }]}>
-              {xp}/{xpToNextLevel} XP
-            </Text>
-          </View>
-        </View>
+        {/* Seviye, XP ve rozet seridi: ekranla AYNI sorgu anahtarindan okur (tek istek). */}
+        <ProfileLevelRow username={username} showProgress={editableAvatar} />
 
         <Text style={[styles.joinDate, { color: colors.textMuted }]}>
           <Ionicons name="calendar-outline" size={12} color={colors.textMuted} />{' '}
@@ -327,42 +296,6 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginTop: Spacing.md,
     lineHeight: 20,
-  },
-  levelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    marginTop: Spacing.lg,
-    gap: Spacing.sm,
-  },
-  levelBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    borderRadius: BorderRadius.full,
-    gap: 4,
-  },
-  levelText: {
-    color: '#ffffff',
-    fontSize: FontSize.sm,
-    fontWeight: '700',
-  },
-  xpContainer: {
-    flex: 1,
-    gap: 2,
-  },
-  xpBar: {
-    height: 6,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  xpFill: {
-    height: '100%',
-    borderRadius: 3,
-  },
-  xpText: {
-    fontSize: FontSize.xs,
   },
   joinDate: {
     fontSize: FontSize.sm,

@@ -32,6 +32,10 @@ export enum NotificationType {
   PostRepost = 14,
   // 15 : dogum gunu. Aktoru YOKTUR (bildirimi sistem uretir), mesaj duz metin basilir.
   Birthday = 15,
+  // 16 (SystemAlert) yalniz web/admin; mobilde gosterilmez.
+  // 17-18 : oyunlastirma. Aktoru yok, link kullanicinin kendi profili.
+  AchievementUnlocked = 17,
+  LevelUp = 18,
 }
 
 /** Tek bir bildirim tipinin acik/kapali durumu. */

@@ -461,6 +461,7 @@ export function AppSidebar({ children }: AppSidebarProps) {
             <NavRow icon="information-circle-outline" label={nav.about} onPress={() => navigate('/about')} colors={colors} muted />
             <NavRow icon="lock-closed-outline" label={nav.privacy} onPress={() => navigate('/privacy')} colors={colors} muted />
             <NavRow icon="document-text-outline" label={nav.terms} onPress={() => navigate('/terms')} colors={colors} muted />
+            <NavRow icon="ribbon-outline" label={nav.levels} onPress={() => navigate('/levels-and-badges')} colors={colors} muted />
           </View>
 
           <View style={[styles.divider, { backgroundColor: colors.border }]} />

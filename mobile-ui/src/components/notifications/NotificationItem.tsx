@@ -31,6 +31,8 @@ const NOTIFICATION_ICONS: Record<NotificationType, keyof typeof Ionicons.glyphMa
   [NotificationType.PostRepost]: 'repeat-outline',
   // Ionicons'ta pasta glyph'i yok; hediye en yakin karsilik.
   [NotificationType.Birthday]: 'gift-outline',
+  [NotificationType.AchievementUnlocked]: 'ribbon-outline',
+  [NotificationType.LevelUp]: 'trending-up-outline',
 };
 
 const NOTIFICATION_COLORS: Record<NotificationType, string> = {
@@ -50,6 +52,8 @@ const NOTIFICATION_COLORS: Record<NotificationType, string> = {
   [NotificationType.PostReply]: '#FF8A1F',
   [NotificationType.PostRepost]: '#10b981',
   [NotificationType.Birthday]: '#d946ef',
+  [NotificationType.AchievementUnlocked]: '#f59e0b',
+  [NotificationType.LevelUp]: '#8b5cf6',
 };
 
 function formatTimeAgo(dateStr: string): string {
