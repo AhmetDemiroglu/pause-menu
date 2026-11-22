@@ -1,5 +1,7 @@
 import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { originAuthHeaders } from "@/core/lib/origin-auth";
+import { visitorIpKey } from "@/core/lib/visitor-ip-key";
 
 /**
  * /download-app telemetrisinin giris kapisi.
@@ -70,6 +72,9 @@ export async function POST(request: NextRequest) {
                 // Ham UA yalnizca siniflandirma icin gecer; backend kovalara
                 // ayristirip ATAR, tam dizgeyi saklamaz.
                 "X-Visitor-UA": userAgent,
+                // Hiz siniri anahtari: yalniz IP (UA degistirerek yeni kova acilamasin).
+                "X-Visitor-Ip-Key": visitorIpKey(ip),
+                ...originAuthHeaders(),
             },
             body,
         });

@@ -75,6 +75,15 @@ namespace GGHub.Infrastructure.Services
             {
                 throw new GeminiBudgetExceededException(source, status.PeriodKey, status.SpentUsd, status.LimitUsd);
             }
+
+            // Bot kaynaginda gunluk fren: gunluk pay hesaplaniyor ama hic uygulanmiyordu. Birkac hesapla
+            // botlara DM yagdiran biri ucretsiz modelin dakika tavanini doldurup ucretli yedege dusurur
+            // ve ayin butcesini tek gunde bitirirdi (botlar ay sonuna kadar herkes icin susardi).
+            // Gunluk payin 2 kati serbest; ceviri job'u toplu calistigi icin bu frene tabi degil.
+            if (source == GeminiSources.AiAgent && status.SpentTodayUsd >= status.DailyShareUsd * 2)
+            {
+                throw new GeminiBudgetExceededException(source, status.PeriodKey, status.SpentUsd, status.LimitUsd);
+            }
         }
 
         public async Task RecordUsageAsync(string source, string model, int inputTokens, int outputTokens, CancellationToken cancellationToken = default)

@@ -16,6 +16,8 @@ public class PhotosController : ControllerBase
     }
 
     [HttpPost("profile")]
+    // Servis 5 MB ustunu reddediyor ama Kestrel varsayilani 30 MB'lik govdeyi once okuyordu.
+    [RequestSizeLimit(5 * 1024 * 1024 + 64 * 1024)]
     public async Task<IActionResult> UploadProfilePhoto(IFormFile file)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -31,6 +33,8 @@ public class PhotosController : ControllerBase
     }
 
     [HttpPost("header")]
+    // Servis 5 MB ustunu reddediyor ama Kestrel varsayilani 30 MB'lik govdeyi once okuyordu.
+    [RequestSizeLimit(5 * 1024 * 1024 + 64 * 1024)]
     public async Task<IActionResult> UploadHeaderPhoto(IFormFile file)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);

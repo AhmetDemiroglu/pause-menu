@@ -169,13 +169,25 @@ namespace GGHub.Infrastructure.Services
         /// WebP'e çevirir. Küçültme yalnızca gerektiğinde yapılır (küçük görsel büyütülmez).
         /// EXIF yönlendirmesi uygulanır ve metadata düşer, böylece konum bilgisi de sızmaz.
         /// </summary>
+        private const long MaxDecodedPixels = 50_000_000;
+
         private static async Task<(Stream Stream, int Width, int Height)> NormalizeAsync(IFormFile file, int maxEdge)
         {
-            await using var source = file.OpenReadStream();
-
             Image image;
             try
             {
+                // Sikistirma bombasi freni: 5 MB'lik bir PNG/GIF acildiginda gigabaytlarca piksele
+                // genisleyebilir (Railway bellegi, kap coker). Once yalniz basliklar okunur; tum
+                // karelerin toplam pikseli tavani asarsa dosya acilmadan reddedilir (~200 MB RGBA).
+                await using (var probe = file.OpenReadStream())
+                {
+                    var info = await Image.IdentifyAsync(probe);
+                    var frames = Math.Max(1, info.FrameMetadataCollection.Count);
+                    if ((long)info.Width * info.Height * frames > MaxDecodedPixels)
+                        throw new ArgumentException(AppText.Get("photo.fileTooLarge"));
+                }
+
+                await using var source = file.OpenReadStream();
                 image = await Image.LoadAsync(source);
             }
             catch (Exception ex) when (ex is UnknownImageFormatException or InvalidImageContentException)

@@ -390,8 +390,8 @@ namespace GGHub.WebAPI.Controllers
             });
         }
 
+        // [AllowAnonymous] kaldirildi: sinif zaten Admin rolu istiyor, sunucu log dosyasi herkese acikti.
         [HttpGet("sync-logs")]
-        [AllowAnonymous]
         public IActionResult GetSyncLogs()
         {
             var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "metacritic_sync.txt");

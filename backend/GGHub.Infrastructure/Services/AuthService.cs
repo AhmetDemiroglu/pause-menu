@@ -244,7 +244,16 @@ namespace GGHub.Infrastructure.Services
                 return true;
             }
 
-            var resetToken = new Random().Next(100000, 999999).ToString();
+            // E-posta seli freni: son 2 dakikada kod gonderildiyse yenisi gonderilmez (kod 15 dk
+            // gecerli, son kullanma 13 dakikadan uzaksa kod 2 dakikadan yeni). Eskiden ayni adrese
+            // sinirsiz mail atilip kisi bombalanabiliyor ve Resend kotasi yakilabiliyordu.
+            if (user.PasswordResetTokenExpiry is { } currentExpiry && currentExpiry > DateTime.UtcNow.AddMinutes(13))
+            {
+                return true;
+            }
+
+            // Kriptografik uretec: System.Random tahmin edilebilir.
+            var resetToken = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
 
             user.PasswordResetToken = resetToken;
             user.PasswordResetTokenExpiry = DateTime.UtcNow.AddMinutes(15);
@@ -266,8 +275,29 @@ namespace GGHub.Infrastructure.Services
             return true;
         }
 
+        /// <summary>
+        /// Sifirlama kodu e-postaya bagli degil (istemci sozlesmesi yalniz kod + yeni sifre; yayindaki
+        /// mobil surum degismeden). 6 haneli kod O ANDA gecerli kodu olan HERHANGI bir hesapla eslesir,
+        /// yani IP rotasyonlu kaba kuvvet bir hesabi ele gecirebilirdi. Surec geneli yanlis kod tavani
+        /// bunu imkansiz kilar: 10 dakikada 50 yanlis denemeden sonra pencere sonuna kadar her deneme
+        /// reddedilir. Bedeli: saldiri aninda mesru sifirlama da birkac dakika bekler.
+        /// </summary>
+        private static readonly System.Threading.RateLimiting.FixedWindowRateLimiter ResetFailureGuard = new(
+            new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 50,
+                Window = TimeSpan.FromMinutes(10),
+                QueueLimit = 0,
+                AutoReplenishment = true,
+            });
+
         public async Task<bool> ResetPasswordAsync(string token, string newPassword)
         {
+            if (ResetFailureGuard.GetStatistics()?.CurrentAvailablePermits == 0)
+            {
+                return false;
+            }
+
             var user = await _context.Users.FirstOrDefaultAsync(u =>
                 !u.IsAiAgent &&
                 u.PasswordResetToken == token &&
@@ -275,6 +305,7 @@ namespace GGHub.Infrastructure.Services
 
             if (user == null)
             {
+                using var _ = ResetFailureGuard.AttemptAcquire(1);
                 return false;
             }
 

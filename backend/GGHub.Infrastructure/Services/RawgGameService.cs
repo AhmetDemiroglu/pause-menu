@@ -72,7 +72,8 @@ namespace GGHub.Infrastructure.Services
             // sorulmamissa simdi sorulur (toplu job'i beklemeden). Zaten kontrol edilmisse
             // hicbir sey yapmaz; hata halinde sessizce gecer. Steam kaynakli (negatif id)
             // satirlar da dahil: eskiden onlar bu adima hic gelmiyordu.
-            if (gameInDb != null && gameInDb.IgdbCheckedAt == null)
+            // Canli tavan doluysa zenginlestirme sonraki ziyarete kalir (CatalogLiveLimiter).
+            if (gameInDb != null && gameInDb.IgdbCheckedAt == null && CatalogLiveLimiter.TryAcquire())
             {
                 await _igdbCatalog.EnrichGameAsync(gameInDb);
             }
@@ -93,6 +94,22 @@ namespace GGHub.Infrastructure.Services
                 return gameInDb;
             }
 
+            // Buradan sonrasi RAWG'a (ve IGDB'ye) canli gider. Anonim uc: rastgele slug gezen bir bot
+            // her istekte disari cagri ve DB yazimi tetikliyordu. Uc fren (CatalogLiveLimiter):
+            // bicimsiz slug disari cikmaz, "yok" cevabi 6 saat hatirlanir, surec geneli dakikada tavan.
+            var missKey = $"game-miss:{idOrSlug}";
+            if (gameInDb == null)
+            {
+                if (!isId && !CatalogLiveLimiter.IsPlausibleSlug(idOrSlug)) return null;
+                if (_cache.TryGetValue(missKey, out _)) return null;
+                if (!CatalogLiveLimiter.TryAcquire()) return null;
+            }
+            else if (!CatalogLiveLimiter.TryAcquire())
+            {
+                // Detayi eksik ama DB'de olan oyun: tavan doluysa elimizdeki kopya yeterli.
+                return gameInDb;
+            }
+
             var requestUrl = $"{_apiSettings.BaseUrl}games/{idOrSlug}?key={_apiSettings.ApiKey}";
 
             RawgGameSingleDto? dto;
@@ -109,6 +126,7 @@ namespace GGHub.Infrastructure.Services
                     var fromIgdb = await _igdbCatalog.IngestBySlugOrNameAsync(idOrSlug);
                     if (fromIgdb != null) return fromIgdb;
                 }
+                if (gameInDb == null) _cache.Set(missKey, true, TimeSpan.FromHours(6));
                 return null;
             }
             catch (Exception ex)
@@ -136,7 +154,11 @@ namespace GGHub.Infrastructure.Services
             // (GTA VI: /games/grand-theft-auto-vi -> RAWG'in slug'i "grand-theft-aito-vi").
             if (dto.Id <= 0)
             {
-                if (!followRedirect || isId || string.IsNullOrEmpty(dto.Slug) || dto.Slug == idOrSlug) return null;
+                if (!followRedirect || isId || string.IsNullOrEmpty(dto.Slug) || dto.Slug == idOrSlug)
+                {
+                    if (gameInDb == null) _cache.Set(missKey, true, TimeSpan.FromHours(6));
+                    return null;
+                }
                 return await GetGameBySlugOrIdAsync(dto.Slug, followRedirect: false);
             }
 
@@ -288,9 +310,13 @@ namespace GGHub.Infrastructure.Services
             // Steam magazasinda ara, eksik oyunlari ingest et ve DB sorgusunu BIR kez tekrarla.
             // "Anomaly President" sinifi vaka: oyun Steam'de gercek, RAWG kataloğunda yok.
             // SearchAndIngestAsync hatalari sessizce yutar; arama asla Steam yuzunden dusmez.
+            // Canli adim surec geneli tavanla sinirli (CatalogLiveLimiter): anonim aramada rastgele
+            // terim gonderen bir bot her istekte Steam + IGDB cagrisi ve 6'ya kadar satir ekletiyordu.
             if (!string.IsNullOrWhiteSpace(queryParams.Search)
                 && queryParams.Page == 1
-                && totalCount < 3)
+                && totalCount < 3
+                && CatalogLiveLimiter.IsPlausibleSearchTerm(queryParams.Search.Trim())
+                && CatalogLiveLimiter.TryAcquire())
             {
                 var term = queryParams.Search.Trim();
                 var ingestedCount = 0;

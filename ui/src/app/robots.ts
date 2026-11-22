@@ -31,11 +31,26 @@ const PRIVATE_PATHS = [
 
 const PREFIXES = ["", ...locales.map((locale) => `/${locale}`)];
 
+/**
+ * Parametreli kopyalar: kesfet filtreleri (?genres=, ?page=, ?search=...) ve giris/kayit donus adresleri
+ * (?returnUrl=). Hepsi sunucuda yeniden cizilen sayfa, hepsinin kanonigi parametresiz adres. Filtre
+ * kombinasyonlari sonsuz URL uretir; botlar bunlari gezerse her biri Railway'de bir SSR demek.
+ */
+const QUERY_VARIANT_PATHS = ["/discover", "/login", "/register"];
+
 const disallow = [
     ...PREFIXES.flatMap((prefix) => PRIVATE_PATHS.flatMap((path) => [`${prefix}${path}$`, `${prefix}${path}/`])),
+    ...PREFIXES.flatMap((prefix) => QUERY_VARIANT_PATHS.map((path) => `${prefix}${path}?`)),
     "/api/",
     "/download-app/og",
 ];
+
+/**
+ * Siteye ziyaretci getirmeyen, yogun tarayan botlar: SEO arac tarayicilari ve ByteDance'in egitim
+ * botu. Arama motoru ya da yapay zeka arama botu DEGILLER; kapatmak siralamayi etkilemez, yalniz
+ * Railway yukunu azaltir. Yapay zeka arama/egitim listesi (asagida) bilincli karar, ona dokunulmadi.
+ */
+const NO_VALUE_CRAWLERS = ["AhrefsBot", "SemrushBot", "MJ12bot", "DotBot", "DataForSeoBot", "BLEXBot", "Bytespider"];
 
 /**
  * Yapay zeka arama/egitim tarayicilari ACIKCA izinli: ChatGPT, Claude, Perplexity, Google AI,
@@ -73,6 +88,7 @@ export default function robots(): MetadataRoute.Robots {
         rules: [
             { userAgent: "*", allow: "/", disallow },
             { userAgent: AI_CRAWLERS, allow: "/", disallow },
+            { userAgent: NO_VALUE_CRAWLERS, disallow: "/" },
         ],
         sitemap: `${SITE_URL}/sitemap.xml`,
         // `host` çıplak alan adı bekliyor, şema kabul etmiyor.

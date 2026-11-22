@@ -1,4 +1,5 @@
 import type { AppLocale } from "@/i18n/config";
+import { originAuthHeaders } from "@/core/lib/origin-auth";
 
 /**
  * Sunucu bilesenlerinin (page, generateMetadata, sitemap) API'ye ulasmasinin TEK yolu.
@@ -38,7 +39,8 @@ export async function serverGet<T>(path: string, options: ServerFetchOptions = {
     const baseUrl = getApiBaseUrl();
     if (!baseUrl) return { data: null, status: 0 };
 
-    const headers: Record<string, string> = { Accept: "application/json" };
+    // Origin kilidi acikken API bu basligi bekler (core/lib/origin-auth.ts).
+    const headers: Record<string, string> = { Accept: "application/json", ...originAuthHeaders() };
     if (options.locale) headers["Accept-Language"] = options.locale;
 
     try {

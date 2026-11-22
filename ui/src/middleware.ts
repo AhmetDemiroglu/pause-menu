@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { appReleaseMaintenanceResponse, isApiHost, isMaintenanceModeOn, maintenanceJsonResponse, maintenancePageResponse, type MaintenanceLocale } from "@/core/lib/maintenance";
+import { isOriginAllowed } from "@/core/lib/origin-auth";
 import { buildLocalizedPathname, countryToLocale, defaultLocale, isLocale, localeCookieName, localeHeaderName, localeManualCookieName, normalizeLocale, parseAcceptLanguage } from "@/i18n/config";
 
 const publicFilePattern = /\.(.*)$/;
@@ -72,6 +73,17 @@ const maintenanceResponse = (request: NextRequest, pathname: string): Response |
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
+    // Cloudflare'i atlayan istek: hicbir is yapmadan reddet (ayrinti core/lib/origin-auth.ts).
+    if (!isOriginAllowed(request.headers)) {
+        return new NextResponse(null, { status: 403 });
+    }
+
+    // Matcher artik /_next/image, sitemap ve robots gibi noktali yollari da kilit icin yakaliyor.
+    // Bunlar eskiden middleware'e hic girmiyordu; kilitten sonra eskisi gibi dokunmadan gecer.
+    if (pathname.startsWith("/_next") || publicFilePattern.test(pathname)) {
+        return NextResponse.next();
+    }
+
     const maintenance = maintenanceResponse(request, pathname);
     if (maintenance) return maintenance;
 
@@ -121,5 +133,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/((?!_next|.*\\..*).*)"],
+    // Yalniz derleme ciktisi (hash'li, Cloudflare'de 30 gun onbellekli) disarida. Gorsel optimizer,
+    // sitemap'ler ve robots origin kilidinden gecsin diye noktali yollar artik dahil.
+    matcher: ["/((?!_next/static).*)"],
 };

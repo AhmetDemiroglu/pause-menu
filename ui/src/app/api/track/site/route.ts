@@ -1,5 +1,7 @@
 import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { originAuthHeaders } from "@/core/lib/origin-auth";
+import { visitorIpKey } from "@/core/lib/visitor-ip-key";
 
 /**
  * Site geneli telemetrinin giris kapisi. /api/track/download-app ile ayni gerekcelerle var
@@ -51,6 +53,9 @@ export async function POST(request: NextRequest) {
         "X-Visitor-Hash": visitorHash(ip, userAgent),
         "X-Visitor-Country": country,
         "X-Visitor-UA": userAgent,
+        // Hiz siniri anahtari: yalniz IP (UA degistirerek yeni kova acilamasin).
+        "X-Visitor-Ip-Key": visitorIpKey(ip),
+        ...originAuthHeaders(),
     };
     if (authorization) headers.Authorization = authorization;
 

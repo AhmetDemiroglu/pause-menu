@@ -17,6 +17,7 @@ namespace GGHub.Infrastructure.Services
     public class SitemapService : ISitemapService
     {
         private const int MaxPageSize = 5000;
+        private const int MaxPage = 50;
         private static readonly TimeSpan CacheDuration = TimeSpan.FromHours(1);
 
         // Oyun kalite esigi DiscoverService'in varsayilan akisiyla AYNI: kesfette gosterdigimiz
@@ -43,6 +44,10 @@ namespace GGHub.Infrastructure.Services
         {
             var query = _context.Games.AsNoTracking()
                 .Where(g => g.BackgroundImage != null && g.Slug != "")
+                // Aciklamasi hic olmayan oyun (cogu DLC/ek paket) sayfada yalniz kalip metin gosterir:
+                // ince sayfa, tarama butcesini ve botlarin SSR yukunu bosa harcar. Yerine siradaki
+                // degerli oyun girer (toplam yine MaxGames).
+                .Where(g => (g.Description != null && g.Description != "") || (g.DescriptionTr != null && g.DescriptionTr != ""))
                 .Where(g =>
                     (g.Metacritic != null && g.Metacritic >= MinMetacritic)
                     || (g.Rating != null && g.Rating >= MinRating)
@@ -95,9 +100,13 @@ namespace GGHub.Infrastructure.Services
 
         private async Task<PaginatedResult<SitemapEntryDto>> GetPageAsync(string kind, IQueryable<SitemapEntryDto> query, int page, int pageSize)
         {
-            var safePage = Math.Max(1, page);
-            var safePageSize = Math.Clamp(pageSize, 1, MaxPageSize);
-            var cacheKey = $"sitemap:{kind}:{safePage}:{safePageSize}";
+            // Sayfa boyutu istemciden ALINMAZ, sayfa numarasi sinirli: uc anonim ve her farkli
+            // (sayfa, boyut) cifti once iki DB sorgusu, sonra sinirsiz bellek onbellegine bir kayit
+            // demekti. Web her zaman 5.000'lik sayfa ister; boylece en fazla 3 x MaxPage kayit olur.
+            _ = pageSize;
+            var safePage = Math.Clamp(page, 1, MaxPage);
+            var safePageSize = MaxPageSize;
+            var cacheKey = $"sitemap:{kind}:{safePage}";
 
             if (_cache.TryGetValue(cacheKey, out PaginatedResult<SitemapEntryDto>? cached) && cached != null)
             {

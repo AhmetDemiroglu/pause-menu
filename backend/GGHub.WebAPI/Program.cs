@@ -301,6 +301,17 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 static string ClientIpPartition(HttpContext httpContext) =>
     httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
+// Telemetri kovasi: web proxy'sinin ilettigi yalniz-IP anahtari (X-Visitor-Ip-Key). Eski anahtar
+// X-Visitor-Hash IP + UA icerdigi icin her istekte UA degistiren biri yeni kova acip olay
+// tablolarina sinirsiz satir yazdirabiliyordu. Eski web surumu icin X-Visitor-Hash yedek.
+static string VisitorRateKey(HttpContext httpContext)
+{
+    var ipKey = httpContext.Request.Headers["X-Visitor-Ip-Key"].ToString();
+    if (ipKey.Length > 0) return ipKey;
+    var visitorHash = httpContext.Request.Headers["X-Visitor-Hash"].ToString();
+    return visitorHash.Length > 0 ? visitorHash : "unknown";
+}
+
 builder.Services.AddRateLimiter(options =>
 {
     // Kimlik uclari (login/register/sifre): IP basina 30/dk.
@@ -366,9 +377,7 @@ builder.Services.AddRateLimiter(options =>
     // uretir; 5 dakikada 240, hizli gezen gercek bir kullaniciya bol pay birakir.
     options.AddPolicy("SiteTrackPolicy", httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: httpContext.Request.Headers["X-Visitor-Hash"].ToString() is { Length: > 0 } siteVisitorHash
-                ? siteVisitorHash
-                : "unknown",
+            partitionKey: VisitorRateKey(httpContext),
             factory: _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 240,
@@ -378,9 +387,7 @@ builder.Services.AddRateLimiter(options =>
 
     options.AddPolicy("DownloadTrackPolicy", httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: httpContext.Request.Headers["X-Visitor-Hash"].ToString() is { Length: > 0 } visitorHash
-                ? visitorHash
-                : "unknown",
+            partitionKey: VisitorRateKey(httpContext),
             factory: _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 60,
@@ -563,6 +570,11 @@ if (app.Environment.IsProduction())
 // Ilk middleware olmali: sonraki her sey (rate limit, log, HSTS) gercek istemci IP'sini gormeli.
 app.UseForwardedHeaders();
 
+// Cloudflare'i atlayan istegi en ucuz noktada reddeder ve kilitten gecen istekte RemoteIpAddress'i
+// CF-Connecting-IP'ye cevirir (rate limit ve loglar gercek istemciyi gorsun). ORIGIN_AUTH_SECRET
+// tanimli degilse hicbir sey yapmaz. Ayrinti: Middleware/OriginAuthMiddleware.cs.
+app.UseMiddleware<OriginAuthMiddleware>();
+
 app.UseSerilogRequestLogging();
 
 // Istek logunun ICINDE, diger her seyin DISINDA: yakalanmamis exception burada kayda girer
@@ -604,9 +616,12 @@ if (app.Environment.IsProduction())
     app.UseHttpsRedirection();
 }
 
-app.UseRateLimiter();
-
+// Kimlik dogrulamadan SONRA: TranslatePolicy ve PostCreatePolicy kovayi kullanici kimligiyle
+// ayiriyor. Eskiden limiter once calistigi icin httpContext.User bostu ve herkes ayni "anonymous"
+// kovasina dusuyordu (ceviri tum site icin saatte 20, tek kisi herkesin gonderi atmasini kilitliyordu).
 app.UseAuthentication();    
+
+app.UseRateLimiter();
 
 app.UseStaticFiles();    
 

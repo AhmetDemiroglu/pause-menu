@@ -46,7 +46,10 @@ namespace GGHub.WebAPI.Controllers
             var y = year ?? now.Year;
             var m = month ?? now.Month;
 
-            if (y < 2000 || y > 2100 || m < 0 || m > 12)
+            // Istemciler (web + mobil) yalniz gecen yil .. 2 yil sonrasini gosterir. Eski aralik
+            // (2000-2100) her (yil, ay) cifti icin ayri 10 dakikalik bellek kaydi demekti: 1.300 kayit,
+            // tam yil gorunumleri buyuk. Railway bellegi faturalandigi icin aralik daraltildi.
+            if (y < now.Year - 3 || y > now.Year + 4 || m < 0 || m > 12)
             {
                 return BadRequest(new { message = "Geçersiz yıl veya ay." });
             }

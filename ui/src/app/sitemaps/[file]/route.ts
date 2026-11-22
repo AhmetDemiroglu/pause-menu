@@ -17,7 +17,10 @@ const KINDS: Record<SitemapKind, { path: (key: string) => string; changeFrequenc
     profiles: { path: (username) => `/profiles/${username}`, changeFrequency: "weekly", priority: 0.5 },
 };
 
-/** Dil onekli statik sayfalar; oncelik sayfanin arama degerine gore. */
+/**
+ * Dil onekli statik sayfalar; oncelik sayfanin arama degerine gore. Giris ve kayit formlari
+ * cikarildi: arama degeri yok, tarama butcesini ve botlarin SSR yukunu bosa harciyorlardi.
+ */
 const STATIC_PAGES: { path: string; priority: number; changeFrequency: SitemapUrl["changeFrequency"] }[] = [
     { path: "/", priority: 1, changeFrequency: "daily" },
     { path: "/discover", priority: 0.9, changeFrequency: "daily" },
@@ -27,8 +30,6 @@ const STATIC_PAGES: { path: string; priority: number; changeFrequency: SitemapUr
     { path: "/about", priority: 0.7, changeFrequency: "monthly" },
     { path: "/support", priority: 0.6, changeFrequency: "monthly" },
     { path: "/marketing", priority: 0.5, changeFrequency: "monthly" },
-    { path: "/register", priority: 0.5, changeFrequency: "yearly" },
-    { path: "/login", priority: 0.3, changeFrequency: "yearly" },
     { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
     { path: "/terms", priority: 0.3, changeFrequency: "yearly" },
     { path: "/child-safety", priority: 0.3, changeFrequency: "yearly" },
