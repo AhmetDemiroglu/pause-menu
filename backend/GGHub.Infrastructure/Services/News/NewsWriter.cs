@@ -21,6 +21,9 @@ namespace GGHub.Infrastructure.Services.News
         public NewsCategory Category { get; set; } = NewsCategory.Other;
         public int Importance { get; set; } = 1;
         public string? GameName { get; set; }
+
+        /// <summary>Oyun adinin kaynaklarda gectigi bicim ("GTA 6"); GameName resmi ad ("Grand Theft Auto VI").</summary>
+        public string? GameNameInSources { get; set; }
         public NewsDraftSide Tr { get; set; } = new();
         public NewsDraftSide En { get; set; } = new();
         public string? ImagePrompt { get; set; }
@@ -66,6 +69,10 @@ namespace GGHub.Infrastructure.Services.News
                 if (string.IsNullOrWhiteSpace(model)) continue;
 
                 var isPrimary = model == settings.PrimaryModel;
+                // 429 alan ucretsiz model 10 dk dinlenir: reddedilen istek de kotadan dusuyor ve kota
+                // Railway'deki AI botlariyla ortak. Bu surede dogrudan yedege gecilir.
+                if (isPrimary && _limiter.IsCoolingDown(model))
+                    continue;
                 if (isPrimary && !await _limiter.WaitForSlotAsync(model, PrimaryRpm, TimeSpan.FromMinutes(2), ct))
                     continue;
 
@@ -103,6 +110,7 @@ namespace GGHub.Infrastructure.Services.News
                 catch (GeminiQuotaExceededException ex)
                 {
                     if (ex.IsBilling) throw;
+                    if (isPrimary) _limiter.StartCooldown(model, TimeSpan.FromMinutes(10));
                     _logger.LogInformation("[News] {Model} kotasi doldu, yedege geciliyor.", model);
                 }
             }
@@ -137,13 +145,15 @@ namespace GGHub.Infrastructure.Services.News
             - category: one of announcement, releaseDate, release, update, industry, hardware, esports, other.
             - importance: 3 = major (new entry or release date of a big franchise, console/hardware reveal, studio
               closure or acquisition, huge industry event), 2 = notable, 1 = routine.
-            - gameName: the exact title of the single game the story is about, as written in the sources, or null.
+            - gameName: the official full title of the single game the story is about (for example "Grand Theft Auto VI"),
+              or null if the story is not about one game.
+            - gameNameInSources: the same game's name exactly as it is written in the sources (for example "GTA 6"), or null.
             - imagePrompt: English, 1-2 sentences for an abstract editorial illustration that evokes the topic (mood,
               setting, objects, genre). No logos, no text or letters, no real people, no existing characters,
               no brand or game names, no copyrighted designs.
 
             Reply with JSON only, exactly this shape:
-            {"skip":false,"skipReason":null,"category":"announcement","importance":2,"gameName":"...",
+            {"skip":false,"skipReason":null,"category":"announcement","importance":2,"gameName":"...","gameNameInSources":"...",
              "tr":{"title":"...","summary":"...","body":"..."},
              "en":{"title":"...","summary":"...","body":"..."},
              "imagePrompt":"..."}
@@ -185,6 +195,7 @@ namespace GGHub.Infrastructure.Services.News
                     Category = ParseCategory(Str(root, "category")),
                     Importance = root.TryGetProperty("importance", out var imp) && imp.TryGetInt32(out var iv) ? Math.Clamp(iv, 1, 3) : 1,
                     GameName = NullIfEmpty(Str(root, "gameName")),
+                    GameNameInSources = NullIfEmpty(Str(root, "gameNameInSources")),
                     ImagePrompt = NullIfEmpty(Str(root, "imagePrompt"))
                 };
 

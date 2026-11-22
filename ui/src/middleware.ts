@@ -44,7 +44,9 @@ const resolveLocale = (request: NextRequest) => {
  * yanit CDN'e yazilmaz, bu yollarda dil cerezi yazilmaz. Kayip yok: dil zaten URL'de, cerez yalniz
  * dil secici (manual) ile anlam kazaniyor.
  */
-const cdnCachedPathPattern = /^\/(tr|en-US)\/games\/[^/]+$/;
+// Haberler de bu sinifta: yanit Set-Cookie tasimazsa Cloudflare HTML onbellek kurali eklendiginde
+// dogrudan calisir (her haber sayfasi icerik olarak sabit, dil URL'de).
+const cdnCachedPathPattern = /^\/(tr|en-US)\/(games\/[^/]+|news|news\/[^/]+)$/;
 
 const withLocaleHeader = (request: NextRequest, locale: string) => {
     const requestHeaders = new Headers(request.headers);

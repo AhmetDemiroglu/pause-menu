@@ -75,7 +75,8 @@ namespace GGHub.Infrastructure.Services.News
     /// </summary>
     public sealed class NewsIngestRunner
     {
-        private const int NormalWindowDays = 2;
+        /// <summary>Normal turda bu kadar saatten eski yazi yeni haber olarak yazilmaz (geriden gelmesin).</summary>
+        private const int NormalWindowHours = 36;
         private const int BackfillDailyCap = 250;
         private const int RetentionDays = 180;
         private const int MaxSourcesPerArticle = 8;
@@ -114,8 +115,9 @@ namespace GGHub.Infrastructure.Services.News
         private sealed class Cluster
         {
             public List<NewsFeedItem> Items { get; } = new();
+            // Tazelik agir basar: 6 saatlik haber 2 puan kaybeder. Cok kaynakli olay (herkes yaziyor) one cikar.
             public double Score => Items.Sum(i => i.Feed.Weight) + Items.Count * 3
-                - (DateTime.UtcNow - Items.Min(i => i.PublishedAt)).TotalHours / 12.0;
+                - (DateTime.UtcNow - Items.Min(i => i.PublishedAt)).TotalHours / 3.0;
         }
 
         public async Task<NewsRunReport> RunAsync(NewsRunOptions opt, CancellationToken ct)
@@ -165,10 +167,11 @@ namespace GGHub.Infrastructure.Services.News
         private async Task RunCoreAsync(NewsRunOptions opt, AiSettings settings, NewsRunReport report, CancellationToken ct)
         {
             var now = DateTime.UtcNow;
-            var windowStart = now.AddDays(-(opt.BackfillDays > 0 ? opt.BackfillDays : NormalWindowDays));
+            var windowStart = opt.BackfillDays > 0 ? now.AddDays(-opt.BackfillDays) : now.AddHours(-NormalWindowHours);
 
             // ---- 1. cek
-            var states = await _db.NewsFeedStates.ToDictionaryAsync(s => s.FeedKey, ct);
+            // AsNoTracking: durumlar turun SONUNDA yazilir; arada yapilan haber kayitlari onlari erken kaydetmesin.
+            var states = await _db.NewsFeedStates.AsNoTracking().ToDictionaryAsync(s => s.FeedKey, ct);
             var useConditional = !opt.DryRun && opt.BackfillDays == 0;
             using var gate = new SemaphoreSlim(6);
             var fetches = await Task.WhenAll(NewsSources.All.Select(async feed =>
@@ -190,25 +193,12 @@ namespace GGHub.Infrastructure.Services.News
                 else report.FeedsOk++;
 
                 items.AddRange(f.Items);
-
-                if (!opt.DryRun)
-                {
-                    if (!states.TryGetValue(f.Feed.Key, out var st))
-                    {
-                        st = new NewsFeedState { FeedKey = f.Feed.Key };
-                        _db.NewsFeedStates.Add(st);
-                        states[f.Feed.Key] = st;
-                    }
-                    st.LastFetchedAt = now;
-                    if (f.Error != null) st.ConsecutiveFailures++;
-                    else
-                    {
-                        st.ConsecutiveFailures = 0;
-                        if (!f.NotModified) { st.ETag = Trunc(f.ETag, 200); st.LastModified = Trunc(f.LastModified, 100); }
-                    }
-                }
             }
-            if (!opt.DryRun) await _db.SaveChangesAsync(ct);
+
+            // Islenen (yazilan, kaynak olarak eklenen, atlanan) yazilarin URL'leri. Akis dogrulayicisi
+            // (ETag) yalniz yazisi kalmayan akis icin kaydedilir: tavana takilan ya da modelin yazamadigi
+            // yazi bir sonraki turda 304 yuzunden kaybolmasin.
+            var handled = new HashSet<string>(StringComparer.Ordinal);
 
             report.ItemsTotal = items.Count;
 
@@ -220,12 +210,14 @@ namespace GGHub.Infrastructure.Services.News
             report.ItemsInWindow = items.Count;
 
             var beforeExclude = items.Count;
+            var inWindow = items;
             items = items.Where(i =>
                 !NewsText.IsExcludedTitle(i.Title)
                 && (i.Feed.RequireCategory is null
                     || i.Categories.Any(c => NewsText.Normalize(c).Contains(i.Feed.RequireCategory, StringComparison.Ordinal))))
                 .ToList();
             report.ItemsExcluded = beforeExclude - items.Count;
+            handled.UnionWith(inWindow.Except(items).Select(i => i.Url));
 
             var urls = items.Select(i => i.Url).ToList();
             var known = new HashSet<string>(
@@ -233,6 +225,7 @@ namespace GGHub.Infrastructure.Services.News
             known.UnionWith(
                 await _db.NewsSkippedItems.AsNoTracking().Where(s => urls.Contains(s.Url)).Select(s => s.Url).ToListAsync(ct));
             report.ItemsKnown = items.Count(i => known.Contains(i.Url));
+            handled.UnionWith(known);
             items = items.Where(i => !known.Contains(i.Url)).ToList();
             report.ItemsNew = items.Count;
 
@@ -255,10 +248,21 @@ namespace GGHub.Infrastructure.Services.News
 
             // ---- 4. tavanlar
             var dayStart = now.Date;
-            var writtenToday = await _db.NewsArticles.CountAsync(a => a.CreatedAt >= dayStart, ct);
+            int remaining;
+            if (opt.BackfillDays > 0)
+            {
+                var backfilledToday = await _db.NewsArticles.CountAsync(a => a.CreatedAt >= dayStart && a.IsBackfill, ct);
+                remaining = Math.Max(0, BackfillDailyCap - backfilledToday);
+            }
+            else
+            {
+                // Gunluk tavan saate yayilir: gece yarisi turu dunun artiklariyla tum gunun hakkini yemesin.
+                // Saat h'ye kadar (UTC) en fazla tavan * (h+1) / 24 haber yazilmis olur.
+                var writtenToday = await _db.NewsArticles.CountAsync(a => a.CreatedAt >= dayStart && !a.IsBackfill, ct);
+                var paced = (int)Math.Ceiling(settings.NewsDailyArticleCap * (now.Hour + 1) / 24.0);
+                remaining = Math.Max(0, Math.Min(settings.NewsDailyArticleCap, paced) - writtenToday);
+            }
             var generatedToday = await _db.NewsArticles.CountAsync(a => a.CreatedAt >= dayStart && a.ImageKind == NewsImageKind.Generated, ct);
-            var cap = opt.BackfillDays > 0 ? BackfillDailyCap : settings.NewsDailyArticleCap;
-            var remaining = Math.Max(0, cap - writtenToday);
             report.CapRemaining = remaining;
 
             var budget = await _budget.GetStatusAsync(GeminiSources.News, ct);
@@ -308,6 +312,9 @@ namespace GGHub.Infrastructure.Services.News
                         _db.NewsArticleSources.Add(ToSource(articleId, item));
                     await SaveIgnoringDuplicatesAsync(ct);
                 }
+                handled.UnionWith(attach.Select(a => a.Item.Url));
+                // Kaynak siniri dolu habere benzeyen yazi da islenmis sayilir (bilerek eklenmedi).
+                handled.UnionWith(langItems.Where(i => !clusters.Any(c => c.Items.Contains(i))).Select(i => i.Url));
 
                 foreach (var cluster in clusters.OrderByDescending(c => c.Score))
                 {
@@ -322,8 +329,9 @@ namespace GGHub.Infrastructure.Services.News
                         break;
                     }
 
-                    var written = await WriteClusterAsync(cluster, settings, opt, report, imagesLeft > 0, imagesLeft > 0 && imagesLeft > imageCapHalf, ct);
+                    var written = await WriteClusterAsync(cluster, settings, opt, report, imagesLeft > 0, imagesLeft > 0 && imagesLeft > imageCapHalf, handled, ct);
                     if (written == null) continue;
+                    handled.UnionWith(cluster.Items.Select(i => i.Url));
 
                     if (written.ImageKind == NewsImageKind.Generated) imagesLeft--;
                     remaining--;
@@ -341,7 +349,40 @@ namespace GGHub.Infrastructure.Services.News
 
             report.CapRemaining = remaining;
 
-            // ---- 6. saklama
+            // ---- 6. akis durumu: hata sayaci her zaman, dogrulayici yalniz yazisi kalmayan akista
+            if (!opt.DryRun)
+            {
+                var leftoverFeeds = items.Where(i => !handled.Contains(i.Url)).Select(i => i.Feed.Key).ToHashSet();
+                foreach (var f in fetches)
+                {
+                    if (!states.TryGetValue(f.Feed.Key, out var st))
+                    {
+                        st = new NewsFeedState { FeedKey = f.Feed.Key };
+                        _db.NewsFeedStates.Add(st);
+                    }
+                    else
+                    {
+                        _db.NewsFeedStates.Attach(st);
+                    }
+                    st.LastFetchedAt = now;
+                    if (f.Error != null) { st.ConsecutiveFailures++; continue; }
+                    st.ConsecutiveFailures = 0;
+                    if (f.NotModified) continue;
+                    if (leftoverFeeds.Contains(f.Feed.Key) || !useConditional)
+                    {
+                        st.ETag = null;
+                        st.LastModified = null;
+                    }
+                    else
+                    {
+                        st.ETag = Trunc(f.ETag, 200);
+                        st.LastModified = Trunc(f.LastModified, 100);
+                    }
+                }
+                await SaveIgnoringDuplicatesAsync(ct);
+            }
+
+            // ---- 7. saklama
             if (!opt.DryRun)
             {
                 await CleanupAsync(report, ct);
@@ -349,7 +390,7 @@ namespace GGHub.Infrastructure.Services.News
         }
 
         private async Task<NewsArticle?> WriteClusterAsync(Cluster cluster, AiSettings settings, NewsRunOptions opt,
-            NewsRunReport report, bool canGenerate, bool canGenerateRoutine, CancellationToken ct)
+            NewsRunReport report, bool canGenerate, bool canGenerateRoutine, HashSet<string> handled, CancellationToken ct)
         {
             var picked = cluster.Items
                 .OrderByDescending(i => i.Feed.Weight)
@@ -398,17 +439,18 @@ namespace GGHub.Infrastructure.Services.News
                     foreach (var i in cluster.Items)
                         _db.NewsSkippedItems.Add(new NewsSkippedItem { Url = i.Url, Reason = "not-news", SkippedAt = DateTime.UtcNow });
                     await SaveIgnoringDuplicatesAsync(ct);
+                    handled.UnionWith(cluster.Items.Select(i => i.Url));
                 }
                 return null;
             }
 
-            var catalog = await _images.FindCatalogGameAsync(_db, draft.GameName, titles, bodies, ct);
+            var catalog = await _images.FindCatalogGameAsync(_db, draft.GameName, draft.GameNameInSources, titles, bodies, ct);
 
             if (opt.DryRun)
             {
                 report.Samples.Add($"""
 
-                    --- ORNEK [{draft.Model}] {draft.Category} / onem {draft.Importance} / oyun: {draft.GameName ?? "-"} / katalog: {(catalog != null ? $"#{catalog.GameId} {catalog.Name}" : "yok")}
+                    --- ORNEK [{draft.Model}] {draft.Category} / onem {draft.Importance} / oyun: {draft.GameName ?? "-"} ({draft.GameNameInSources ?? "-"}) / katalog: {(catalog != null ? $"#{catalog.GameId} {catalog.Name}" : "yok")}
                     Kaynaklar: {string.Join(" | ", cluster.Items.Select(i => $"{i.Feed.Name}: {i.Title}"))}
                     TR: {draft.Tr.Title}
                         {draft.Tr.Summary}
@@ -418,6 +460,7 @@ namespace GGHub.Infrastructure.Services.News
                         {draft.En.Body}
                     Gorsel istemi: {draft.ImagePrompt}
                     """);
+                if (catalog != null) report.CatalogImages++; else report.NoImage++;
                 return new NewsArticle
                 {
                     TitleEn = draft.En.Title, TitleTr = draft.Tr.Title,
@@ -472,7 +515,8 @@ namespace GGHub.Infrastructure.Services.News
                 ImageKind = kind,
                 GameId = catalog?.GameId,
                 PublishedAt = first.PublishedAt > DateTime.UtcNow ? DateTime.UtcNow : first.PublishedAt,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                IsBackfill = opt.BackfillDays > 0
             };
             foreach (var i in cluster.Items.Take(MaxSourcesPerArticle))
                 article.Sources.Add(ToSource(0, i));

@@ -66,16 +66,29 @@ namespace GGHub.Infrastructure.Services.News
         public sealed record CatalogMatch(int GameId, string Name, string ImageUrl);
 
         /// <summary>
-        /// Modelin verdigi oyun adini katalogda TAM ad olarak arar (ILIKE, trigram indeksi kullanir).
-        /// Ad kaynak metinde gecmiyorsa aranmaz: model uydurdugu bir adla yanlis oyuna baglamasin.
-        /// Ayni adli birden fazla kayitta gundemdeki ve en cok eklenen secilir.
+        /// Oyunu katalogda TAM ad olarak arar (ILIKE, trigram indeksi kullanir): once resmi ad, sonra
+        /// kaynaklardaki bicim ("Grand Theft Auto VI", sonra "GTA 6"). Kaynaklarda iki addan biri gecmiyorsa
+        /// aranmaz: model uydurdugu bir adla yanlis oyuna baglamasin. Ayni adli birden fazla kayitta
+        /// gundemdeki ve en cok eklenen secilir.
         /// </summary>
-        public async Task<CatalogMatch?> FindCatalogGameAsync(GGHubDbContext db, string? gameName,
+        public async Task<CatalogMatch?> FindCatalogGameAsync(GGHubDbContext db, string? officialName, string? nameInSources,
             IReadOnlyList<string> titles, IReadOnlyList<string> bodies, CancellationToken ct)
         {
-            if (string.IsNullOrWhiteSpace(gameName) || gameName.Length > 120) return null;
-            if (!NewsText.NameAppearsIn(gameName, titles, bodies)) return null;
+            var grounded = (!string.IsNullOrWhiteSpace(nameInSources) && NewsText.NameAppearsIn(nameInSources, titles, bodies))
+                || (!string.IsNullOrWhiteSpace(officialName) && NewsText.NameAppearsIn(officialName, titles, bodies));
+            if (!grounded) return null;
 
+            foreach (var name in new[] { officialName, nameInSources }.Distinct())
+            {
+                var match = await FindExactAsync(db, name, ct);
+                if (match != null) return match;
+            }
+            return null;
+        }
+
+        private static async Task<CatalogMatch?> FindExactAsync(GGHubDbContext db, string? gameName, CancellationToken ct)
+        {
+            if (string.IsNullOrWhiteSpace(gameName) || gameName.Length > 120) return null;
             var escaped = gameName.Trim().Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
             var game = await db.Games.AsNoTracking()
                 .Where(g => g.BackgroundImage != null && g.BackgroundImage != "")

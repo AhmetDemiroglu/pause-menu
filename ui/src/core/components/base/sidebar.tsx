@@ -178,9 +178,10 @@ function SidebarInner({ isMobile }: { isMobile: boolean }) {
                     />
                 )}
 
-                {/* ── Admin ─────────────────────────────────────────────────
-                    Masaustu mesajlar ust cubukta (MessagesMenu): menuye sayfa eklendikce cubuk kaymasin. */}
-                {isAuthenticated && user?.role === "Admin" && (
+                {/* ── Admin (yalniz mobil cekmece) ──────────────────────────
+                    Masaustunde mesajlar ust cubukta (MessagesMenu), admin paneli kullanici menusunde:
+                    menuye sayfa eklendikce cubuk kucuk ekranda (673 px) kaymasin. */}
+                {isAuthenticated && isMobile && user?.role === "Admin" && (
                     <>
                         <div className="sidebar-section py-1">
                             <Separator className="my-1" />
@@ -252,6 +253,14 @@ function SidebarInner({ isMobile }: { isMobile: boolean }) {
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
+                                {!isMobile && user.role === "Admin" ? (
+                                    <DropdownMenuItem asChild>
+                                        <Link href={localizeHref("/dashboard")} className="flex cursor-pointer items-center" onClick={onLinkClick}>
+                                            <LayoutDashboard className="mr-2 h-4 w-4" />
+                                            <span>{t("nav.adminPanel")}</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                ) : null}
                                 <DropdownMenuItem asChild>
                                     <Link href={localizeHref("/profile")} className="flex cursor-pointer items-center" onClick={onLinkClick}>
                                         <Settings className="mr-2 h-4 w-4" />

@@ -46,6 +46,9 @@ namespace GGHub.Core.Entities
         /// <summary>Admin gizledi: listede ve detayda gorunmez, sitemap'e girmez.</summary>
         public bool IsHidden { get; set; }
 
+        /// <summary>Ilk dolumda (--news-backfill) yazildi: gunluk haber tavanina sayilmaz.</summary>
+        public bool IsBackfill { get; set; }
+
         public ICollection<NewsArticleSource> Sources { get; set; } = new List<NewsArticleSource>();
     }
 

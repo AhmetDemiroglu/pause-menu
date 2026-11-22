@@ -1181,6 +1181,9 @@ namespace GGHub.Infrastructure.Migrations
                     b.Property<int>("Importance")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsBackfill")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsHidden")
                         .HasColumnType("boolean");
 

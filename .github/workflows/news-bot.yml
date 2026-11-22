@@ -41,6 +41,17 @@ jobs:
           KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           if [ -n "$DB" ] && [ -n "$KEY" ]; then
+            # Loglar herkese acik ve GitHub yalniz sirrin TAMAMINI gizler: baglanti dizesinin parcalarini
+            # (sunucu, port, kullanici, veritabani) ayrica maskele ki bir hata mesajinda gorunmesinler.
+            for KEYNAME in Host Port Username Database "User Id"; do
+              PART=$(printf '%s' "$DB" | tr ';' '\n' | sed -n "s/^[[:space:]]*$KEYNAME[[:space:]]*=[[:space:]]*//Ip" | head -n1)
+              if [ -n "$PART" ]; then echo "::add-mask::$PART"; fi
+            done
+            # URL bicimi (postgresql://kullanici:sifre@sunucu:port/vt) verildiyse sunucu ve portu da maskele.
+            URLHOST=$(printf '%s' "$DB" | sed -n 's|^[a-z]*://[^@]*@\([^:/]*\).*|\1|p')
+            URLPORT=$(printf '%s' "$DB" | sed -n 's|^[a-z]*://[^@]*@[^:/]*:\([0-9]*\).*|\1|p')
+            if [ -n "$URLHOST" ]; then echo "::add-mask::$URLHOST"; fi
+            if [ -n "$URLPORT" ]; then echo "::add-mask::$URLPORT"; fi
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "Sirlar henuz tanimli degil, is atlandi."
@@ -89,7 +100,7 @@ jobs:
           {
             "Serilog": {
               "Using": [ "Serilog.Sinks.Console" ],
-              "MinimumLevel": { "Default": "Information", "Override": { "Microsoft": "Warning", "System": "Warning" } },
+              "MinimumLevel": { "Default": "Information", "Override": { "Microsoft": "Warning", "Microsoft.EntityFrameworkCore": "Fatal", "Npgsql": "Fatal", "System": "Warning" } },
               "WriteTo": [ { "Name": "Console" } ]
             }
           }

@@ -265,7 +265,17 @@ var logger = host.Services.GetRequiredService<ILogger<Program>>();
 using (var startupScope = host.Services.CreateScope())
 {
     var db = startupScope.ServiceProvider.GetRequiredService<GGHubDbContext>();
-    var pending = (await db.Database.GetPendingMigrationsAsync()).ToList();
+    List<string> pending;
+    try
+    {
+        pending = (await db.Database.GetPendingMigrationsAsync()).ToList();
+    }
+    catch (Exception ex) when (args.Contains("--news-once"))
+    {
+        // Actions: baglanti hatasi mesaji sunucu adresini loga yazmasin.
+        Console.WriteLine($"Veritabanina baglanilamadi: {ex.GetType().Name}");
+        return 1;
+    }
 
     if (pending.Count > 0)
     {
@@ -309,13 +319,32 @@ if (args.Contains("--news-once") || args.Contains("--news-backfill"))
             : null
     };
 
-    using var newsScope = host.Services.CreateScope();
-    var runner = newsScope.ServiceProvider.GetRequiredService<NewsIngestRunner>();
+    // Actions loglari herkese acik: istisna mesaji baglanti adresini (sunucu, port) tasiyabilir.
+    // Yakalanir ve yalniz tipi yazilir. Zaman asiminda yarim tur sorun degil: kilit 15 dk'da duser,
+    // islenmeyen yazilar bir sonraki turda yeniden gelir.
     using var newsCts = new CancellationTokenSource(TimeSpan.FromMinutes(backfillDays > 0 ? 120 : 9));
-    var newsReport = await runner.RunAsync(options, newsCts.Token);
-    Console.WriteLine(newsReport.ToString());
-    host.Services.GetService<NewsImageStore>()?.Dispose();
-    return 0;
+    try
+    {
+        using var newsScope = host.Services.CreateScope();
+        var runner = newsScope.ServiceProvider.GetRequiredService<NewsIngestRunner>();
+        var newsReport = await runner.RunAsync(options, newsCts.Token);
+        Console.WriteLine(newsReport.ToString());
+        return 0;
+    }
+    catch (OperationCanceledException) when (newsCts.IsCancellationRequested)
+    {
+        Console.WriteLine("Haber turu zaman asimina ugradi; kalan yazilar bir sonraki turda islenecek.");
+        return 0;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Haber turu hatayla bitti: {ex.GetType().Name}");
+        return 1;
+    }
+    finally
+    {
+        host.Services.GetService<NewsImageStore>()?.Dispose();
+    }
 }
 
 logger.LogInformation("=== Pause Menu Worker basladi ===");
