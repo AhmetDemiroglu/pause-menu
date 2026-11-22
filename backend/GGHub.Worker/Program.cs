@@ -303,6 +303,22 @@ if (args.Contains("--news-refresh-images"))
     return 0;
 }
 
+// "--news-dedupe [--dry-run] [--skip 12,34]": ayni olayi anlatan haberleri birlestirir (fazlasi gizlenir, silinmez).
+// --skip: benzer gorunen ama farkli olay olan haberler birlestirmeye girmez.
+if (args.Contains("--news-dedupe"))
+{
+    using var dedupeScope = host.Services.CreateScope();
+    var deduper = dedupeScope.ServiceProvider.GetRequiredService<NewsIngestRunner>();
+    var si = Array.IndexOf(args, "--skip");
+    var skip = (si >= 0 && si + 1 < args.Length ? args[si + 1] : "")
+        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+        .Select(x => int.TryParse(x, out var id) ? id : 0).Where(id => id > 0).ToHashSet();
+    var merges = await deduper.DedupeAsync(args.Contains("--dry-run"), skip, CancellationToken.None);
+    foreach (var m in merges) Console.WriteLine(m);
+    Console.WriteLine($"Birlestirilen: {merges.Count}{(args.Contains("--dry-run") ? " (kuru kosu, hicbir sey degismedi)" : "")}");
+    return 0;
+}
+
 // "--news-fix-images [--limit N] [--dry-run]": gorselsiz ve ayni katalog gorselini tekrar eden haberlere gorsel uretir.
 if (args.Contains("--news-fix-images"))
 {

@@ -112,7 +112,7 @@ namespace GGHub.Infrastructure.Services.News
             _logger = logger;
         }
 
-        private sealed class PoolArticle
+        public sealed class PoolArticle
         {
             public int Id;
             public List<HashSet<string>> TitleTokens = new();
@@ -283,6 +283,8 @@ namespace GGHub.Infrastructure.Services.News
                 return p;
             }).ToList();
 
+            var common = NewsText.CommonTokens(pool.SelectMany(p => p.TitleTokens).Concat(items.Select(i => i.Tokens)));
+
             // ---- 4. tavanlar
             var dayStart = now.Date;
             int remaining;
@@ -332,7 +334,7 @@ namespace GGHub.Infrastructure.Services.News
 
                 foreach (var item in langItems)
                 {
-                    var match = pool.FirstOrDefault(p => p.TitleTokens.Any(t => NewsText.SameStory(t, item.Tokens)));
+                    var match = pool.FirstOrDefault(p => p.TitleTokens.Any(t => NewsText.SameStory(t, item.Tokens, common)));
                     if (match != null)
                     {
                         if (match.SourceCount < MaxSourcesPerArticle)
@@ -343,7 +345,7 @@ namespace GGHub.Infrastructure.Services.News
                         continue;
                     }
 
-                    var cluster = clusters.FirstOrDefault(c => c.Items.Any(x => NewsText.SameStory(x.Tokens, item.Tokens)));
+                    var cluster = clusters.FirstOrDefault(c => c.Items.Any(x => NewsText.SameStory(x.Tokens, item.Tokens, common)));
                     if (cluster != null) cluster.Items.Add(item);
                     else
                     {
@@ -383,7 +385,7 @@ namespace GGHub.Infrastructure.Services.News
                     NewsArticle? written;
                     try
                     {
-                        written = await WriteClusterAsync(cluster, settings, opt, report, imagesLeft > 0, imagesLeft > 0 && imagesLeft > imageCapHalf, handled, failed, ct);
+                        written = await WriteClusterAsync(cluster, settings, opt, report, imagesLeft > 0, imagesLeft > 0 && imagesLeft > imageCapHalf, handled, failed, pool, common, ct);
                     }
                     catch (Exception ex) when (ex is not OperationCanceledException && ex is not GeminiQuotaExceededException { IsBilling: true })
                     {
@@ -489,7 +491,8 @@ namespace GGHub.Infrastructure.Services.News
         }
 
         private async Task<NewsArticle?> WriteClusterAsync(Cluster cluster, AiSettings settings, NewsRunOptions opt,
-            NewsRunReport report, bool canGenerate, bool canGenerateRoutine, HashSet<string> handled, HashSet<string> failed, CancellationToken ct)
+            NewsRunReport report, bool canGenerate, bool canGenerateRoutine, HashSet<string> handled, HashSet<string> failed,
+            List<PoolArticle> pool, HashSet<string> common, CancellationToken ct)
         {
             var picked = cluster.Items
                 .OrderByDescending(i => i.Feed.Weight)
@@ -541,6 +544,24 @@ namespace GGHub.Infrastructure.Services.News
                     await SaveIgnoringDuplicatesAsync(ct);
                     handled.UnionWith(cluster.Items.Select(i => i.Url));
                 }
+                return null;
+            }
+
+            // Ikinci tekrar kontrolu: model basligi kaynaklarin farkli yazimlarini ayni bicime getirir ("GTA 6" ve
+            // "Grand Theft Auto VI"). Yazilan baslik mevcut bir haberle ayni olaysa yeni haber acilmaz, kaynaklar eklenir.
+            var draftTokens = new[] { NewsText.Tokens(draft.En.Title), NewsText.Tokens(draft.Tr.Title) };
+            var existing = pool.FirstOrDefault(p => p.TitleTokens.Count >= 2
+                && NewsText.SameStory(p.TitleTokens[0], draftTokens[0], common)
+                && NewsText.SameStory(p.TitleTokens[1], draftTokens[1], common));
+            if (existing != null && !opt.DryRun)
+            {
+                foreach (var i in cluster.Items.Take(Math.Max(0, MaxSourcesPerArticle - existing.SourceCount)))
+                    _db.NewsArticleSources.Add(ToSource(existing.Id, i));
+                await SaveIgnoringDuplicatesAsync(ct);
+                existing.SourceCount += cluster.Items.Count;
+                handled.UnionWith(cluster.Items.Select(i => i.Url));
+                report.AttachedToExisting += cluster.Items.Count;
+                _logger.LogInformation("[News] Tekrar onlendi: {Title} mevcut habere kaynak olarak eklendi (#{Id}).", draft.En.Title, existing.Id);
                 return null;
             }
 
@@ -829,6 +850,47 @@ namespace GGHub.Infrastructure.Services.News
                 generated++;
             }
             return (candidates.Count, generated);
+        }
+
+        /// <summary>
+        /// Tek seferlik tekrar birlestirme: son 14 gunde ayni olayi anlatan haberlerden kaynagi en cok olan
+        /// (esitse en eski) kalir, digerlerinin kaynaklari ona tasinir ve kendileri GIZLENIR (silinmez, geri alinabilir).
+        /// </summary>
+        public async Task<List<string>> DedupeAsync(bool dryRun, IReadOnlySet<int> skip, CancellationToken ct)
+        {
+            var since = DateTime.UtcNow.AddDays(-14);
+            var rows = await _db.NewsArticles.AsNoTracking()
+                .Where(a => !a.IsHidden && a.PublishedAt >= since && !skip.Contains(a.Id))
+                .Select(a => new { a.Id, a.TitleEn, a.TitleTr, a.PublishedAt, Sources = a.Sources.Count })
+                .ToListAsync(ct);
+            var tokens = rows.ToDictionary(r => r.Id, r => (En: NewsText.Tokens(r.TitleEn), Tr: NewsText.Tokens(r.TitleTr)));
+            var common = NewsText.CommonTokens(tokens.Values.SelectMany(t => new[] { t.En, t.Tr }));
+
+            var ordered = rows.OrderByDescending(r => r.Sources).ThenBy(r => r.PublishedAt).ToList();
+            var merged = new HashSet<int>();
+            var log = new List<string>();
+            foreach (var keep in ordered)
+            {
+                if (merged.Contains(keep.Id)) continue;
+                var k = tokens[keep.Id];
+                foreach (var dup in ordered.Where(d => d.Id != keep.Id && !merged.Contains(d.Id)))
+                {
+                    var d = tokens[dup.Id];
+                    // Iki dilde de ayni olay olmali: tek dildeki genel fiiller ("yanit verdi") yaniltiyor.
+                    if (!NewsText.SameStory(k.En, d.En, common) || !NewsText.SameStory(k.Tr, d.Tr, common)) continue;
+                    merged.Add(dup.Id);
+                    log.Add($"#{dup.Id} \"{dup.TitleTr}\"  ->  #{keep.Id} \"{keep.TitleTr}\"");
+                    if (dryRun) continue;
+
+                    var keepUrls = await _db.NewsArticleSources.Where(s => s.NewsArticleId == keep.Id).Select(s => s.Url).ToListAsync(ct);
+                    await _db.NewsArticleSources
+                        .Where(s => s.NewsArticleId == dup.Id && !keepUrls.Contains(s.Url))
+                        .ExecuteUpdateAsync(u => u.SetProperty(s => s.NewsArticleId, keep.Id), ct);
+                    await _db.NewsArticles.Where(a => a.Id == dup.Id)
+                        .ExecuteUpdateAsync(u => u.SetProperty(a => a.IsHidden, true), ct);
+                }
+            }
+            return log;
         }
 
         // ---------------------------------------------------------------- kilit

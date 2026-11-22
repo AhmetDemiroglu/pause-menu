@@ -54,27 +54,67 @@ namespace GGHub.Infrastructure.Services.News
             "aciklandi","duyuruldu","resmi","resmen","iste"
         };
 
+        private static readonly Dictionary<string, string> Roman = new(StringComparer.Ordinal)
+        {
+            ["ii"] = "2", ["iii"] = "3", ["iv"] = "4", ["vi"] = "6", ["vii"] = "7", ["viii"] = "8",
+            ["ix"] = "9", ["xi"] = "11", ["xii"] = "12", ["xiii"] = "13", ["xiv"] = "14", ["xv"] = "15", ["xvi"] = "16"
+        };
+
+        /// <summary>Kaynaklarin farkli yazdigi uzun adlar tek bicime iner ("grand theft auto" -> "gta").</summary>
+        private static readonly (string Long, string Short)[] Aliases =
+        {
+            ("grand theft auto", "gta"), ("call of duty", "cod"), ("the legend of zelda", "zelda"),
+            ("playstation 5", "ps5"), ("playstation 4", "ps4"), ("nintendo switch 2", "switch2"), ("switch 2", "switch2"),
+            ("xbox series x", "xbox"), ("xbox series s", "xbox"), ("elder scrolls", "tes"),
+        };
+
         public static HashSet<string> Tokens(string? title)
         {
             var set = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var t in Normalize(title).Split(' ', StringSplitOptions.RemoveEmptyEntries))
+            var text = " " + Normalize(title) + " ";
+            foreach (var (longName, shortName) in Aliases)
+                text = text.Replace(" " + longName + " ", " " + shortName + " ");
+
+            foreach (var raw in text.Split(' ', StringSplitOptions.RemoveEmptyEntries))
             {
+                var t = Roman.TryGetValue(raw, out var digit) ? digit : raw;
                 if (t.Length < 2 && !char.IsDigit(t[0])) continue;
                 if (Stopwords.Contains(t)) continue;
+                // Kaba ingilizce kok: "becomes" = "become", "crashes" = "crashe" (ss ile bitenler haric).
+                if (t.Length > 3 && t.EndsWith('s') && !t.EndsWith("ss", StringComparison.Ordinal)) t = t[..^1];
                 set.Add(t);
             }
             return set;
         }
 
         /// <summary>
+        /// Bu turda cok gecen kelimeler (bir haftada her yerde gecen "gta", "6", "ps5"): tek baslarina iki
+        /// haberi ayni olay saydirmasinlar diye ayrilir. Kelime basliklarin %6'sindan fazlasinda ve en az 4
+        /// baslikta geciyorsa yaygin sayilir.
+        /// </summary>
+        public static HashSet<string> CommonTokens(IEnumerable<HashSet<string>> titles)
+        {
+            var list = titles.ToList();
+            var df = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (var t in list)
+                foreach (var w in t)
+                    df[w] = df.GetValueOrDefault(w) + 1;
+            var threshold = Math.Max(4, (int)Math.Ceiling(list.Count * 0.06));
+            return df.Where(kv => kv.Value >= threshold).Select(kv => kv.Key).ToHashSet(StringComparer.Ordinal);
+        }
+
+        /// <summary>
         /// Iki baslik ayni olayi mi anlatiyor? Ortak anlamli kelime sayisi ve Jaccard birlikte bakilir:
         /// kisa basliklarda tek ortak kelime (oyun adi) yeterli sayilmaz.
         /// </summary>
-        public static bool SameStory(HashSet<string> a, HashSet<string> b)
+        public static bool SameStory(HashSet<string> a, HashSet<string> b, HashSet<string>? common = null)
         {
             if (a.Count == 0 || b.Count == 0) return false;
             var shared = a.Count(b.Contains);
             if (shared < 2) return false;
+            // Yaygin kelimeler (oyun adi, platform) disinda en az iki ortak kelime: "GTA 6 PS5 satislari" ile
+            // "GTA 6 PS5 performansi" ayni olay degildir.
+            if (common != null && a.Count(w => b.Contains(w) && !common.Contains(w)) < 2) return false;
             var jaccard = shared / (double)(a.Count + b.Count - shared);
             return (shared >= 3 && jaccard >= 0.34) || jaccard >= 0.55;
         }
