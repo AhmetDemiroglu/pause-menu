@@ -274,8 +274,20 @@ namespace GGHub.Infrastructure.Services.News
 
             // ---- 5. dil sirasiyla kumele ve yaz
             var sampleLeft = opt.Sample;
+
+            // Ingilizce once islenir (Turkce yazilar onlarin TR basliklariyla eslesip kaynak olarak
+            // eklensin diye). Ama Ingilizce olay sayisi tek basina gunluk hakki asiyor: Turkce kaynaklara
+            // hakkin %30'u ayrilir, Ingilizce bu payi yiyemez. Turkce az gelirse kalan hak bos kalmaz,
+            // bir sonraki turda Ingilizceye doner.
+            var trItemCount = items.Count(i => i.Feed.Language == "tr");
+            int TrReserve(int budget) => trItemCount == 0 ? 0 : Math.Min(trItemCount, (int)Math.Ceiling(budget * 0.3));
+            var trReserveWrites = TrReserve(remaining);
+            var trReserveSamples = TrReserve(opt.Sample);
+
             foreach (var lang in new[] { "en", "tr" })
             {
+                var reserveWrites = lang == "en" ? trReserveWrites : 0;
+                var reserveSamples = lang == "en" ? trReserveSamples : 0;
                 var langItems = items.Where(i => i.Feed.Language == lang).OrderBy(i => i.PublishedAt).ToList();
                 var clusters = new List<Cluster>();
                 var attach = new List<(int ArticleId, NewsFeedItem Item)>();
@@ -322,9 +334,10 @@ namespace GGHub.Infrastructure.Services.News
 
                     if (opt.DryRun)
                     {
-                        if (sampleLeft-- <= 0) continue;
+                        if (sampleLeft <= reserveSamples) break;
+                        sampleLeft--;
                     }
-                    else if (remaining <= 0)
+                    else if (remaining <= reserveWrites)
                     {
                         break;
                     }

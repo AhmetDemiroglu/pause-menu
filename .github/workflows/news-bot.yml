@@ -42,8 +42,8 @@ jobs:
         run: |
           if [ -n "$DB" ] && [ -n "$KEY" ]; then
             # Loglar herkese acik ve GitHub yalniz sirrin TAMAMINI gizler: baglanti dizesinin parcalarini
-            # (sunucu, port, kullanici, veritabani) ayrica maskele ki bir hata mesajinda gorunmesinler.
-            for KEYNAME in Host Port Username Database "User Id"; do
+            # (sunucu, port, kullanici, sifre, veritabani) ayrica maskele ki bir hata mesajinda gorunmesinler.
+            for KEYNAME in Host Server Port Username "User Id" Password Database; do
               PART=$(printf '%s' "$DB" | tr ';' '\n' | sed -n "s/^[[:space:]]*$KEYNAME[[:space:]]*=[[:space:]]*//Ip" | head -n1)
               if [ -n "$PART" ]; then echo "::add-mask::$PART"; fi
             done
