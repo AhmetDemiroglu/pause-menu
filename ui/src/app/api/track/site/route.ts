@@ -1,6 +1,6 @@
 import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { originAuthHeaders } from "@/core/lib/origin-auth";
+import { getIngestKey, getVisitorHashSalt, originAuthHeaders } from "@/core/lib/origin-auth";
 import { visitorIpKey } from "@/core/lib/visitor-ip-key";
 
 /**
@@ -18,7 +18,7 @@ export const runtime = "nodejs";
 const MAX_BODY_BYTES = 4096;
 
 function visitorHash(ip: string, userAgent: string): string {
-    const salt = process.env.VISITOR_HASH_SALT ?? "pm-dev-salt";
+    const salt = getVisitorHashSalt();
     const day = new Date().toISOString().slice(0, 10);
     return createHash("sha256").update(`${salt}|${day}|${ip}|${userAgent}`).digest("hex").slice(0, 32);
 }
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     const headers: Record<string, string> = {
         "Content-Type": "text/plain;charset=UTF-8",
-        "X-Ingest-Key": process.env.DOWNLOAD_ANALYTICS_INGEST_KEY ?? "",
+        "X-Ingest-Key": getIngestKey(),
         "X-Visitor-Hash": visitorHash(ip, userAgent),
         "X-Visitor-Country": country,
         "X-Visitor-UA": userAgent,

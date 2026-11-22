@@ -39,3 +39,13 @@ export const isOriginAllowed = (headers: Headers): boolean => {
 
     return headers.get(ORIGIN_AUTH_HEADER) === secret;
 };
+
+/**
+ * Telemetri tuzu ve ingest anahtari: ayri degiskenler (VISITOR_HASH_SALT, DOWNLOAD_ANALYTICS_INGEST_KEY)
+ * tanimli degilse ORIGIN_AUTH_SECRET kullanilir. 22 Kas 2026'da ikisi de Railway'de yoktu: tuz repodaki
+ * herkese acik varsayilandi, collect uclari anahtarsizdi. Tek sir girilince ucu de kapanir. Tarayici bu
+ * degeri goremez: Cloudflare yalniz x-origin-auth basligini ekler, X-Ingest-Key'i yalniz sunucu yazar.
+ */
+export const getVisitorHashSalt = () => process.env.VISITOR_HASH_SALT || getOriginAuthSecret() || "pm-dev-salt";
+
+export const getIngestKey = () => process.env.DOWNLOAD_ANALYTICS_INGEST_KEY || getOriginAuthSecret();

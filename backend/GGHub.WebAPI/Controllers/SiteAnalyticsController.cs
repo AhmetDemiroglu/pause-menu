@@ -43,7 +43,10 @@ namespace GGHub.WebAPI.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> Collect()
         {
+            // Ayri anahtar tanimli degilse origin sirri kullanilir (web proxy'si de ayni yedege duser).
+            // 22 Kas 2026'da Railway'de anahtar yoktu, uc herkese acikti. Tarayici bu degeri bilemez.
             var expectedKey = _configuration["DownloadAnalytics:IngestKey"];
+            if (string.IsNullOrWhiteSpace(expectedKey)) expectedKey = _configuration["ORIGIN_AUTH_SECRET"]?.Trim();
             if (!string.IsNullOrWhiteSpace(expectedKey))
             {
                 var providedKey = Request.Headers["X-Ingest-Key"].ToString();
