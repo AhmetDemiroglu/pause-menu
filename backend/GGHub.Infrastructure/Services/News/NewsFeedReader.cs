@@ -51,6 +51,7 @@ namespace GGHub.Infrastructure.Services.News
         private readonly IHttpClientFactory _httpFactory;
         private readonly ILogger<NewsFeedReader> _logger;
         private readonly Dictionary<string, List<string>> _robotsCache = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, bool> _imageHostCache = new(StringComparer.OrdinalIgnoreCase);
 
         public NewsFeedReader(IHttpClientFactory httpFactory, ILogger<NewsFeedReader> logger)
         {
@@ -210,6 +211,37 @@ namespace GGHub.Infrastructure.Services.News
             chosen = Regex.Replace(chosen, @"-(\d{2,3})x(\d{2,3})(\.(jpe?g|png|webp))$", "$3", RegexOptions.IgnoreCase);
             chosen = Regex.Replace(chosen, @"([?&]w=)(\d{2,3})(?=&|$)", "${1}1200");
             return chosen.Length > 800 ? null : chosen;
+        }
+
+        /// <summary>
+        /// Gorsel baska siteden (referrer'siz) gosterilebiliyor mu? Bazi yayincilar (Nintendo Life, Push Square,
+        /// Gematsu, VGC) dis istegi 403 ile reddediyor: bu, gorselin baska yerde kullanilmasini istemedikleri
+        /// anlamina gelir; kopyalayip kendimiz sunmayiz, katalog ya da uretime duseriz. Sunucu basina bir kez
+        /// yoklanir (ayni sunucu hepsini ayni sekilde ele aliyor).
+        /// </summary>
+        public async Task<bool> IsImageEmbeddableAsync(string url, CancellationToken ct)
+        {
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return false;
+            if (_imageHostCache.TryGetValue(uri.Host, out var known)) return known;
+
+            var ok = false;
+            try
+            {
+                var client = _httpFactory.CreateClient(HttpClientName);
+                using var req = new HttpRequestMessage(HttpMethod.Get, uri);
+                req.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(0, 1023);
+                req.Headers.Accept.ParseAdd("image/avif,image/webp,image/*;q=0.8");
+                using var resp = await client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct);
+                ok = resp.IsSuccessStatusCode
+                    && (resp.Content.Headers.ContentType?.MediaType?.StartsWith("image/", StringComparison.OrdinalIgnoreCase) ?? false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException || !ct.IsCancellationRequested)
+            {
+                ok = false;
+            }
+
+            _imageHostCache[uri.Host] = ok;
+            return ok;
         }
 
         private static bool LooksLikeImage(string url) =>

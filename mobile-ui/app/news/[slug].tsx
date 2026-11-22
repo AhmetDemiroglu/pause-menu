@@ -77,7 +77,13 @@ export default function NewsDetailScreen() {
     .filter(Boolean);
   const primary = article.sources[0];
   const caption =
-    article.imageKind === 'generated' ? m.representativeImage : article.game ? m.imageFromGame.replace('{game}', article.game.name) : null;
+    article.imageKind === 'generated'
+      ? m.representativeImage
+      : article.imageKind === 'source' && article.imageCredit
+        ? m.imageFromSource.replace('{source}', article.imageCredit)
+        : article.imageKind === 'catalog' && article.game
+          ? m.imageFromGame.replace('{game}', article.game.name)
+          : null;
 
   return (
     <ScreenWrapper noPadding safeArea={false}>

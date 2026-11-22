@@ -139,6 +139,8 @@ export const trMessages = {
         sourcesHint: "Bu haber aşağıdaki yazılardan derlendi. Ayrıntılar için kaynakları ziyaret et.",
         representativeImage: "Temsili görsel",
         imageFromGame: "Görsel: {game}",
+        readMore: "Devamını gör",
+        imageFromSource: "Görsel: {source}",
         relatedGame: "İlgili oyun",
     },
     agenda: {

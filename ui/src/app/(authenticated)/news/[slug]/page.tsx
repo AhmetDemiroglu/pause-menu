@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NewsDetailView } from "@/core/components/other/news/news-detail-view";
-import { getNewsDetailServer } from "@/api/news/news.server";
+import { getNewsDetailServer, getNewsFirstPageServer } from "@/api/news/news.server";
 import { getMessages, translate } from "@/i18n";
 import { resolveLocaleFromParams } from "@/i18n/server";
 import { seoCopy } from "@/core/seo/copy";
@@ -57,9 +57,11 @@ export default async function NewsDetailPage({ params }: Props) {
 
     const messages = getMessages(locale);
     const title = locale === "tr" ? article.titleTr : article.titleEn;
+    // Sag sutundaki son haberler: liste sayfasiyla ayni onbellekli istek (ek API yuku yok).
+    const latest = (await getNewsFirstPageServer()).data?.items ?? [];
 
     return (
-        <>
+        <div className="container mx-auto max-w-[1600px] p-4 md:p-6">
             <JsonLd
                 data={[
                     newsArticleJsonLd({
@@ -78,7 +80,7 @@ export default async function NewsDetailPage({ params }: Props) {
                     ]),
                 ]}
             />
-            <NewsDetailView article={article} />
-        </>
+            <NewsDetailView article={article} latest={latest} />
+        </div>
     );
 }

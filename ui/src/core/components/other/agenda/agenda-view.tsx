@@ -14,7 +14,7 @@ import { Input } from "@/core/components/ui/input";
 import { useDebounce } from "@/core/hooks/use-debounce";
 import { PlatformIcons } from "@/core/components/other/platform-icons";
 import { IgdbLogo } from "@/core/components/other/igdb-logo";
-import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
+import { PageHero } from "@core/components/base/page-hero";
 import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { buildLocalizedPathname } from "@/i18n/config";
 import { getGameImageUrl } from "@/core/lib/get-image-url";
@@ -291,39 +291,23 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
 
     return (
         <div className="space-y-8">
-            {/* Sinematik başlık bandı */}
-            <div className="relative overflow-hidden rounded-2xl bg-[#0D0915] ring-1 ring-white/10">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/15 via-[#0D0915] to-rose-600/20" />
-                <div
-                    aria-hidden
-                    className="absolute inset-0 opacity-[0.35]"
-                    style={{
-                        backgroundImage:
-                            "linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)",
-                        backgroundSize: "56px 56px",
-                        maskImage: "radial-gradient(ellipse 90% 70% at 30% 40%, black 30%, transparent 75%)",
-                    }}
-                />
-                <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl" />
-                <div aria-hidden className="pointer-events-none absolute -bottom-24 right-1/4 h-80 w-80 rounded-full bg-rose-600/15 blur-3xl" />
-
-                <div className="relative flex flex-col gap-5 p-6 md:flex-row md:items-end md:justify-between md:p-8">
-                    <div className="space-y-2">
-                        <BrandScriptLogo tone="dark" className="h-9 md:h-10" />
-                        <h1 className="text-3xl font-black tracking-tight text-white md:text-4xl">{t("agenda.title")}</h1>
-                        <p className="max-w-2xl text-sm text-white/60">{t("agenda.subtitle")}</p>
-                        {data ? (
-                            <div className="flex items-center gap-3 pt-1 text-xs font-semibold">
-                                <span className="text-amber-300">
-                                    {t("agenda.gamesCount", { count: data.counts.upcoming })} · {t("agenda.upcomingShort")}
-                                </span>
-                                <span className="text-emerald-300">
-                                    {t("agenda.gamesCount", { count: data.counts.released })} · {t("agenda.releasedShort")}
-                                </span>
-                            </div>
-                        ) : null}
-                    </div>
-
+            {/* Sinematik başlık bandı (ortak PageHero) */}
+            <PageHero
+                title={t("agenda.title")}
+                subtitle={t("agenda.subtitle")}
+                meta={
+                    data ? (
+                        <>
+                            <span className="text-amber-300">
+                                {t("agenda.gamesCount", { count: data.counts.upcoming })} · {t("agenda.upcomingShort")}
+                            </span>
+                            <span className="text-emerald-300">
+                                {t("agenda.gamesCount", { count: data.counts.released })} · {t("agenda.releasedShort")}
+                            </span>
+                        </>
+                    ) : null
+                }
+                actions={
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                         <div className="relative sm:w-[230px]">
                             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" />
@@ -379,8 +363,8 @@ export const AgendaView = ({ initialContent, initialYear, initialMonth }: Agenda
                             </Select>
                         </div>
                     </div>
-                </div>
-            </div>
+                }
+            />
 
             {isSearching ? (
                 <section className="space-y-5">

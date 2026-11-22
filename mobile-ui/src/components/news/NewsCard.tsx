@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View, type ImageStyle, type StyleProp } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,9 +14,10 @@ import { pickNewsText, type NewsListItem } from '@/src/models/news';
 /** Haber gorseli: katalog gorseli RAWG'de kucultulur, uretilen gorsel R2'de hazir. Yoksa marka renkli zemin. */
 export function NewsImage({ item, width, style }: { item: NewsListItem; width: 640 | 1280; style?: StyleProp<ImageStyle> }) {
   const { colors } = useTheme();
+  const [failed, setFailed] = useState(false);
   const uri = item.imageKind === 'catalog' ? getResizedGameImageUrl(item.imageUrl, width) : item.imageUrl ?? undefined;
 
-  if (!uri) {
+  if (!uri || failed) {
     return (
       <LinearGradient
         colors={[`${colors.primary}66`, `${colors.primary}1A`, colors.background]}
@@ -29,7 +30,7 @@ export function NewsImage({ item, width, style }: { item: NewsListItem; width: 6
     );
   }
 
-  return <Image source={{ uri }} style={style} resizeMode="cover" />;
+  return <Image source={{ uri }} style={style} resizeMode="cover" onError={() => setFailed(true)} />;
 }
 
 /** Liste karti: ustte 16:9 gorsel, altta kategori, baslik, spot, kaynak ve zaman. */
@@ -38,6 +39,8 @@ export function NewsCard({ item }: { item: NewsListItem }) {
   const { messages, locale } = useLocale();
   const router = useRouter();
   const { title, summary } = pickNewsText(item, locale);
+  // Baslik kesilmez. Ozet 3 satiri asarsa kesilir ve "Devamini gor" cikar (satir sayisi olculur).
+  const [summaryLines, setSummaryLines] = useState(0);
 
   return (
     <Pressable
@@ -50,13 +53,22 @@ export function NewsCard({ item }: { item: NewsListItem }) {
       <NewsImage item={item} width={640} style={styles.image} />
       <View style={styles.body}>
         <Text style={[styles.category, { color: colors.primary }]}>{messages.news.categories[item.category]}</Text>
-        <Text style={[styles.title, { color: colors.text }]} numberOfLines={2}>
-          {title}
-        </Text>
-        <Text style={[styles.summary, { color: colors.textSecondary }]} numberOfLines={2}>
+        <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+        {/* Gorunmez olcum kopyasi: tam metnin kac satir tuttugunu verir. */}
+        <Text
+          style={[styles.summary, styles.measure]}
+          onTextLayout={(e) => setSummaryLines(e.nativeEvent.lines.length)}
+          pointerEvents="none"
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
           {summary}
         </Text>
-        <Text style={[styles.meta, { color: colors.textMuted }]} numberOfLines={1}>
+        <Text style={[styles.summary, { color: colors.textSecondary }]} numberOfLines={3}>
+          {summary}
+        </Text>
+        {summaryLines > 3 ? <Text style={[styles.readMore, { color: colors.primary }]}>{messages.news.readMore}</Text> : null}
+        <Text style={[styles.meta, { color: colors.textMuted }]}>
           {item.sourceName}
           {item.sourceCount > 1 ? ` ${messages.news.sourceCount.replace('{count}', String(item.sourceCount - 1))}` : ''}
           {' · '}
@@ -103,5 +115,15 @@ const styles = StyleSheet.create({
   meta: {
     fontSize: FontSize.xs,
     marginTop: 2,
+  },
+  measure: {
+    position: 'absolute',
+    opacity: 0,
+    left: Spacing.md,
+    right: Spacing.md,
+  },
+  readMore: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
   },
 });

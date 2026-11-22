@@ -576,7 +576,11 @@ namespace GGHub.Infrastructure.Services.News
             string? imageUrl = null;
             string? imageCredit = null;
             var kind = NewsImageKind.None;
-            var withImage = picked.FirstOrDefault(i => i.ImageUrl != null) ?? cluster.Items.FirstOrDefault(i => i.ImageUrl != null);
+            NewsFeedItem? withImage = null;
+            foreach (var candidate in picked.Concat(cluster.Items).Where(i => i.ImageUrl != null).Distinct())
+            {
+                if (await _reader.IsImageEmbeddableAsync(candidate.ImageUrl!, ct)) { withImage = candidate; break; }
+            }
             if (withImage != null)
             {
                 imageUrl = withImage.ImageUrl;
@@ -717,8 +721,30 @@ namespace GGHub.Infrastructure.Services.News
                 finally { gate.Release(); }
             }));
 
-            var withImage = fetches.SelectMany(f => f.Items).Where(i => i.ImageUrl != null)
-                .GroupBy(i => i.Url).ToDictionary(g => g.Key, g => g.First());
+            // 1) Daha once yazilmis ama sunucusu dis gosterime kapali kaynak gorselleri: katalog ya da gorselsiz.
+            var sourceRows = await _db.NewsArticles.AsNoTracking()
+                .Where(a => a.ImageKind == NewsImageKind.Source && a.ImageUrl != null)
+                .Select(a => new { a.Id, a.ImageUrl, GameImage = a.Game != null ? a.Game.BackgroundImage : null })
+                .ToListAsync(ct);
+            var updated = 0;
+            foreach (var a in sourceRows)
+            {
+                if (await _reader.IsImageEmbeddableAsync(a.ImageUrl!, ct)) continue;
+                var kind = a.GameImage != null ? NewsImageKind.Catalog : NewsImageKind.None;
+                updated += await _db.NewsArticles.Where(x => x.Id == a.Id)
+                    .ExecuteUpdateAsync(u => u
+                        .SetProperty(x => x.ImageUrl, a.GameImage)
+                        .SetProperty(x => x.ImageKind, kind)
+                        .SetProperty(x => x.ImageCredit, (string?)null), ct);
+            }
+
+            // 2) Gorselsiz ya da katalog gorselli haberlere gosterilebilen kaynak gorseli.
+            var withImage = new Dictionary<string, NewsFeedItem>(StringComparer.Ordinal);
+            foreach (var i in fetches.SelectMany(f => f.Items).Where(i => i.ImageUrl != null))
+            {
+                if (withImage.ContainsKey(i.Url)) continue;
+                if (await _reader.IsImageEmbeddableAsync(i.ImageUrl!, ct)) withImage[i.Url] = i;
+            }
             var urls = withImage.Keys.ToList();
 
             var rows = await _db.NewsArticleSources.AsNoTracking()
@@ -727,7 +753,6 @@ namespace GGHub.Infrastructure.Services.News
                 .Select(s => new { s.NewsArticleId, s.Url })
                 .ToListAsync(ct);
 
-            var updated = 0;
             foreach (var g in rows.GroupBy(r => r.NewsArticleId))
             {
                 var item = withImage[g.First().Url];

@@ -22,7 +22,7 @@ export default async function NewsPage({ params }: Props) {
     const messages = getMessages(locale);
 
     return (
-        <>
+        <div className="container mx-auto max-w-[1600px] p-4 md:p-6">
             {firstPage?.items.length ? (
                 <JsonLd
                     data={[
@@ -45,6 +45,6 @@ export default async function NewsPage({ params }: Props) {
                 />
             ) : null}
             <NewsView initialFirstPage={firstPage} />
-        </>
+        </div>
     );
 }

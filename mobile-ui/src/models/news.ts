@@ -16,7 +16,9 @@ export interface NewsListItem {
   category: NewsCategory;
   importance: number;
   imageUrl: string | null;
-  imageKind: 'none' | 'catalog' | 'generated';
+  imageKind: 'none' | 'catalog' | 'generated' | 'source';
+  /** Gorsel kaynaktan geldiyse kaynagin adi. */
+  imageCredit?: string | null;
   publishedAt: string;
   sourceName: string;
   sourceCount: number;

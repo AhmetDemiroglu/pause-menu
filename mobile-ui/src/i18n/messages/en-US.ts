@@ -139,6 +139,8 @@ export const enUSMessages = {
         sourcesHint: "This story was compiled from the articles below. Visit the sources for the full details.",
         representativeImage: "Representative image",
         imageFromGame: "Image: {game}",
+        readMore: "Read more",
+        imageFromSource: "Image: {source}",
         relatedGame: "Related game",
     },
     agenda: {

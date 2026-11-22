@@ -2,18 +2,19 @@
 
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Flame, Loader2, Newspaper } from "lucide-react";
 import { newsApi } from "@/api/news/news.api";
 import { NEWS_CATEGORIES, type NewsCategory, type NewsListItem } from "@/models/news/news.model";
 import type { PaginatedResponse } from "@/models/system/api.model";
 import { useI18n } from "@/core/contexts/locale-context";
 import { useInfiniteScroll } from "@/core/hooks/use-infinite-scroll";
-import { Separator } from "@/core/components/ui/separator";
+import { PageHero } from "@core/components/base/page-hero";
 import { Skeleton } from "@/core/components/ui/skeleton";
-import { Tabs, TabsList, TabsTrigger } from "@/core/components/ui/tabs";
 import { NewsCard, NewsFeaturedCard } from "./news-card";
 
 const ALL = "all";
+/** Haber botunun okudugu kaynak sayisi (backend NewsSources.All). */
+const SOURCE_COUNT = 20;
 
 export function NewsGridSkeleton({ count = 8 }: { count?: number }) {
     return (
@@ -35,6 +36,7 @@ export function NewsGridSkeleton({ count = 8 }: { count?: number }) {
 /**
  * Haber listesi. Kategorisiz ilk sayfa sunucuda cizilir (page.tsx -> initialFirstPage), botlar API'ye
  * gitmeden icerigi gorur. Kategori secimi istemci durumudur: URL'ye yazilmaz, sorgu varyanti uretmez.
+ * Sayfa kabi ve baslik bandi Oyun Gundemi ile ayni (PageHero).
  */
 export function NewsView({ initialFirstPage }: { initialFirstPage: PaginatedResponse<NewsListItem> | null }) {
     const t = useI18n();
@@ -51,6 +53,7 @@ export function NewsView({ initialFirstPage }: { initialFirstPage: PaginatedResp
     });
 
     const items = query.data?.pages.flatMap((p) => p.items) ?? [];
+    const total = query.data?.pages[0]?.totalCount ?? initialFirstPage?.totalCount ?? 0;
     const showFeatured = activeCategory === null && items.length >= 6;
     const featured = showFeatured ? items.slice(0, 3) : [];
     const rest = showFeatured ? items.slice(3) : items;
@@ -61,64 +64,84 @@ export function NewsView({ initialFirstPage }: { initialFirstPage: PaginatedResp
         onLoadMore: () => query.fetchNextPage(),
     });
 
+    const pills: Array<{ key: NewsCategory | typeof ALL; label: string }> = [
+        { key: ALL, label: t("news.all") },
+        ...NEWS_CATEGORIES.map((c) => ({ key: c, label: t(`news.categories.${c}`) })),
+    ];
+
     return (
-        <div className="h-full w-full p-5">
-            <div className="space-y-4">
-                <div>
-                    <h1 className="text-3xl font-bold">{t("news.title")}</h1>
-                    <p className="mt-2 text-muted-foreground">{t("news.subtitle")}</p>
-                </div>
+        <div className="space-y-8">
+            <PageHero
+                accent="sky"
+                title={t("news.title")}
+                subtitle={t("news.subtitle")}
+                meta={
+                    <>
+                        {total > 0 ? <span className="text-sky-300">{t("news.statsStories", { count: total })}</span> : null}
+                        <span className="text-fuchsia-300">{t("news.statsSources", { count: SOURCE_COUNT })}</span>
+                    </>
+                }
+            />
 
-                <Separator />
-
-                {/* Dar ekranda sayfa tasmaz: yalniz sekme serisi kendi icinde yana kayar. */}
-                <Tabs value={category} onValueChange={(v) => setCategory(v as NewsCategory | typeof ALL)}>
-                    <div className="-mx-1 overflow-x-auto px-1 pb-1">
-                        <TabsList aria-label={t("news.categoriesLabel")} className="w-max">
-                            <TabsTrigger value={ALL} className="cursor-pointer px-3">
-                                {t("news.all")}
-                            </TabsTrigger>
-                            {NEWS_CATEGORIES.map((c) => (
-                                <TabsTrigger key={c} value={c} className="cursor-pointer px-3">
-                                    {t(`news.categories.${c}`)}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
-                    </div>
-                </Tabs>
+            {/* Filtre haplari Oyun Gundemi'ndeki gibi. Dar ekranda sayfa tasmaz, yalniz hap serisi yana kayar. */}
+            <div aria-label={t("news.categoriesLabel")} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+                {pills.map((pill) => (
+                    <button
+                        key={pill.key}
+                        type="button"
+                        aria-pressed={category === pill.key}
+                        onClick={() => setCategory(pill.key)}
+                        className={`shrink-0 cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                            category === pill.key ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+                        }`}
+                    >
+                        {pill.label}
+                    </button>
+                ))}
             </div>
 
-            <div className="mt-6 space-y-6">
-                {query.isPending ? (
-                    <NewsGridSkeleton />
-                ) : items.length === 0 ? (
-                    // Veri varken tazeleme hatasi icerigi silmez; hata yalniz hic veri yoksa gorunur.
-                    <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-                        {query.isError ? t("news.loadError") : t("news.empty")}
-                    </div>
-                ) : (
-                    <>
-                        {featured.length > 0 ? (
+            {query.isPending ? (
+                <NewsGridSkeleton />
+            ) : items.length === 0 ? (
+                // Veri varken tazeleme hatasi icerigi silmez; hata yalniz hic veri yoksa gorunur.
+                <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
+                    {query.isError ? t("news.loadError") : t("news.empty")}
+                </div>
+            ) : (
+                <>
+                    {featured.length > 0 ? (
+                        <section className="space-y-4">
+                            <div className="flex items-center gap-2">
+                                <Flame className="h-5 w-5 text-amber-400" />
+                                <h2 className="text-xl font-bold text-foreground">{t("news.featured")}</h2>
+                            </div>
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                                 {featured.map((item, i) => (
                                     <NewsFeaturedCard key={item.id} item={item} eager={i === 0} />
                                 ))}
                             </div>
-                        ) : null}
+                        </section>
+                    ) : null}
 
+                    <section className="space-y-4">
+                        {featured.length > 0 ? (
+                            <div className="flex items-center gap-2">
+                                <Newspaper className="h-5 w-5 text-primary" />
+                                <h2 className="text-xl font-bold text-foreground">{t("news.latest")}</h2>
+                            </div>
+                        ) : null}
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {rest.map((item, i) => (
                                 <NewsCard key={item.id} item={item} eager={!showFeatured && i < 4} />
                             ))}
                         </div>
-                    </>
-                )}
+                    </section>
+                </>
+            )}
 
-                <div ref={sentinelRef} className="flex h-10 items-center justify-center">
-                    {query.isFetchingNextPage ? <Loader2 aria-label={t("news.loadingMore")} className="h-5 w-5 animate-spin text-muted-foreground" /> : null}
-                </div>
+            <div ref={sentinelRef} className="flex h-10 items-center justify-center">
+                {query.isFetchingNextPage ? <Loader2 aria-label={t("news.loadingMore")} className="h-5 w-5 animate-spin text-muted-foreground" /> : null}
             </div>
         </div>
     );
 }
-

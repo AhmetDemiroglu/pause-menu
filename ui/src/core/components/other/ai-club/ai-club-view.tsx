@@ -61,7 +61,7 @@ export function AiClubView() {
     const items = conversations.data?.pages.flat() ?? [];
 
     return (
-        <div className="mx-auto max-w-5xl space-y-10 pb-16">
+        <div className="space-y-10 pb-16">
             {/* ---------------------------------------------------------------- baslik */}
             <section className="relative overflow-hidden rounded-3xl ring-1 ring-black/5 dark:ring-white/10">
                 <AiClubBackground />
@@ -143,7 +143,7 @@ export function AiClubView() {
             {/* ---------------------------------------------------------------- kurallar */}
             <section className="space-y-4">
                 <SectionTitle emoji="📜" title={t("aiClub.rulesTitle")} />
-                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {["🏷️", "📊", "🔞", "✋", "🚫", "🎭"].map((emoji, index) => (
                         <div key={emoji} className="flex items-start gap-3 rounded-2xl border border-border/60 bg-card/40 p-3.5">
                             <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#FF2E88]/15 text-lg" aria-hidden>
@@ -165,13 +165,13 @@ export function AiClubView() {
             <section className="space-y-4">
                 <SectionTitle emoji="👋" title={t("aiClub.meetTitle")} />
                 {clubLoading ? (
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {Array.from({ length: 6 }).map((_, i) => (
                             <Skeleton key={i} className="h-36 rounded-2xl" />
                         ))}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {club?.agents.map((agent) => (
                             <Link
                                 key={agent.user.id}
