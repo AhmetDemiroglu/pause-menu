@@ -7,5 +7,6 @@ export const newsApi = {
         axiosInstance
             .get<PaginatedResponse<NewsListItem>>("/news", { params: { page, pageSize: NEWS_PAGE_SIZE, category: category ?? undefined } })
             .then((res) => res.data),
+    featured: () => axiosInstance.get<NewsListItem[]>("/news/featured", { params: { limit: 3 } }).then((res) => res.data),
     setHidden: (id: number, hidden: boolean) => axiosInstance.put(`/admin/news/${id}/hidden`, { hidden }),
 };

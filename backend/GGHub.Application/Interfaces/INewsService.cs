@@ -11,6 +11,9 @@ namespace GGHub.Application.Interfaces
     {
         Task<PaginatedResult<NewsListItemDto>> GetListAsync(int page, int pageSize, string? category, CancellationToken ct = default);
 
+        /// <summary>One cikanlar: son 48 saatin (azsa 7 gunun) gorselli haberleri, onem, kaynak sayisi, tazelik sirasiyla.</summary>
+        Task<List<NewsListItemDto>> GetFeaturedAsync(int limit, CancellationToken ct = default);
+
         /// <summary>Bulunamazsa ya da gizliyse null (admin icin includeHidden).</summary>
         Task<NewsDetailDto?> GetBySlugAsync(string slug, bool includeHidden, CancellationToken ct = default);
 

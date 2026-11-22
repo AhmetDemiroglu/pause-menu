@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Flame, Loader2, Newspaper } from "lucide-react";
 import { newsApi } from "@/api/news/news.api";
 import { NEWS_CATEGORIES, type NewsCategory, type NewsListItem } from "@/models/news/news.model";
@@ -38,7 +38,13 @@ export function NewsGridSkeleton({ count = 8 }: { count?: number }) {
  * gitmeden icerigi gorur. Kategori secimi istemci durumudur: URL'ye yazilmaz, sorgu varyanti uretmez.
  * Sayfa kabi ve baslik bandi Oyun Gundemi ile ayni (PageHero).
  */
-export function NewsView({ initialFirstPage }: { initialFirstPage: PaginatedResponse<NewsListItem> | null }) {
+export function NewsView({
+    initialFirstPage,
+    initialFeatured,
+}: {
+    initialFirstPage: PaginatedResponse<NewsListItem> | null;
+    initialFeatured: NewsListItem[] | null;
+}) {
     const t = useI18n();
     const [category, setCategory] = useState<NewsCategory | typeof ALL>(ALL);
     const activeCategory = category === ALL ? null : category;
@@ -52,11 +58,20 @@ export function NewsView({ initialFirstPage }: { initialFirstPage: PaginatedResp
         staleTime: 2 * 60 * 1000,
     });
 
+    // One cikanlar en yeni 3 haber DEGIL: son 48 saatin en onemli haberleri (onem, kaynak sayisi, tazelik).
+    const featuredQuery = useQuery({
+        queryKey: ["news-featured"],
+        queryFn: () => newsApi.featured(),
+        initialData: initialFeatured ?? undefined,
+        staleTime: 2 * 60 * 1000,
+    });
+
     const items = query.data?.pages.flatMap((p) => p.items) ?? [];
     const total = query.data?.pages[0]?.totalCount ?? initialFirstPage?.totalCount ?? 0;
-    const showFeatured = activeCategory === null && items.length >= 6;
-    const featured = showFeatured ? items.slice(0, 3) : [];
-    const rest = showFeatured ? items.slice(3) : items;
+    const featured = activeCategory === null && items.length >= 6 ? (featuredQuery.data ?? []).slice(0, 3) : [];
+    const showFeatured = featured.length > 0;
+    const featuredIds = new Set(featured.map((f) => f.id));
+    const rest = items.filter((i) => !featuredIds.has(i.id));
 
     const sentinelRef = useInfiniteScroll<HTMLDivElement>({
         enabled: !!query.hasNextPage,

@@ -145,8 +145,13 @@ namespace GGHub.Infrastructure.Services.News
 
             FIELDS
             - category: one of announcement, releaseDate, release, update, industry, hardware, esports, other.
-            - importance: 3 = major (new entry or release date of a big franchise, console/hardware reveal, studio
-              closure or acquisition, huge industry event), 2 = notable, 1 = routine.
+            - importance: how much the average gamer worldwide cares.
+              3 = major: a new entry, release date or big reveal of a franchise most gamers know (GTA, Call of Duty,
+                  Zelda, Pokemon, Elden Ring...), console/hardware reveals, studio closures or acquisitions of well-known
+                  companies, record-breaking launches.
+              2 = notable: news about a well-known game or company that many players follow.
+              1 = routine or niche: patches, small updates, niche or little-known titles, regional releases, merchandise,
+                  minor community stories. When unsure, choose 1. A title most gamers have not heard of is always 1.
             - gameName: the official full title of the single game the story is about (for example "Grand Theft Auto VI"),
               or null if the story is not about one game.
             - gameNameInSources: the same game's name exactly as it is written in the sources (for example "GTA 6"), or null.

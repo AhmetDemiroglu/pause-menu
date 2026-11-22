@@ -303,6 +303,19 @@ if (args.Contains("--news-refresh-images"))
     return 0;
 }
 
+// "--news-fix-images [--limit N] [--dry-run]": gorselsiz ve ayni katalog gorselini tekrar eden haberlere gorsel uretir.
+if (args.Contains("--news-fix-images"))
+{
+    var li = Array.IndexOf(args, "--limit");
+    var limit = li >= 0 && li + 1 < args.Length && int.TryParse(args[li + 1], out var l) ? Math.Clamp(l, 0, 200) : 20;
+    using var fixScope = host.Services.CreateScope();
+    var fixer = fixScope.ServiceProvider.GetRequiredService<NewsIngestRunner>();
+    using var fixCts = new CancellationTokenSource(TimeSpan.FromMinutes(30));
+    var (candidates, generated) = await fixer.FixImagesAsync(limit, args.Contains("--dry-run"), fixCts.Token);
+    Console.WriteLine($"Aday: {candidates}, uretilen: {generated} (tahmini maliyet {generated * 0.0336m:F2} USD)");
+    return 0;
+}
+
 if (args.Contains("--news-once") || args.Contains("--news-backfill"))
 {
     string? ArgValue(string name)

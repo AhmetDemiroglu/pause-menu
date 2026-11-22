@@ -29,6 +29,12 @@ namespace GGHub.WebAPI.Controllers
             return Ok(await _service.GetListAsync(page, pageSize, category, ct));
         }
 
+        [HttpGet("featured")]
+        public async Task<IActionResult> GetFeatured([FromQuery] int limit = 3, CancellationToken ct = default)
+        {
+            return Ok(await _service.GetFeaturedAsync(limit, ct));
+        }
+
         [HttpGet("{slug}")]
         public async Task<IActionResult> GetBySlug(string slug, CancellationToken ct)
         {

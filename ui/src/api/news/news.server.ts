@@ -6,6 +6,10 @@ import { serverGet } from "@/api/server-fetch";
 export const getNewsFirstPageServer = () =>
     serverGet<PaginatedResponse<NewsListItem>>(`/api/news?page=1&pageSize=${NEWS_PAGE_SIZE}`, { revalidate: 300, tags: ["news-list"] });
 
+/** One cikanlar: son 48 saatin en onemli 3 haberi (API'de onem, kaynak sayisi, tazelik sirasi). */
+export const getNewsFeaturedServer = () =>
+    serverGet<NewsListItem[]>(`/api/news/featured?limit=3`, { revalidate: 300, tags: ["news-featured"] });
+
 export const getNewsDetailServer = (slug: string) =>
     serverGet<NewsDetail>(`/api/news/${encodeURIComponent(slug)}`, { revalidate: 600, tags: [`news-${slug}`] });
 

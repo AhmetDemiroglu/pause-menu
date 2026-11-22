@@ -588,13 +588,17 @@ namespace GGHub.Infrastructure.Services.News
                 kind = NewsImageKind.Source;
                 report.SourceImages++;
             }
-            else if (catalog != null)
+            // Cesitlilik: ayni oyunun katalog gorseli son 48 saatte kullanildiysa (ayni oyun art arda haber
+            // olunca hep ayni gorsel cikmasin) gunluk uretim hakki varsa yeni gorsel uretilir.
+            var catalogRecentlyUsed = catalog != null && await _db.NewsArticles.AnyAsync(
+                a => a.ImageUrl == catalog.ImageUrl && a.PublishedAt >= DateTime.UtcNow.AddHours(-48), ct);
+            if (withImage == null && catalog != null && !(catalogRecentlyUsed && canGenerate && draft.ImagePrompt != null))
             {
                 imageUrl = catalog.ImageUrl;
                 kind = NewsImageKind.Catalog;
                 report.CatalogImages++;
             }
-            else if (draft.ImagePrompt != null && canGenerate && (draft.Importance >= 2 || canGenerateRoutine))
+            else if (withImage == null && draft.ImagePrompt != null && canGenerate)
             {
                 try
                 {
@@ -612,6 +616,13 @@ namespace GGHub.Infrastructure.Services.News
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
                     _logger.LogWarning(ex, "[News] Gorsel uretimi hatasi.");
+                }
+                // Uretim olmadiysa katalog gorseli tekrar etse de gorselsiz birakmaktan iyidir.
+                if (kind == NewsImageKind.None && catalog != null)
+                {
+                    imageUrl = catalog.ImageUrl;
+                    kind = NewsImageKind.Catalog;
+                    report.CatalogImages++;
                 }
             }
             if (kind == NewsImageKind.None) report.NoImage++;
@@ -764,6 +775,60 @@ namespace GGHub.Infrastructure.Services.News
                         .SetProperty(a => a.ImageCredit, item.Feed.Name), ct);
             }
             return updated;
+        }
+
+        /// <summary>
+        /// Tek seferlik gorsel onarimi: gorselsiz haberler ve ayni katalog gorselini tekrar eden haberler (ilk
+        /// kullanan haric) icin gorsel uretir. Istem haberin Ingilizce baslik ve ozetinden kurulur, model cagrisi
+        /// yalniz gorsel icindir. dryRun: yalniz kac haber oldugunu ve tahmini maliyeti doner.
+        /// </summary>
+        public async Task<(int Candidates, int Generated)> FixImagesAsync(int limit, bool dryRun, CancellationToken ct)
+        {
+            var rows = await _db.NewsArticles.AsNoTracking()
+                .Where(a => !a.IsHidden && (a.ImageKind == NewsImageKind.None || a.ImageKind == NewsImageKind.Catalog))
+                .OrderBy(a => a.PublishedAt)
+                .Select(a => new { a.Id, a.ImageUrl, a.ImageKind, a.TitleEn, a.SummaryEn, a.PublishedAt })
+                .ToListAsync(ct);
+
+            var seenCatalog = new HashSet<string>(StringComparer.Ordinal);
+            var candidates = new List<(int Id, string Prompt)>();
+            foreach (var a in rows)
+            {
+                var duplicate = a.ImageKind == NewsImageKind.Catalog && a.ImageUrl != null && !seenCatalog.Add(a.ImageUrl);
+                if (a.ImageKind == NewsImageKind.None || duplicate)
+                    candidates.Add((a.Id, $"Topic: {a.TitleEn}. {a.SummaryEn} Depict the mood, setting and objects of this topic."));
+            }
+            // En yeni haberler once (sayfanin ustunde gorunenler).
+            candidates.Reverse();
+            if (dryRun || !_images.CanUpload) return (candidates.Count, 0);
+
+            var generated = 0;
+            foreach (var (id, prompt) in candidates.Take(Math.Max(0, limit)))
+            {
+                ct.ThrowIfCancellationRequested();
+                string? url;
+                try
+                {
+                    url = await _images.GenerateAsync(_gemini, prompt, ct);
+                }
+                catch (GeminiBudgetExceededException)
+                {
+                    _logger.LogWarning("[News] Aylik haber butcesi doldu, onarim durdu.");
+                    break;
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    _logger.LogWarning(ex, "[News] Onarim gorseli uretilemedi: {Id}", id);
+                    continue;
+                }
+                if (url == null) continue;
+                await _db.NewsArticles.Where(a => a.Id == id).ExecuteUpdateAsync(u => u
+                    .SetProperty(a => a.ImageUrl, url)
+                    .SetProperty(a => a.ImageKind, NewsImageKind.Generated)
+                    .SetProperty(a => a.ImageCredit, (string?)null), ct);
+                generated++;
+            }
+            return (candidates.Count, generated);
         }
 
         // ---------------------------------------------------------------- kilit

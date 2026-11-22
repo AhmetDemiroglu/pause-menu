@@ -90,6 +90,48 @@ namespace GGHub.Infrastructure.Services.News
             return result;
         }
 
+        public async Task<List<NewsListItemDto>> GetFeaturedAsync(int limit, CancellationToken ct = default)
+        {
+            var safe = Math.Clamp(limit, 1, 6);
+            var key = $"news:featured:{Volatile.Read(ref _generation)}:{safe}";
+            if (_cache.TryGetValue(key, out List<NewsListItemDto>? cached) && cached != null)
+                return cached;
+
+            var result = new List<NewsListItemDto>();
+            foreach (var hours in new[] { 48, 24 * 7 })
+            {
+                var since = DateTime.UtcNow.AddHours(-hours);
+                var rows = await _context.NewsArticles.AsNoTracking()
+                    .Where(a => !a.IsHidden && a.ImageKind != NewsImageKind.None && a.PublishedAt >= since)
+                    .Select(a => new
+                    {
+                        a.Id, a.Slug, a.TitleTr, a.TitleEn, a.SummaryTr, a.SummaryEn, a.Category, a.Importance,
+                        a.ImageUrl, a.ImageKind, a.ImageCredit, a.PublishedAt,
+                        FirstSource = a.Sources.OrderBy(s => s.PublishedAt).Select(s => s.SourceName).FirstOrDefault(),
+                        SourceCount = a.Sources.Count
+                    })
+                    // Onem en guclu sinyal; ayni onemde cok kaynakli olay (herkes yaziyor) ve yeni olan once.
+                    .OrderByDescending(a => a.Importance)
+                    .ThenByDescending(a => a.SourceCount)
+                    .ThenByDescending(a => a.PublishedAt)
+                    .Take(safe)
+                    .ToListAsync(ct);
+
+                result = rows.Select(r => new NewsListItemDto
+                {
+                    Id = r.Id, Slug = r.Slug, TitleTr = r.TitleTr, TitleEn = r.TitleEn, SummaryTr = r.SummaryTr, SummaryEn = r.SummaryEn,
+                    Category = CategoryKey(r.Category), Importance = r.Importance, ImageUrl = r.ImageUrl,
+                    ImageKind = ImageKindKey(r.ImageKind), ImageCredit = r.ImageCredit,
+                    PublishedAt = DateTime.SpecifyKind(r.PublishedAt, DateTimeKind.Utc),
+                    SourceName = r.FirstSource ?? string.Empty, SourceCount = r.SourceCount
+                }).ToList();
+                if (result.Count >= safe) break;
+            }
+
+            _cache.Set(key, result, CacheTtl);
+            return result;
+        }
+
         public async Task<NewsDetailDto?> GetBySlugAsync(string slug, bool includeHidden, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(slug) || slug.Length > 160)

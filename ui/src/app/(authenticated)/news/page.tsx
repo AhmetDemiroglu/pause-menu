@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { NewsView } from "@/core/components/other/news/news-view";
-import { getNewsFirstPageServer } from "@/api/news/news.server";
+import { getNewsFeaturedServer, getNewsFirstPageServer } from "@/api/news/news.server";
 import { resolveLocaleFromParams } from "@/i18n/server";
 import { staticPageMetadata } from "@/core/seo/page-metadata";
 import { getMessages, translate } from "@/i18n";
@@ -18,7 +18,7 @@ export const generateMetadata: (props: Props) => Promise<Metadata> = staticPageM
  */
 export default async function NewsPage({ params }: Props) {
     const locale = await resolveLocaleFromParams(params);
-    const firstPage = (await getNewsFirstPageServer()).data;
+    const [{ data: firstPage }, { data: featured }] = await Promise.all([getNewsFirstPageServer(), getNewsFeaturedServer()]);
     const messages = getMessages(locale);
 
     return (
@@ -44,7 +44,7 @@ export default async function NewsPage({ params }: Props) {
                     ]}
                 />
             ) : null}
-            <NewsView initialFirstPage={firstPage} />
+            <NewsView initialFirstPage={firstPage} initialFeatured={featured} />
         </div>
     );
 }
