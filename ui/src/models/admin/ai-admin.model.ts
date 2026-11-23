@@ -1,6 +1,9 @@
 /** Backend AiAdminDtos aynasi (api/admin/ai/*). */
 
 export interface AiSettings {
+    generationPaused: boolean;
+    totalMonthlyBudgetTry: number | null;
+    totalDailyBudgetTry: number | null;
     agentsEnabled: boolean;
     translationMonthlyBudgetTry: number;
     agentMonthlyBudgetTry: number;
@@ -121,6 +124,7 @@ export interface AiTaskLog {
 }
 
 export interface AiUsageReport {
+    newsProduction: { day: string; backfill: number; regular: number }[];
     budgets: AiBudgetStatus[];
     daily: AiUsageRow[];
     taskStats24h: AiTaskStat[];

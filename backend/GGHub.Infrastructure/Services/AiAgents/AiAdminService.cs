@@ -59,7 +59,7 @@ namespace GGHub.Infrastructure.Services
         {
             if (!_gemini.Models.ContainsKey(dto.PrimaryModel) || !_gemini.Models.ContainsKey(dto.FallbackModel))
                 throw new ArgumentException("Model fiyat tablosunda yok. Bilinen modellerden birini seçin.");
-            if (dto.TranslationMonthlyBudgetTry < 0 || dto.AgentMonthlyBudgetTry < 0 || dto.NewsMonthlyBudgetTry < 0)
+            if (dto.TotalMonthlyBudgetTry < 0 || dto.TotalDailyBudgetTry < 0 || dto.TranslationMonthlyBudgetTry < 0 || dto.AgentMonthlyBudgetTry < 0 || dto.NewsMonthlyBudgetTry < 0)
                 throw new ArgumentException("Bütçe tavanı negatif olamaz.");
             if (dto.UsdToTryRate <= 0)
                 throw new ArgumentException("Kur sıfırdan büyük olmalı.");
@@ -96,8 +96,23 @@ namespace GGHub.Infrastructure.Services
             return ToDto(updated);
         }
 
+        public async Task<AiSettingsDto> UpdateBudgetControlsAsync(AiBudgetControlsDto dto, CancellationToken ct)
+        {
+            if (dto.TotalMonthlyBudgetTry < 0 || dto.TotalDailyBudgetTry < 0)
+                throw new ArgumentException("Bütçe tavanı negatif olamaz.");
+            return ToDto(await _settings.UpdateAsync(s =>
+            {
+                s.GenerationPaused = dto.GenerationPaused;
+                s.TotalMonthlyBudgetTry = dto.TotalMonthlyBudgetTry;
+                s.TotalDailyBudgetTry = dto.TotalDailyBudgetTry;
+            }, ct));
+        }
+
         private AiSettingsDto ToDto(AiSettings s) => new()
         {
+            GenerationPaused = s.GenerationPaused,
+            TotalMonthlyBudgetTry = s.TotalMonthlyBudgetTry,
+            TotalDailyBudgetTry = s.TotalDailyBudgetTry,
             AgentsEnabled = s.AgentsEnabled,
             TranslationMonthlyBudgetTry = s.TranslationMonthlyBudgetTry,
             AgentMonthlyBudgetTry = s.AgentMonthlyBudgetTry,
@@ -487,6 +502,14 @@ namespace GGHub.Infrastructure.Services
                 SpentUsd = u.SpentUsd,
                 SpentTry = Math.Round(u.SpentUsd * rate, 4)
             }).ToList();
+
+            var fromDate = DateTime.UtcNow.Date.AddDays(-(days - 1));
+            var production = await _context.NewsArticles.AsNoTracking()
+                .Where(a => a.CreatedAt >= fromDate)
+                .Select(a => new { a.CreatedAt, a.IsBackfill }).ToListAsync(ct);
+            report.NewsProduction = production.GroupBy(a => a.CreatedAt.ToString("yyyy-MM-dd"))
+                .Select(g => new NewsProductionDayDto { Day = g.Key, Backfill = g.Count(a => a.IsBackfill), Regular = g.Count(a => !a.IsBackfill) })
+                .OrderByDescending(x => x.Day).ToList();
 
             var since = DateTime.UtcNow.AddHours(-24);
             var stats = await _context.AiAgentTasks.AsNoTracking()

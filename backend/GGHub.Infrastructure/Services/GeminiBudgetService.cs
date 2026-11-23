@@ -65,10 +65,29 @@ namespace GGHub.Infrastructure.Services
 
         public async Task EnsureBudgetAvailableAsync(string source, string model, CancellationToken cancellationToken = default)
         {
-            if (IsFreeModel(model))
+            // Read the shared switch without the settings cache: API and Worker must see stops immediately.
+            var settings = await _context.AiSettings.AsNoTracking().FirstOrDefaultAsync(s => s.Id == 1, cancellationToken)
+                ?? await _aiSettings.GetAsync(cancellationToken);
+            var month = CurrentMonthPrefix();
+            var today = TodayKey();
+            var totals = await _context.GeminiUsages.AsNoTracking()
+                .Where(u => u.PeriodKey.StartsWith(month))
+                .Select(u => new { u.PeriodKey, u.SpentUsd }).ToListAsync(cancellationToken);
+            var spent = totals.Sum(u => u.SpentUsd);
+            var spentToday = totals.Where(u => u.PeriodKey == today).Sum(u => u.SpentUsd);
+            TotalBudgetPolicy.EnsureAvailable(settings, spent, spentToday, month, today);
+
+            // Every news image path, including one-off repairs, shares the daily cap and 80% brake.
+            if (source == GeminiSources.News && model.EndsWith("-image", StringComparison.OrdinalIgnoreCase))
             {
-                return;
+                var calls = await _context.GeminiUsages.AsNoTracking()
+                    .Where(u => u.Source == source && u.PeriodKey == today && u.Model.EndsWith("-image"))
+                    .SumAsync(u => u.CallCount, cancellationToken);
+                var news = await GetStatusAsync(source, cancellationToken);
+                if (calls >= settings.NewsDailyGeneratedImageCap || news.SpentUsd >= news.LimitUsd * 0.8m)
+                    throw new GeminiBudgetExceededException(source, today, news.SpentUsd, news.LimitUsd);
             }
+            if (IsFreeModel(model)) return;
 
             var status = await GetStatusAsync(source, cancellationToken);
             if (status.IsExhausted)

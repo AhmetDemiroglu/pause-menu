@@ -5,6 +5,8 @@ import type { AiAgentAdmin, AiAgentUpdate, AiPurgeReport, AiSettings, AiUsageRep
 export const aiAdminApi = {
     getSettings: () => axiosInstance.get<AiSettings>("/admin/ai/settings").then((r) => r.data),
     updateSettings: (data: AiSettings) => axiosInstance.put<AiSettings>("/admin/ai/settings", data).then((r) => r.data),
+    updateBudgetControls: (data: Pick<AiSettings, "generationPaused" | "totalMonthlyBudgetTry" | "totalDailyBudgetTry">) =>
+        axiosInstance.put<AiSettings>("/admin/ai/budget-controls", data).then(r => r.data),
     getAgents: () => axiosInstance.get<AiAgentAdmin[]>("/admin/ai/agents").then((r) => r.data),
     provisionAgents: () => axiosInstance.post<{ created: number }>("/admin/ai/agents/provision").then((r) => r.data),
     /** Yeni bot (koddaki karakterlere ek). */

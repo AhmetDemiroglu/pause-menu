@@ -521,6 +521,9 @@ namespace GGHub.Infrastructure.Persistence
             modelBuilder.Entity<AiSettings>(entity =>
             {
                 entity.Property(s => s.Id).ValueGeneratedNever();
+                entity.Property(s => s.GenerationPaused).HasDefaultValue(false);
+                entity.Property(s => s.TotalMonthlyBudgetTry).HasPrecision(12, 2);
+                entity.Property(s => s.TotalDailyBudgetTry).HasPrecision(12, 2);
                 entity.Property(s => s.TranslationMonthlyBudgetTry).HasPrecision(12, 2);
                 entity.Property(s => s.AgentMonthlyBudgetTry).HasPrecision(12, 2);
                 entity.Property(s => s.UsdToTryRate).HasPrecision(12, 4);

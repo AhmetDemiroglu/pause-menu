@@ -364,6 +364,11 @@ namespace GGHub.Infrastructure.Migrations
                     b.Property<int>("FeedMaxAiSharePercent")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("GenerationPaused")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.Property<int>("MaxAgentMessagesPerUserPerDay")
                         .HasColumnType("integer");
 
@@ -404,6 +409,14 @@ namespace GGHub.Infrastructure.Migrations
 
                     b.Property<int>("PrimaryModelRpm")
                         .HasColumnType("integer");
+
+                    b.Property<decimal?>("TotalDailyBudgetTry")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("numeric(12,2)");
+
+                    b.Property<decimal?>("TotalMonthlyBudgetTry")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("numeric(12,2)");
 
                     b.Property<decimal>("TranslationMonthlyBudgetTry")
                         .HasPrecision(12, 2)

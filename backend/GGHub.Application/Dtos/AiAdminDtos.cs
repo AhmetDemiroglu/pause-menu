@@ -1,7 +1,17 @@
 namespace GGHub.Application.Dtos
 {
+    public class AiBudgetControlsDto
+    {
+        public bool GenerationPaused { get; set; }
+        public decimal? TotalMonthlyBudgetTry { get; set; }
+        public decimal? TotalDailyBudgetTry { get; set; }
+    }
+
     public class AiSettingsDto
     {
+        public bool GenerationPaused { get; set; }
+        public decimal? TotalMonthlyBudgetTry { get; set; }
+        public decimal? TotalDailyBudgetTry { get; set; }
         public bool AgentsEnabled { get; set; }
         public decimal TranslationMonthlyBudgetTry { get; set; }
         public decimal AgentMonthlyBudgetTry { get; set; }
@@ -139,8 +149,16 @@ namespace GGHub.Application.Dtos
         public string? Error { get; set; }
     }
 
+    public class NewsProductionDayDto
+    {
+        public string Day { get; set; } = string.Empty;
+        public int Backfill { get; set; }
+        public int Regular { get; set; }
+    }
+
     public class AiUsageReportDto
     {
+        public List<NewsProductionDayDto> NewsProduction { get; set; } = new();
         public List<AiBudgetStatusDto> Budgets { get; set; } = new();
         public List<AiUsageRowDto> Daily { get; set; } = new();
         public List<AiTaskStatDto> TaskStats24h { get; set; } = new();

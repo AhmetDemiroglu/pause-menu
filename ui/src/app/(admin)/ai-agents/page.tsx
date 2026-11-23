@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bot, Coins, Loader2, Languages, ShieldAlert, Trash2 } from "lucide-react";
+import { Bot, Languages, Loader2, ShieldAlert, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { aiAdminApi } from "@/api/admin/ai-admin.api";
 import type { AiAgentAdmin, AiAgentCreate, AiAgentLanguage, AiAgentUpdate, AiPurgeReport, AiSettings } from "@/models/admin/ai-admin.model";
 import { useI18n } from "@/core/contexts/locale-context";
-import { StatsCard } from "@/core/components/admin/stats-card";
+import { AiSpendingDashboard } from "@/core/components/admin/ai-spending-dashboard";
 import { AiBadge } from "@/core/components/base/ai-badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/core/components/ui/avatar";
 import { Badge } from "@/core/components/ui/badge";
@@ -51,7 +51,7 @@ export default function AiAgentsPage() {
 
     const settingsQuery = useQuery({ queryKey: ["ai-admin", "settings"], queryFn: aiAdminApi.getSettings });
     const agentsQuery = useQuery({ queryKey: ["ai-admin", "agents"], queryFn: aiAdminApi.getAgents });
-    const usageQuery = useQuery({ queryKey: ["ai-admin", "usage"], queryFn: () => aiAdminApi.getUsage(30), refetchInterval: 60_000 });
+    const usageQuery = useQuery({ queryKey: ["ai-admin", "usage"], queryFn: () => aiAdminApi.getUsage(62), refetchInterval: 60_000 });
 
     const [draft, setDraft] = useState<AiSettings | null>(null);
     useEffect(() => {
@@ -67,6 +67,16 @@ export default function AiAgentsPage() {
             // Kayit Ingilizce bot kadrosunu orana ceker: liste degisebilir.
             queryClient.invalidateQueries({ queryKey: ["ai-admin", "agents"] });
             queryClient.invalidateQueries({ queryKey: ["ai-admin", "usage"] });
+        },
+        onError: (error: Error) => toast.error(t("aiAdmin.saveError"), { description: error.message }),
+    });
+
+    const saveBudget = useMutation({
+        mutationFn: aiAdminApi.updateBudgetControls,
+        onSuccess: (data) => {
+            queryClient.setQueryData(["ai-admin", "settings"], data);
+            queryClient.invalidateQueries({ queryKey: ["ai-admin", "usage"] });
+            toast.success(t("aiAdmin.saved"));
         },
         onError: (error: Error) => toast.error(t("aiAdmin.saveError"), { description: error.message }),
     });
@@ -175,8 +185,6 @@ export default function AiAgentsPage() {
     );
 
     const budgets = usageQuery.data?.budgets ?? [];
-    const translation = budgets.find((b) => b.source === "translation");
-    const agentsBudget = budgets.find((b) => b.source === "ai-agent");
     const newsBudget = budgets.find((b) => b.source === "news");
     const purgeTotal = preview ? Object.values(preview.counts).reduce((a, b) => a + b, 0) : 0;
 
@@ -198,36 +206,7 @@ export default function AiAgentsPage() {
                 )}
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-                <StatsCard
-                    title={t("aiAdmin.budgetTranslation")}
-                    value={translation ? t("aiAdmin.budgetOf", { spent: fmtTry(translation.spentTry), limit: fmtTry(translation.limitTry) }) : "-"}
-                    icon={Languages}
-                    description={
-                        translation
-                            ? t("aiAdmin.budgetDetail", {
-                                  calls: fmtInt(translation.callCount),
-                                  today: fmtTry(translation.spentTodayTry),
-                                  share: fmtTry(translation.dailyShareTry),
-                              })
-                            : undefined
-                    }
-                />
-                <StatsCard
-                    title={t("aiAdmin.budgetAgents")}
-                    value={agentsBudget ? t("aiAdmin.budgetOf", { spent: fmtTry(agentsBudget.spentTry), limit: fmtTry(agentsBudget.limitTry) }) : "-"}
-                    icon={Coins}
-                    description={
-                        agentsBudget
-                            ? t("aiAdmin.budgetDetail", {
-                                  calls: fmtInt(agentsBudget.callCount),
-                                  today: fmtTry(agentsBudget.spentTodayTry),
-                                  share: fmtTry(agentsBudget.dailyShareTry),
-                              })
-                            : undefined
-                    }
-                />
-            </div>
+            <AiSpendingDashboard report={usageQuery.data} settings={draft} appliedSettings={settingsQuery.data ?? draft} onChange={setDraft} onSave={() => saveBudget.mutate({ generationPaused: draft.generationPaused, totalMonthlyBudgetTry: draft.totalMonthlyBudgetTry, totalDailyBudgetTry: draft.totalDailyBudgetTry })} saving={saveBudget.isPending} />
 
             <Card>
                 <CardHeader>

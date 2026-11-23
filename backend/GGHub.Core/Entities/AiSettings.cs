@@ -12,6 +12,9 @@ namespace GGHub.Core.Entities
         public int Id { get; set; } = 1;
 
         /// <summary>Motorun ana salteri. Host kapisi (AiAgents:HostEnabled) da acik olmali.</summary>
+        public bool GenerationPaused { get; set; }
+        public decimal? TotalMonthlyBudgetTry { get; set; }
+        public decimal? TotalDailyBudgetTry { get; set; }
         public bool AgentsEnabled { get; set; }
 
         /// <summary>Ceviri (job + sitedeki buton) aylik TL tavani.</summary>

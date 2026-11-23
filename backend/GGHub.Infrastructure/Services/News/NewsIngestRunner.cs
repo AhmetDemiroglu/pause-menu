@@ -301,8 +301,10 @@ namespace GGHub.Infrastructure.Services.News
                 var paced = (int)Math.Ceiling(settings.NewsDailyArticleCap * (now.Hour + 1) / 24.0);
                 remaining = Math.Max(0, Math.Min(settings.NewsDailyArticleCap, paced) - writtenToday);
             }
-            // Ilk dolum haberlerine sonradan uretilen onarim gorselleri gunluk hakki yemez.
-            var generatedToday = await _db.NewsArticles.CountAsync(a => a.CreatedAt >= dayStart && !a.IsBackfill && a.ImageKind == NewsImageKind.Generated, ct);
+            // Onarimlar dahil tum gorsel cagrilari ayni gunluk hakki kullanir.
+            var imageDay = GeminiBudgetService.TodayKey();
+            var generatedToday = await _db.GeminiUsages.Where(u => u.PeriodKey == imageDay && u.Source == GeminiSources.News && u.Model.EndsWith("-image"))
+                .SumAsync(u => u.CallCount, ct);
             report.CapRemaining = remaining;
 
             var budget = await _budget.GetStatusAsync(GeminiSources.News, ct);

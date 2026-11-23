@@ -37,6 +37,13 @@ namespace GGHub.WebAPI.Controllers
             }
         }
 
+        [HttpPut("budget-controls")]
+        public async Task<ActionResult<AiSettingsDto>> UpdateBudgetControls(AiBudgetControlsDto dto, CancellationToken ct)
+        {
+            try { return Ok(await _service.UpdateBudgetControlsAsync(dto, ct)); }
+            catch (ArgumentException ex) { return BadRequest(new { message = ex.Message }); }
+        }
+
         [HttpGet("agents")]
         public async Task<ActionResult<List<AiAgentAdminDto>>> GetAgents(CancellationToken ct)
             => Ok(await _service.GetAgentsAsync(ct));

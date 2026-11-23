@@ -22,17 +22,17 @@ export function TopCards() {
   const m = messages.admin;
 
   const topUsersQuery = useQuery({
-    queryKey: ['admin', 'top-users'],
+    queryKey: ['admin', 'top-users', { humansOnly: true }],
     queryFn: () => analyticsAdminApi.getTopUsers(5, true),
   });
 
   const topListsQuery = useQuery({
-    queryKey: ['admin', 'top-lists'],
+    queryKey: ['admin', 'top-lists', { humansOnly: true }],
     queryFn: () => analyticsAdminApi.getTopLists(5, true),
   });
 
   const topGamesQuery = useQuery({
-    queryKey: ['admin', 'top-games'],
+    queryKey: ['admin', 'top-games', { humansOnly: true }],
     queryFn: () => analyticsAdminApi.getTopGames(5, true),
   });
 
