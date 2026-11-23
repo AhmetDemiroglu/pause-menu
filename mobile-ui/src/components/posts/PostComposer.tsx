@@ -294,7 +294,7 @@ export function PostComposer({ parentPostId, placeholder, autoFocus, onCreated }
                   <ActivityIndicator size="small" color={colors.textSecondary} />
                 </View>
               ) : (
-                <ScrollView keyboardShouldPersistTaps="handled" style={styles.suggestionScroll}>
+                <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" style={styles.suggestionScroll}>
                   {suggestions.map((candidate) => (
                     <Pressable
                       key={`${candidate.type}-${candidate.id}`}

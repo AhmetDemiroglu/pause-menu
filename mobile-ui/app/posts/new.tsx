@@ -32,7 +32,7 @@ export default function NewPostScreen() {
         <AuthRequiredView />
       ) : (
         <KeyboardAvoidingView behavior="padding" style={styles.flex}>
-          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
             <PostComposer
               autoFocus
               onCreated={(post) => {

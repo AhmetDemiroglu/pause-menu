@@ -153,6 +153,7 @@ export default function ReviewDetailScreen() {
       */}
       <Animated.View style={[styles.flex, dockStyle]}>
         <ScrollView
+          showsVerticalScrollIndicator={false}
           ref={scrollRef}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scrollContent}

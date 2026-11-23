@@ -317,6 +317,7 @@ export default function ListsTabScreen() {
           <LoadingScreen />
         ) : (
           <FlatList
+            showsVerticalScrollIndicator={false}
             data={discoverLists}
             keyExtractor={(item) => String(item.id)}
             renderItem={renderDiscoverItem}
@@ -384,6 +385,7 @@ export default function ListsTabScreen() {
                 <LoadingScreen />
               ) : (
                 <FlatList
+                  showsVerticalScrollIndicator={false}
                   data={customLists}
                   keyExtractor={(item) => String(item.id)}
                   renderItem={renderMyListItem}
@@ -398,6 +400,7 @@ export default function ListsTabScreen() {
                 <LoadingScreen />
               ) : (
                 <FlatList
+                  showsVerticalScrollIndicator={false}
                   data={followedLists}
                   keyExtractor={(item) => String(item.id)}
                   renderItem={renderFollowedItem}

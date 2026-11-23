@@ -236,6 +236,7 @@ export default function MessageThreadScreen() {
 
       <Animated.View style={[styles.flex, inputAreaStyle]}>
         <FlatList
+          showsVerticalScrollIndicator={false}
           ref={flatListRef}
           data={localMessages}
           renderItem={renderItem}

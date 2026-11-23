@@ -169,6 +169,7 @@ export default function UserReviewsScreen() {
     <ScreenWrapper noPadding safeArea={false}>
       <ScreenHeader title={headerTitle} />
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={reviews ?? []}
         keyExtractor={(item) => String(item.id)}
         renderItem={renderReview}

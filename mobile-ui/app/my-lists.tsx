@@ -168,6 +168,7 @@ export default function MyListsScreen() {
         <LoadingScreen />
       ) : activeTab === 'my' ? (
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={customLists}
           keyExtractor={(item) => String(item.id)}
           renderItem={renderMyListItem}
@@ -184,6 +185,7 @@ export default function MyListsScreen() {
         />
       ) : (
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={followedLists}
           keyExtractor={(item) => String(item.id)}
           renderItem={renderFollowedItem}

@@ -197,6 +197,7 @@ export default function SearchScreen() {
         </View>
       ) : (
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={results}
           keyExtractor={(item) => `${item.type}-${item.id}`}
           renderItem={renderItem}

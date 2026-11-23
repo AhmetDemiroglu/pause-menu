@@ -31,7 +31,7 @@ import { getMyProfile } from '@/src/api/profile';
 import { getUserStats } from '@/src/api/stats';
 import { getReviewsByUser } from '@/src/api/review';
 import { getMyLists } from '@/src/api/list';
-import { getPersonalizedFeed } from '@/src/api/activity';
+import { getUserActivityFeed } from '@/src/api/activity';
 import { getImageUrl } from '@/src/utils/image';
 import type { Review } from '@/src/models/review';
 import type { UserList } from '@/src/models/list';
@@ -79,8 +79,11 @@ export default function OwnProfileScreen() {
   });
 
   const activityQuery = useQuery({
-    queryKey: ['activityFeed'],
-    queryFn: () => getPersonalizedFeed(10),
+    // Profilde yalniz kullanicinin KENDI aktiviteleri. Eskiden ana sayfa akisi
+    // (takip edilenler + AI botlari) cekiliyordu; satirda aktor adi olmadigi icin
+    // baskalarinin incelemeleri kullanicininmis gibi gorunuyordu. Web ile ayni uc.
+    queryKey: ['userActivity', username],
+    queryFn: () => getUserActivityFeed(username!),
     enabled: !!username && activeTab === 'overview',
   });
 
@@ -197,6 +200,7 @@ export default function OwnProfileScreen() {
       <AppTopBar title={messages.nav.profile} />
 
       <ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: tabBarHeight + Spacing.xxxl }}
         refreshControl={
           <RefreshControl refreshing={profileQuery.isRefetching} onRefresh={onRefresh} />

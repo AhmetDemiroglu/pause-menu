@@ -105,6 +105,7 @@ export default function NotificationsScreen() {
       <AppTopBar title={nav.notificationsTitle} rightExtra={MarkAllButton} showBack />
 
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={notificationsQuery.data ?? []}
         renderItem={renderItem}
         keyExtractor={(item) => String(item.id)}

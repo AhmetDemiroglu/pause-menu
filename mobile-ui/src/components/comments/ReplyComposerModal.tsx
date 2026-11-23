@@ -122,6 +122,7 @@ export function ReplyComposerModal({
         </View>
 
         <ScrollView
+          showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={[styles.body, { paddingBottom: insets.bottom + Spacing.lg }]}
         >

@@ -113,6 +113,7 @@ export default function MessagesListScreen() {
       <AiInteractionSetting variant="compact" style={{ marginHorizontal: Spacing.lg, marginBottom: Spacing.sm }} />
 
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={filtered}
         renderItem={renderItem}
         keyExtractor={(item) => String(item.partnerId)}

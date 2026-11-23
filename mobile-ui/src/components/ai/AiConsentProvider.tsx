@@ -164,7 +164,7 @@ function AiConsentModal({ pending, onClose }: { pending: Pending | null; onClose
             <Text style={styles.heroEmoji}>🤖 💬 🎮</Text>
           </LinearGradient>
 
-          <ScrollView style={styles.scroll} contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
+          <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll} contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
             {underage ? (
               <>
                 <Text style={[styles.title, { color: colors.text }]}>{m.underageTitle}</Text>

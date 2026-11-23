@@ -77,6 +77,7 @@ export default function PostDetailScreen() {
         />
       ) : (
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={replies}
           keyExtractor={(item) => String(item.id)}
           contentContainerStyle={{ paddingBottom: bottomInset + Spacing.xxl }}

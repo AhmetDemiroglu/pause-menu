@@ -462,6 +462,7 @@ export const BottomSheetScrollView = forwardRef<ScrollView, ScrollViewProps & Sh
     );
     return (
       <ScrollView
+        showsVerticalScrollIndicator={false}
         ref={ref}
         scrollEventThrottle={16}
         // En ustte asagi cekince liste esnemesin; o hareket pencereyi tasir.
@@ -488,6 +489,7 @@ export function BottomSheetFlatList<T>({
   );
   return (
     <FlatList
+      showsVerticalScrollIndicator={false}
       scrollEventThrottle={16}
       bounces={false}
       overScrollMode="never"

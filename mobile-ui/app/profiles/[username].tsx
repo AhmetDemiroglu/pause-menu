@@ -285,6 +285,7 @@ export default function PublicProfileScreen() {
       />
 
       <ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: insets.bottom + Spacing.xxxl }}
         refreshControl={
           <RefreshControl refreshing={profileQuery.isRefetching} onRefresh={onRefresh} />
