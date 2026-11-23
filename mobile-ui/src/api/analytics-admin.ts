@@ -41,18 +41,18 @@ export interface TopGame {
  * beri dogru yolu kullaniyor.
  */
 export const analyticsAdminApi = {
-  getTopUsers: (count: number = 5) =>
+  getTopUsers: (count: number = 5, humansOnly = false) =>
     axiosInstance
-      .get<TopUser[]>('/analytics/top-users', { params: { count } })
+      .get<TopUser[]>('/analytics/top-users', { params: { count, humansOnly } })
       .then((res) => res.data),
 
-  getTopLists: (count: number = 5) =>
+  getTopLists: (count: number = 5, humansOnly = false) =>
     axiosInstance
-      .get<TopList[]>('/analytics/top-lists', { params: { count } })
+      .get<TopList[]>('/analytics/top-lists', { params: { count, humansOnly } })
       .then((res) => res.data),
 
-  getTopGames: (count: number = 5) =>
+  getTopGames: (count: number = 5, humansOnly = false) =>
     axiosInstance
-      .get<TopGame[]>('/analytics/top-games', { params: { count } })
+      .get<TopGame[]>('/analytics/top-games', { params: { count, humansOnly } })
       .then((res) => res.data),
 };

@@ -23,17 +23,17 @@ export function TopCards() {
 
   const topUsersQuery = useQuery({
     queryKey: ['admin', 'top-users'],
-    queryFn: () => analyticsAdminApi.getTopUsers(5),
+    queryFn: () => analyticsAdminApi.getTopUsers(5, true),
   });
 
   const topListsQuery = useQuery({
     queryKey: ['admin', 'top-lists'],
-    queryFn: () => analyticsAdminApi.getTopLists(5),
+    queryFn: () => analyticsAdminApi.getTopLists(5, true),
   });
 
   const topGamesQuery = useQuery({
     queryKey: ['admin', 'top-games'],
-    queryFn: () => analyticsAdminApi.getTopGames(5),
+    queryFn: () => analyticsAdminApi.getTopGames(5, true),
   });
 
   const topUsers = topUsersQuery.data ?? [];

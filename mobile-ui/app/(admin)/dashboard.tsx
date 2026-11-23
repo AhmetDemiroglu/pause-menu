@@ -59,12 +59,12 @@ export default function AdminDashboard() {
 
   const recentUsersQuery = useQuery({
     queryKey: ['admin', 'recent-users'],
-    queryFn: () => getRecentUsers(5).then((res) => res.data),
+    queryFn: () => getRecentUsers(5, true).then((res) => res.data),
   });
 
   const recentReviewsQuery = useQuery({
     queryKey: ['admin', 'recent-reviews'],
-    queryFn: () => getRecentReviews(5).then((res) => res.data),
+    queryFn: () => getRecentReviews(5, true).then((res) => res.data),
   });
 
   const isLoading =

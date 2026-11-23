@@ -67,15 +67,15 @@ export const changeUserRole = (userId: number, data: ChangeRoleRequest) => {
   return axiosInstance.put(`/admin/users/${userId}/role`, data);
 };
 
-export const getRecentUsers = (count: number = 5) => {
+export const getRecentUsers = (count: number = 5, humansOnly = false) => {
   return axiosInstance.get<AdminUserSummary[]>('/admin/recent-users', {
-    params: { count },
+    params: { count, humansOnly },
   });
 };
 
-export const getRecentReviews = (count: number = 5) => {
+export const getRecentReviews = (count: number = 5, humansOnly = false) => {
   return axiosInstance.get<RecentReview[]>('/admin/recent-reviews', {
-    params: { count },
+    params: { count, humansOnly },
   });
 };
 

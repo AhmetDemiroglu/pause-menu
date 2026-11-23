@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
@@ -58,7 +59,9 @@ export default function AdminReportDetailScreen() {
 
   return (
     <SwipeBackEdge>
-    <ScrollView
+    <KeyboardAwareScrollView
+      bottomOffset={Spacing.xxl}
+      keyboardShouldPersistTaps="handled"
       style={[styles.container, { backgroundColor: colors.background }]}
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
@@ -164,7 +167,7 @@ export default function AdminReportDetailScreen() {
         variant="outline"
         icon={<Ionicons name="person" size={18} color={colors.primary} />}
       />
-    </ScrollView>
+    </KeyboardAwareScrollView>
     </SwipeBackEdge>
   );
 }
