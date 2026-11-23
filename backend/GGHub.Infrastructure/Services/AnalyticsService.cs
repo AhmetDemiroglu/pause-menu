@@ -16,11 +16,12 @@ namespace GGHub.Infrastructure.Services
         {
             _context = context;
         }
-        public async Task<IEnumerable<TopUserDto>> GetMostFollowedUsersAsync(int count = 5)
+        public async Task<IEnumerable<TopUserDto>> GetMostFollowedUsersAsync(int count = 5, bool humansOnly = false)
         {
             var users = await _context.Users
                 .AsNoTracking()
                 .Where(u => !u.IsDeleted && !u.IsAiAgent)
+                .Where(u => !humansOnly || !u.IsSeeded)
                 .OrderByDescending(u => u.Followers.Count())
                 .Take(count)
                 .Select(u => new TopUserDto
@@ -34,12 +35,13 @@ namespace GGHub.Infrastructure.Services
 
             return users;
         }
-        public async Task<IEnumerable<TopListDto>> GetMostPopularListsAsync(int count = 5)
+        public async Task<IEnumerable<TopListDto>> GetMostPopularListsAsync(int count = 5, bool humansOnly = false)
         {
             var lists = await _context.UserLists
                 .AsNoTracking()
                 .Include(l => l.User)
                 .Where(l => !l.User.IsDeleted)
+                .Where(l => !humansOnly || (!l.User.IsAiAgent && !l.User.IsSeeded))
                 .OrderByDescending(l => l.AverageRating)
                 .ThenByDescending(l => l.Followers.Count())
                 .Take(count)
@@ -57,12 +59,13 @@ namespace GGHub.Infrastructure.Services
 
             return lists;
         }
-        public async Task<IEnumerable<TopGameDto>> GetHighestRatedGamesAsync(int count = 5)
+        public async Task<IEnumerable<TopGameDto>> GetHighestRatedGamesAsync(int count = 5, bool humansOnly = false)
         {
             var gameRatings = _context.Reviews
                 .AsNoTracking()
                 .Include(r => r.User)
                 .Where(r => !r.User.IsDeleted && !r.User.IsAiAgent)
+                .Where(r => !humansOnly || !r.User.IsSeeded)
                 .GroupBy(r => r.GameId)
                 .Select(g => new
                 {

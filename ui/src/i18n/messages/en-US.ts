@@ -577,7 +577,7 @@ export const enUSMessages = {
         users: "Users",
         reports: "Reports",
         backToSite: "Back to site",
-        dashboardDescription: "Review the platform's overall statistics in this section.",
+        dashboardDescription: "User, review and ranking sections show only real users.",
         totalUsers: "Total Users",
         bannedUsers: "Suspended Users",
         pendingReports: "Pending Reports",

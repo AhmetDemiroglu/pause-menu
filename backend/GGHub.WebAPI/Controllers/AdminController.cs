@@ -171,16 +171,16 @@ namespace GGHub.WebAPI.Controllers
         }
 
         [HttpGet("recent-users")]
-        public async Task<IActionResult> GetRecentUsers(int count = 5)
+        public async Task<IActionResult> GetRecentUsers(int count = 5, bool humansOnly = false)
         {
-            var users = await _adminService.GetRecentUsersAsync(count > 10 ? 10 : count);
+            var users = await _adminService.GetRecentUsersAsync(count > 10 ? 10 : count, humansOnly);
             return Ok(users);
         }
 
         [HttpGet("recent-reviews")]
-        public async Task<IActionResult> GetRecentReviews(int count = 5)
+        public async Task<IActionResult> GetRecentReviews(int count = 5, bool humansOnly = false)
         {
-            var reviews = await _adminService.GetRecentReviewsAsync(count > 10 ? 10 : count);
+            var reviews = await _adminService.GetRecentReviewsAsync(count > 10 ? 10 : count, humansOnly);
             return Ok(reviews);
         }
 

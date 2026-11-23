@@ -384,11 +384,13 @@ namespace GGHub.Infrastructure.Services
 
             return stats;
         }
-        public async Task<IEnumerable<AdminUserSummaryDto>> GetRecentUsersAsync(int count = 5)
+        public async Task<IEnumerable<AdminUserSummaryDto>> GetRecentUsersAsync(int count = 5, bool humansOnly = false)
         {
+            // Web dashboard opts in; existing clients keep the unfiltered view.
             var users = await _context.Users
                 .AsNoTracking()
                 .Where(u => !u.IsDeleted)
+                .Where(u => !humansOnly || (!u.IsAiAgent && !u.IsSeeded))
                 .OrderByDescending(u => u.CreatedAt)
                 .Take(count)
                 .Select(u => new AdminUserSummaryDto
@@ -407,10 +409,11 @@ namespace GGHub.Infrastructure.Services
             return users;
         }
 
-        public async Task<IEnumerable<RecentReviewDto>> GetRecentReviewsAsync(int count = 5)
+        public async Task<IEnumerable<RecentReviewDto>> GetRecentReviewsAsync(int count = 5, bool humansOnly = false)
         {
             var reviews = await _context.Reviews
                 .AsNoTracking()
+                .Where(r => !humansOnly || (!r.User.IsAiAgent && !r.User.IsSeeded && !r.User.IsDeleted))
                 .Include(r => r.User) 
                 .Include(r => r.Game) 
                 .OrderByDescending(r => r.CreatedAt)

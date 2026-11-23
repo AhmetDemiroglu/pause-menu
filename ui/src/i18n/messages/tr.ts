@@ -578,7 +578,7 @@ export const trMessages = {
         users: "Kullanıcılar",
         reports: "Raporlar",
         backToSite: "Siteye dön",
-        dashboardDescription: "Bu bölümde platformun genel istatistiklerini inceleyebilirsiniz.",
+        dashboardDescription: "Kullanıcı, inceleme ve sıralama alanlarında yalnızca gerçek kullanıcılar gösterilir.",
         totalUsers: "Toplam Kullanıcı",
         bannedUsers: "Askıdaki Kullanıcılar",
         pendingReports: "Bekleyen Raporlar",

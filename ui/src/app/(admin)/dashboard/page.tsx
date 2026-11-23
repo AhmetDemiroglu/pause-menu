@@ -63,28 +63,28 @@ export default function DashboardPage() {
     });
 
     const { data: recentUsersData, isLoading: isLoadingRecentUsers } = useQuery<AdminUserSummary[]>({
-        queryKey: ["adminRecentUsers"],
-        queryFn: async () => (await getRecentUsers(5)).data,
+        queryKey: ["adminRecentUsers", { humansOnly: true }],
+        queryFn: async () => (await getRecentUsers(5, true)).data,
     });
 
     const { data: recentReviewsData, isLoading: isLoadingRecentReviews } = useQuery<RecentReview[]>({
-        queryKey: ["adminRecentReviews"],
-        queryFn: async () => (await getRecentReviews(5)).data,
+        queryKey: ["adminRecentReviews", { humansOnly: true }],
+        queryFn: async () => (await getRecentReviews(5, true)).data,
     });
 
     const { data: topUsersData, isLoading: isLoadingTopUsers } = useQuery<TopUser[]>({
-        queryKey: ["analyticsTopUsers"],
-        queryFn: async () => (await getTopUsers(5)).data,
+        queryKey: ["analyticsTopUsers", { humansOnly: true }],
+        queryFn: async () => (await getTopUsers(5, true)).data,
     });
 
     const { data: topListsData, isLoading: isLoadingTopLists } = useQuery<TopList[]>({
-        queryKey: ["analyticsTopLists"],
-        queryFn: async () => (await getTopLists(5)).data,
+        queryKey: ["analyticsTopLists", { humansOnly: true }],
+        queryFn: async () => (await getTopLists(5, true)).data,
     });
 
     const { data: topGamesData, isLoading: isLoadingTopGames } = useQuery<TopGame[]>({
-        queryKey: ["analyticsTopGames"],
-        queryFn: async () => (await getTopRatedGames(5)).data,
+        queryKey: ["analyticsTopGames", { humansOnly: true }],
+        queryFn: async () => (await getTopRatedGames(5, true)).data,
     });
 
     const isLoading = isLoadingStats || isLoadingReports || isLoadingRecentUsers || isLoadingRecentReviews || isLoadingTopUsers || isLoadingTopLists || isLoadingTopGames;
