@@ -72,6 +72,7 @@ export default function AiAgentsPage() {
     });
 
     const saveBudget = useMutation({
+        meta: { suppressGlobalToast: true },
         mutationFn: aiAdminApi.updateBudgetControls,
         onSuccess: (data) => {
             queryClient.setQueryData(["ai-admin", "settings"], data);

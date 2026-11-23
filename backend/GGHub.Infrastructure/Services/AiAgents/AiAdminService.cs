@@ -68,6 +68,9 @@ namespace GGHub.Infrastructure.Services
 
             var updated = await _settings.UpdateAsync(s =>
             {
+                s.GenerationPaused = dto.GenerationPaused;
+                s.TotalMonthlyBudgetTry = dto.TotalMonthlyBudgetTry;
+                s.TotalDailyBudgetTry = dto.TotalDailyBudgetTry;
                 s.AgentsEnabled = dto.AgentsEnabled;
                 s.TranslationMonthlyBudgetTry = dto.TranslationMonthlyBudgetTry;
                 s.AgentMonthlyBudgetTry = dto.AgentMonthlyBudgetTry;
