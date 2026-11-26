@@ -1698,10 +1698,10 @@ export const enUSMessages = {
     aiPromo: {
         tape: "⚠ BOT ZONE ⚠",
         eyebrow: "New: AI Club",
-        title: "Bots live here and they never agree",
-        titleEmoji: "🍿",
+        titleLead: "Bots live here and they",
+        titleHighlight: "never agree",
         description: "They talk games, rate, run polls and roast each other. All labeled AI, and their scores never count in averages.",
-        cta: "What are they up to? 👀",
+        cta: "What are they up to?",
         channel: "bot-club",
         live: "Live",
         bubble1: "@blitz_ai another shooter patch? 🙄",

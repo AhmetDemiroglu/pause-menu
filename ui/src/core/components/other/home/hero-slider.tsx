@@ -20,6 +20,8 @@ import logoSrc from "@core/assets/brand-mark.png";
 import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
 import { cn } from "@/core/lib/utils";
 import AiClubPromoSlide from "./ai-club-promo-slide";
+import { AppPromoPhones } from "./app-promo-phones";
+import { PromoSlideBackdrop } from "./promo-slide-backdrop";
 import metacriticLogoSrc from "@core/assets/metacritic_logo.png";
 import rawgLogoSrc from "@core/assets/rawg_logo.png";
 
@@ -186,19 +188,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                     {/* Sabit 2. slayt: Oyun Gündemi. Bu ayın yeni çıkanları + sayfaya CTA. */}
                     <CarouselItem key="agenda-promo">
                         <div className="@container relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#FFF6EE] ring-1 ring-black/5 md:h-[420px] dark:bg-[#14101F] dark:ring-white/10">
-                            <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#FF8A1F]/15 via-transparent to-[#FF2E88]/15" />
-                            <div
-                                aria-hidden
-                                className="absolute inset-0 z-0 opacity-[0.35]"
-                                style={{
-                                    backgroundImage:
-                                        "linear-gradient(var(--promo-grid) 1px, transparent 1px), linear-gradient(90deg, var(--promo-grid) 1px, transparent 1px)",
-                                    backgroundSize: "56px 56px",
-                                    maskImage: "radial-gradient(ellipse 90% 70% at 30% 40%, black 30%, transparent 75%)",
-                                }}
-                            />
-                            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 z-0 h-80 w-80 rounded-full bg-[#FF8A1F]/20 blur-3xl" />
-                            <div aria-hidden className="pointer-events-none absolute -bottom-28 right-1/4 z-0 h-96 w-96 rounded-full bg-[#FF2E88]/20 blur-3xl" />
+                            <PromoSlideBackdrop tone="agenda" />
 
                             {/* Metin ve poster yelpazesi yan yana akar: yelpaze yerini kaplar, metin kalan
                                 genislikte sarilir. Eskiden yelpaze absolute idi ve metin %55 genislik
@@ -286,25 +276,14 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                     {/* Sabit 3. slayt: mobil uygulama. Mağaza düğmeleri masaüstünde QR'lı indirme
                         penceresini açar, telefonda doğrudan mağazaya gider. */}
                     <CarouselItem key="app-promo">
-                        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#FFF6EE] ring-1 ring-black/5 md:h-[420px] dark:bg-[#14101F] dark:ring-white/10">
-                            <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#FF2E88]/15 via-transparent to-[#7A1FD0]/15" />
-                            <div
-                                aria-hidden
-                                className="absolute inset-0 z-0 opacity-[0.35]"
-                                style={{
-                                    backgroundImage:
-                                        "linear-gradient(var(--promo-grid) 1px, transparent 1px), linear-gradient(90deg, var(--promo-grid) 1px, transparent 1px)",
-                                    backgroundSize: "56px 56px",
-                                    maskImage: "radial-gradient(ellipse 90% 70% at 30% 40%, black 30%, transparent 75%)",
-                                }}
-                            />
-                            <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 z-0 h-80 w-80 rounded-full bg-[#FF8A1F]/20 blur-3xl" />
-                            <div aria-hidden className="pointer-events-none absolute -bottom-28 right-1/4 z-0 h-96 w-96 rounded-full bg-[#7A1FD0]/15 blur-3xl dark:bg-[#5B0FB0]/35" />
+                        <div className="@container relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#FFF6EE] ring-1 ring-black/5 md:h-[420px] dark:bg-[#14101F] dark:ring-white/10">
+                            <PromoSlideBackdrop tone="app" />
 
                             {/* Mobilde slayt sabit 340px: dolgu ve boşluklar dar tutulmazsa
-                                içerik taşıp overflow-hidden tarafından kırpılıyor. md: ve
-                                üstünde eski ferah düzen aynen korunuyor. */}
-                            <div className="relative z-10 flex h-full max-w-[620px] flex-col items-center justify-center gap-2.5 px-4 pb-12 pt-5 text-center md:max-w-[58%] md:items-start md:gap-4 md:p-12 md:pb-16 md:text-left lg:px-16">
+                                içerik taşıp overflow-hidden tarafından kırpılıyor. Masaüstünde metin
+                                ve telefon kümesi yan yana akar (gündem slaytıyla aynı düzen). */}
+                            <div className="relative z-10 flex h-full">
+                            <div className="mx-auto flex h-full w-full max-w-[620px] min-w-0 flex-1 flex-col items-center justify-center gap-2.5 px-4 pb-12 pt-5 text-center md:mx-0 md:max-w-none md:items-start md:gap-4 md:py-12 md:pb-16 md:pl-12 md:pr-8 md:text-left lg:pl-16 lg:pr-12">
                                 <BrandScriptLogo className="h-9 self-center md:h-11 md:self-start" />
                                 <h2 className="text-2xl font-black tracking-tight text-[#14101F] md:text-3xl lg:text-[2.6rem] lg:leading-[1.05] dark:text-white dark:drop-shadow-xl">{t("home.promoTitle")}</h2>
                                 <p className="line-clamp-2 max-w-md text-sm text-[#14101F]/65 md:line-clamp-none md:text-base dark:text-white/65">{t("home.promoSubtitle")}</p>
@@ -321,23 +300,10 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                 </div>
                             </div>
 
-                            {/* Sağ alttan taşan iPhone mockup; hover'da doğrulur */}
-                            <div className="absolute right-4 top-10 z-10 hidden w-[190px] md:block lg:right-16 lg:top-12 lg:w-[270px]">
-                                <div className="rotate-[5deg] transition-transform duration-500 ease-out will-change-transform hover:-translate-y-3 hover:rotate-0">
-                                    <div className="relative rounded-[2.4rem] bg-zinc-900 p-[7px] shadow-[0_30px_70px_-20px_rgba(0,0,0,0.85)] ring-1 ring-white/10">
-                                        <div className="absolute left-1/2 top-[11px] z-20 h-[15px] w-[66px] -translate-x-1/2 rounded-full bg-black" />
-                                        <div className="overflow-hidden rounded-[1.9rem] bg-black">
-                                            <Image
-                                                src={locale === "tr" ? "/pausemenu-app-tr.jpg" : "/pausemenu-app-en.jpg"}
-                                                alt={t("common.appName")}
-                                                width={540}
-                                                height={1174}
-                                                className="block h-auto w-full"
-                                                sizes="270px"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                            {/* Sağda alttan yükselen telefon kümesi; ekranlar tema ve dile göre değişir */}
+                            <div className="hidden shrink-0 pr-6 md:block lg:pr-14">
+                                <AppPromoPhones locale={locale} appName={t("common.appName")} />
+                            </div>
                             </div>
                         </div>
                     </CarouselItem>

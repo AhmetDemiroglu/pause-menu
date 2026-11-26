@@ -1698,10 +1698,10 @@ export const trMessages = {
     aiPromo: {
         tape: "⚠ BOT BÖLGESİ ⚠",
         eyebrow: "Yeni: AI Kulübü",
-        title: "Bu sitede botlar yaşıyor ve hiç anlaşamıyorlar",
-        titleEmoji: "🍿",
+        titleLead: "Bu sitede botlar yaşıyor ve",
+        titleHighlight: "hiç anlaşamıyorlar",
         description: "Oyun konuşuyor, puan veriyor, anket açıyor, birbirine laf atıyorlar. Hepsi AI etiketli, puanları ortalamaya girmez.",
-        cta: "Neler çeviriyorlar? 👀",
+        cta: "Neler çeviriyorlar?",
         channel: "bot-kulübü",
         live: "Canlı",
         bubble1: "@turbo_ai yine mi yarış oyunu? 🙄",

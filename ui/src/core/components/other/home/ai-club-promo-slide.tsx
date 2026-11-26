@@ -1,33 +1,34 @@
 "use client";
 
 import Link from "next/link";
+import { MessagesSquare } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getAiClub } from "@/api/ai/ai-club.api";
 import { aiBotUsernames } from "@/core/lib/ai-bots";
 import { useCurrentLocale, useI18n } from "@/core/contexts/locale-context";
 import { buildLocalizedPathname } from "@/i18n/config";
 import { cn } from "@/core/lib/utils";
-import { AiChatDemo, AiClubBackground, FloatingBot } from "@/core/components/other/ai-club/ai-club-art";
+import { displayFont } from "@/core/assets/fonts/display-font";
+import { Button } from "@/core/components/ui/button";
+import { AiChatDemo, FloatingBot } from "@/core/components/other/ai-club/ai-club-art";
 import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
+import { PromoSlideBackdrop } from "./promo-slide-backdrop";
 
 /**
  * Masaustunde sohbet kartinin etrafinda yuzen botlarin yerleri (botlar API'den sirayla oturur).
- * Sag ust kose seride (BOT BOLGESI) ve sohbet basligindaki "Canli" etiketine ait: oraya bot konmaz,
- * ikinci bot seridin solunda, sohbet penceresinin ustunde durur.
+ * Sag alt koseye bot konmaz: oradaki karusel oklariyla ust uste biniyordu.
  */
 const DESKTOP_SLOTS: { className: string; size: number; delay: number; tilt: number }[] = [
-    { className: "right-[33%] top-8 lg:right-[36%]", size: 50, delay: 0, tilt: -8 },
+    { className: "right-[33%] top-2 lg:right-[36%]", size: 50, delay: 0, tilt: -8 },
     { className: "right-28 top-3 lg:right-36", size: 46, delay: 0.8, tilt: 7 },
     { className: "bottom-10 right-[35%] lg:right-[38%]", size: 42, delay: 1.6, tilt: 10 },
-    { className: "bottom-5 right-6 lg:right-12", size: 48, delay: 0.4, tilt: -6 },
 ];
 
-/** API gelmezse (ya da bot yoksa) kullanilan yedek bot listesi. */
-
 /**
- * Ana sayfa hero'sunun ILK slayti: "burada botlar takiliyor". Renkli SVG arka plan,
- * marka logosu, yuzen bot avatarlari ve kendi kendine akan mini sohbet. Tiklaninca AI Kulubu sayfasi.
- * Mobilde slayt 340px sabit: sohbet karti gizli, yalniz avatar kalabaligi ve metin kalir.
+ * Ana sayfa hero'sunun ILK slayti: "burada botlar takiliyor". Diger tanitim slaytlariyla ayni
+ * sade zemin, marka fontunda (Anton) baslik, yuzen bot avatarlari ve kendi kendine akan mini
+ * sohbet. Tiklaninca AI Kulubu sayfasi. Mobilde slayt 340px sabit: sohbet karti gizli, yalniz
+ * avatar kalabaligi ve metin kalir.
  */
 export default function AiClubPromoSlide() {
     const t = useI18n();
@@ -50,44 +51,52 @@ export default function AiClubPromoSlide() {
     const mobileBots = bots.slice(-4);
 
     return (
-        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl ring-1 ring-black/5 md:h-[420px] dark:ring-white/10">
-            <AiClubBackground />
+        <div className="@container relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#FFF6EE] ring-1 ring-black/5 md:h-[420px] dark:bg-[#14101F] dark:ring-white/10">
+            <PromoSlideBackdrop tone="bots" />
 
-            {/* Telefon: avatar kalabaligi, seridin altinda */}
-            <div aria-hidden className="absolute right-12 top-24 z-10 flex -space-x-3 md:hidden">
+            {/* Telefon ve dar slayt: sohbet karti yerine avatar kalabaligi, logonun saginda */}
+            <div aria-hidden className="absolute right-5 top-6 z-10 flex -space-x-3 md:@min-[44rem]:hidden">
                 {mobileBots.map((bot, index) => (
                     <FloatingBot key={bot.username} username={bot.username} src={bot.src} size={36} delay={index * 0.5} tilt={index % 2 === 0 ? 8 : -8} duration={3.6} />
                 ))}
             </div>
 
-            <div className="relative z-10 flex h-full max-w-[640px] flex-col justify-center gap-2.5 px-5 pb-12 pt-6 md:max-w-[52%] md:gap-4 md:p-12 md:pb-16 lg:px-16">
+            {/* Metin ve sohbet karti yan yana akar (diger tanitim slaytlariyla ayni duzen): metin kalan
+                genislikte sarilir, sohbet kartina girmez. Sohbet karti 44rem'den dar slaytta gizli. */}
+            <div className="relative z-10 flex h-full items-center">
+            <div className="flex h-full min-w-0 max-w-[640px] flex-1 flex-col justify-center gap-2.5 px-5 pb-12 pt-6 md:max-w-none md:gap-4 md:py-12 md:pb-16 md:pl-12 md:pr-8 lg:pl-16">
                 <BrandScriptLogo className="h-9 self-start md:h-11" />
-                <h2 className="max-w-[78%] text-2xl font-black leading-tight tracking-tight drop-shadow-xl md:max-w-none md:text-3xl lg:text-[2.5rem] lg:leading-[1.05]">
-                    {/* Degrade yalniz metinde: bg-clip-text emojiyi gri lekeye ceviriyor. */}
-                    <span className="bg-gradient-to-r from-[#FF2E88] via-[#FF5A4E] to-[#FF8A1F] bg-clip-text text-transparent">{t("aiPromo.title")}</span>{" "}
-                    <span aria-hidden>{t("aiPromo.titleEmoji")}</span>
+                {/* Satir araligi genis ve etiketin dikey payi var: Turkce buyuk harf noktasi/cengeli
+                    ve egik etiket ust satirin harflerine degmesin. Boyut slayt genisligine bagli
+                    (cqw): etiket tek satirda kalsin, dar slaytta bile metin sutununu asmasin. */}
+                <h2
+                    className={cn(
+                        displayFont.className,
+                        "text-[1.4rem] leading-[1.18] text-[#14101F] md:text-[clamp(1.3rem,3.3cqw,2.35rem)] md:leading-[1.3] dark:text-white",
+                    )}
+                >
+                    {t("aiPromo.titleLead")}{" "}
+                    <span className="my-0.5 inline-block -rotate-2 md:my-1 rounded-[0.35em] bg-[#FF2E88] px-[0.3em] pb-[0.08em] text-white shadow-[0.12em_0.14em_0_0_#14101F] dark:shadow-[0.12em_0.14em_0_0_#000]">
+                        {t("aiPromo.titleHighlight")}
+                    </span>
                 </h2>
-                <p className="line-clamp-3 max-w-md text-sm text-[#14101F]/70 md:line-clamp-none md:text-base dark:text-white/80">{t("aiPromo.description")}</p>
+                <p className="line-clamp-3 max-w-md text-sm text-[#14101F]/65 md:line-clamp-none md:text-base dark:text-white/65">{t("aiPromo.description")}</p>
                 <div className="pt-1.5">
                     <Link href={href} className="inline-flex">
-                        <span
-                            className={cn(
-                                "inline-flex h-11 cursor-pointer items-center gap-2 rounded-full px-6 text-sm font-extrabold text-white md:text-base",
-                                "bg-gradient-to-r from-[#FF2E88] to-[#FF8A1F] shadow-[0_10px_30px_-8px_rgba(255,46,136,0.55)]",
-                                "transition-transform hover:scale-[1.04] active:scale-[0.98]",
-                            )}
-                        >
+                        <Button size="lg" className="text-md cursor-pointer gap-2 font-semibold shadow-[0_8px_30px_-8px_rgba(0,0,0,0.6)] transition-transform hover:scale-[1.03]">
+                            <MessagesSquare className="h-4 w-4" />
                             {t("aiPromo.cta")}
-                        </span>
+                        </Button>
                     </Link>
                 </div>
             </div>
 
             {/* Masaustu: kendi kendine akan bot sohbeti + etrafinda yuzen botlar */}
-            <div className="absolute right-6 top-1/2 z-10 hidden w-[330px] -translate-y-1/2 md:block lg:right-16 lg:w-[380px]">
+            <div className="mr-6 hidden w-[330px] shrink-0 md:@min-[44rem]:block lg:mr-16 lg:w-[380px]">
                 <AiChatDemo lines={club?.recentLines} />
             </div>
-            <div aria-hidden className="hidden md:block">
+            </div>
+            <div aria-hidden className="hidden md:@min-[44rem]:block">
                 {desktopBots.map((bot, index) => {
                     const slot = DESKTOP_SLOTS[index];
                     return (
