@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Suspense } from "react";
 import NextTopLoader from "nextjs-toploader";
@@ -19,14 +18,7 @@ import SiteAnalyticsListener from "./site-analytics-listener";
 import MetaPixelListener from "./meta-pixel-listener";
 import { metaPixelBootstrapScript } from "@/core/lib/meta-pixel";
 import "./globals.css";
-
-// latin-ext olmadan Türkçe ğ/ş/İ glifleri fallback font'tan çiziliyordu.
-// display "optional": font ilk boyaya yetismezse o sayfa yuklemesi metrik uyumlu yedek fontla
-// kalir, degisim (swap) olmaz. Onceki "swap" ile Lighthouse LCP'yi font degisim anina tasiyordu:
-// Inter Black yedekten genis, hero basligi bir satir buyuyor ve Chrome yeni LCP girdisi
-// yaziyordu; o yeniden boyama da hydration yuzunden 3 sn gecikiyordu (LCP 4.4 sn, FCP 1.4 sn).
-// Font onbellege girdikten sonra (ikinci sayfadan itibaren) Inter ilk boyada gelir.
-const inter = Inter({ subsets: ["latin", "latin-ext"], display: "optional" });
+import { bodyFontFamily } from "@/core/assets/fonts/body-font";
 
 // İlk boyamadan hemen sonra bu origin'lere istek gidiyor; TLS el sıkışmasını öne çekmek
 // Lighthouse ölçümünde ~440 ms kazandırıyor.
@@ -169,7 +161,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     <Script id="meta-pixel" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: metaPixelScript }} />
                 ) : null}
             </head>
-            <body className={inter.className}>
+            <body style={{ fontFamily: bodyFontFamily }}>
                 {/* Site geneli yapisal veri: kurulus, site (arama eylemi) ve mobil uygulama.
                     Sayfaya ozel semalar (oyun, inceleme, profil...) sayfanin kendisinde. */}
                 <JsonLd data={[organizationJsonLd(), webSiteJsonLd(locale), mobileApplicationJsonLd()]} />
