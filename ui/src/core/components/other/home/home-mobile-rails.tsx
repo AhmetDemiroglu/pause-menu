@@ -57,7 +57,13 @@ export default function HomeMobileRails({ trending, leaders }: HomeMobileRailsPr
                                         // denendi ve geri alındı: next/image eager için de
                                         // <link rel="preload"> üretiyor, prod'da 22 görsel preload'ı
                                         // oluşup LCP ile bant genişliği yarışına giriyordu.
+                                        //
+                                        // fetchPriority="high" şart: priority tek başına preload'ı düşük
+                                        // öncelikle yazıyor. Chrome ilk anda düşük öncelikli en fazla 2
+                                        // istek indiriyor; o iki yeri üst bardaki logolar (açık + koyu)
+                                        // tutunca bu görsel ~800 ms sıra bekliyordu (LCP 2,5 sn).
                                         priority={index === 0}
+                                        fetchPriority={index === 0 ? "high" : undefined}
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                                     <span className="absolute left-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-md bg-black/60 text-[10px] font-bold text-white backdrop-blur-sm">
