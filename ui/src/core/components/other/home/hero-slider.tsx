@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight, Play, Newspaper } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { agendaApi } from "@/api/agenda/agenda.api";
@@ -18,6 +18,7 @@ import { IgdbLogo } from "@/core/components/other/igdb-logo";
 import { StoreButtons } from "@/core/components/other/public/store-buttons";
 import logoSrc from "@core/assets/brand-mark.png";
 import { BrandScriptLogo } from "@core/components/base/brand-script-logo";
+import { cn } from "@/core/lib/utils";
 import AiClubPromoSlide from "./ai-club-promo-slide";
 import metacriticLogoSrc from "@core/assets/metacritic_logo.png";
 import rawgLogoSrc from "@core/assets/rawg_logo.png";
@@ -27,6 +28,31 @@ interface HeroSliderProps {
 }
 
 const AUTOPLAY_DELAY = 6000;
+
+/**
+ * Gündem slaytındaki poster yelpazesi. Görünen poster sayısı slayt genişliğine göre değişir
+ * (42rem: 2, 50rem: 3, 66rem: 4, 72rem: 5); her sayı için ayrı, simetrik açı ve yükseklik
+ * seti CSS değişkeniyle verilir, container query hangisinin uygulanacağını seçer.
+ */
+const POSTER_FAN_TRANSFORM =
+    "[transform:rotate(var(--fan-r2))_translateY(var(--fan-y2))] @min-[50rem]:[transform:rotate(var(--fan-r3))_translateY(var(--fan-y3))] @min-[66rem]:[transform:rotate(var(--fan-r4))_translateY(var(--fan-y4))] @6xl:[transform:rotate(var(--fan-r5))_translateY(var(--fan-y5))]";
+
+const fanVars = (r: number[], y: number[]) =>
+    Object.fromEntries(
+        r.flatMap((deg, i) => [
+            [`--fan-r${i + 2}`, `${deg}deg`],
+            [`--fan-y${i + 2}`, `${y[i]}px`],
+        ]),
+    ) as CSSProperties;
+
+// Her satır bir poster: [2'li, 3'lü, 4'lü, 5'li yelpazedeki açı], aynı sırada yükseklik.
+const POSTER_FAN: { visibility: string; vars: CSSProperties }[] = [
+    { visibility: "block", vars: fanVars([-6, -8, -9, -9], [6, 10, 10, 10]) },
+    { visibility: "block", vars: fanVars([6, 0, -3, -4], [-8, -12, -12, -14]) },
+    { visibility: "hidden @min-[50rem]:block", vars: fanVars([0, 8, 3, 1], [0, 8, 6, 4]) },
+    { visibility: "hidden @min-[66rem]:block", vars: fanVars([0, 0, 9, 6], [0, 0, -8, -10]) },
+    { visibility: "hidden @6xl:block", vars: fanVars([0, 0, 0, 11], [0, 0, 0, 12]) },
+];
 
 const normalizeDescription = (value: string | null | undefined) => {
     if (!value) return null;
@@ -159,7 +185,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
 
                     {/* Sabit 2. slayt: Oyun Gündemi. Bu ayın yeni çıkanları + sayfaya CTA. */}
                     <CarouselItem key="agenda-promo">
-                        <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#FFF6EE] ring-1 ring-black/5 md:h-[420px] dark:bg-[#14101F] dark:ring-white/10">
+                        <div className="@container relative h-[340px] w-full overflow-hidden rounded-2xl bg-[#FFF6EE] ring-1 ring-black/5 md:h-[420px] dark:bg-[#14101F] dark:ring-white/10">
                             <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#FF8A1F]/15 via-transparent to-[#FF2E88]/15" />
                             <div
                                 aria-hidden
@@ -174,9 +200,13 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                             <div aria-hidden className="pointer-events-none absolute -left-24 -top-24 z-0 h-80 w-80 rounded-full bg-[#FF8A1F]/20 blur-3xl" />
                             <div aria-hidden className="pointer-events-none absolute -bottom-28 right-1/4 z-0 h-96 w-96 rounded-full bg-[#FF2E88]/20 blur-3xl" />
 
-                            <div className="relative z-10 flex h-full flex-col justify-center gap-3 px-5 pb-12 pt-5 md:max-w-[55%] md:gap-4 md:p-12 md:pb-16 lg:px-16">
+                            {/* Metin ve poster yelpazesi yan yana akar: yelpaze yerini kaplar, metin kalan
+                                genislikte sarilir. Eskiden yelpaze absolute idi ve metin %55 genislik
+                                aliyordu; ~1000 px slaytta baslik posterlerin altina giriyordu. */}
+                            <div className="relative z-10 flex h-full items-center">
+                            <div className="flex h-full min-w-0 flex-1 flex-col justify-center gap-3 px-5 pb-12 pt-5 md:gap-4 md:py-12 md:pb-16 md:pl-12 md:pr-8 lg:pl-16">
                                 <BrandScriptLogo className="h-9 self-start md:h-11" />
-                                <h2 className="text-2xl font-black tracking-tight text-[#14101F] md:text-3xl lg:text-[2.6rem] lg:leading-[1.05] dark:text-white dark:drop-shadow-xl">
+                                <h2 className="text-balance text-2xl font-black tracking-tight text-[#14101F] md:text-3xl lg:text-[2.6rem] lg:leading-[1.05] dark:text-white dark:drop-shadow-xl">
                                     {t("home.agendaPromoTitle")}
                                 </h2>
                                 <p className="line-clamp-2 max-w-md text-sm text-[#14101F]/65 md:line-clamp-none md:text-base dark:text-white/65">{t("home.agendaPromoSubtitle")}</p>
@@ -196,13 +226,14 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                 </div>
                             </div>
 
-                            {/* Sağda yılın öne çıkanlarından yelpaze poster kolajı (mobilde gizli) */}
+                            {/* Sağda yılın öne çıkanlarından yelpaze poster kolajı (mobilde gizli).
+                                Poster sayısı ve boyu slayt genişliğine göre (container query): metne
+                                en az ~350 px kalsın diye dar slaytta 2-3, genişte 5 poster. */}
                             {agendaHighlights.length > 0 ? (
-                                <div className="absolute right-6 top-1/2 z-10 hidden -translate-y-1/2 md:block lg:right-14">
-                                    <div className="flex items-center -space-x-9 lg:-space-x-11">
+                                <div className="hidden shrink-0 pr-6 md:@min-[42rem]:block lg:pr-14">
+                                    <div className="flex items-center">
                                         {agendaHighlights.map((game, index) => {
-                                            const rotation = [-9, -4, 1, 6, 11][index % 5];
-                                            const lift = [10, -14, 4, -10, 12][index % 5];
+                                            const fan = POSTER_FAN[index % POSTER_FAN.length];
                                             const isUpcoming = !!game.released && game.released > todayStr;
                                             const dateLabel = game.released
                                                 ? agendaDateFormatter.format(new Date(`${game.released}T00:00:00`))
@@ -211,11 +242,14 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                                 <Link
                                                     key={game.id}
                                                     href={buildLocalizedPathname(`/games/${game.slug || game.rawgId}`, locale)}
-                                                    className="group/poster relative block shrink-0"
+                                                    className={cn(
+                                                        "group/poster relative shrink-0 -ml-9 first:ml-0 @min-[60rem]:-ml-11 @min-[60rem]:first:ml-0",
+                                                        fan.visibility,
+                                                    )}
                                                     style={{ zIndex: 10 + index }}
                                                 >
-                                                    <div style={{ transform: `rotate(${rotation}deg) translateY(${lift}px)` }}>
-                                                        <div className="w-[118px] overflow-hidden rounded-xl bg-zinc-900 shadow-[0_18px_45px_-14px_rgba(20,16,31,0.45)] ring-1 ring-black/10 dark:shadow-[0_18px_45px_-12px_rgba(0,0,0,0.9)] dark:ring-white/15 transition-all duration-300 group-hover/poster:-translate-y-3 group-hover/poster:shadow-[0_26px_60px_-12px_rgba(0,0,0,0.95)] group-hover/poster:ring-white/40 lg:w-[148px]">
+                                                    <div className={POSTER_FAN_TRANSFORM} style={fan.vars}>
+                                                        <div className="w-[118px] overflow-hidden rounded-xl bg-zinc-900 shadow-[0_18px_45px_-14px_rgba(20,16,31,0.45)] ring-1 ring-black/10 dark:shadow-[0_18px_45px_-12px_rgba(0,0,0,0.9)] dark:ring-white/15 transition-all duration-300 group-hover/poster:-translate-y-3 group-hover/poster:shadow-[0_26px_60px_-12px_rgba(0,0,0,0.95)] group-hover/poster:ring-white/40 @min-[60rem]:w-[148px]">
                                                             <div className="relative aspect-[3/4]">
                                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                                                 <img
@@ -226,9 +260,9 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                                                 />
                                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-transparent" />
                                                                 <div className="absolute inset-x-0 bottom-0 space-y-1 p-2.5">
-                                                                    <p className="line-clamp-2 text-[11px] font-bold leading-tight text-white drop-shadow lg:text-xs">{game.name}</p>
+                                                                    <p className="line-clamp-2 text-[11px] font-bold leading-tight text-white drop-shadow @min-[60rem]:text-xs">{game.name}</p>
                                                                     <span
-                                                                        className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-semibold lg:text-[10px] ${
+                                                                        className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-semibold @min-[60rem]:text-[10px] ${
                                                                             isUpcoming ? "bg-[#FF8A1F] text-white" : "bg-[#FF2E88] text-white"
                                                                         }`}
                                                                     >
@@ -245,6 +279,7 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                     </div>
                                 </div>
                             ) : null}
+                            </div>
                         </div>
                     </CarouselItem>
 
@@ -399,9 +434,12 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
 
                 {/* Segmentli ilerleme göstergeleri: aktif segment autoplay ile dolar, tıklanınca slayta gider */}
                 {/* gap-2: dugmeler -mx-1 ile 4 px tasiyor; gap-1.5 iken komsu dugmeler 2 px ust uste biniyor, hedef 22 px kaliyordu (target-size). */}
+                {/* Renk: sabit tanıtım slaytları açık temada açık zeminli, beyaz çubuk zemine karışıp
+                    kayboluyordu. Orada koyu mürekkep, oyun slaytlarında (koyu görsel) beyaz. */}
                 <div className="absolute bottom-5 left-6 z-20 flex items-center gap-2 md:left-12 lg:left-16">
                     {Array.from({ length: slideCount }).map((_, index) => {
                         const isActive = selectedIndex === index;
+                        const onPromo = selectedIndex < FIXED_SLIDES;
                         return (
                             // Dokunma hedefi: görsel çubuk 16x4 px olduğu için Lighthouse
                             // "touch targets do not have sufficient size" veriyordu. px/py ile
@@ -416,12 +454,23 @@ export default function HeroSlider({ games = [] }: HeroSliderProps) {
                                 className="-mx-1 -my-2.5 flex cursor-pointer items-center px-1 py-2.5"
                             >
                                 <span
-                                    className={`block h-1 overflow-hidden rounded-full transition-all duration-400 ${
-                                        isActive ? "w-10 bg-white/20" : "w-4 bg-white/15 hover:bg-white/30"
-                                    }`}
+                                    className={cn(
+                                        "block h-1 overflow-hidden rounded-full transition-all duration-400",
+                                        isActive ? "w-10" : "w-4",
+                                        onPromo
+                                            ? isActive
+                                                ? "bg-[#14101F]/15 dark:bg-white/20"
+                                                : "bg-[#14101F]/20 hover:bg-[#14101F]/40 dark:bg-white/15 dark:hover:bg-white/30"
+                                            : isActive
+                                              ? "bg-white/20"
+                                              : "bg-white/15 hover:bg-white/30",
+                                    )}
                                 >
                                     {isActive ? (
-                                        <span key={`${selectedIndex}-${progressCycle}`} className="hero-progress-fill block h-full w-full rounded-full bg-white/90" />
+                                        <span
+                                            key={`${selectedIndex}-${progressCycle}`}
+                                            className={cn("hero-progress-fill block h-full w-full rounded-full", onPromo ? "bg-[#14101F]/75 dark:bg-white/90" : "bg-white/90")}
+                                        />
                                     ) : null}
                                 </span>
                             </button>
